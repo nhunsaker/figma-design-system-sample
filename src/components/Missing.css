@@ -1,0 +1,65 @@
+/* A gap, drawn honestly.
+ *
+ * --frame-w and --frame-h are set inline by the component from the size the design gave the
+ * component that is not here, so the layout around the hole keeps its real proportions.
+ *
+ * They deliberately do NOT carry the --ds- prefix. That prefix means "a design decision this
+ * system made", and the contract check enforces that every --ds-* is declared in the pack. These
+ * are neither: they are measurements carried over from a design file, different on every
+ * instance. Naming them --ds-* was a lie, and the check refused it. When the reader could not
+ * measure one, the fallback IS a token.
+ *
+ * The dashed border is the whole point. Every other surface in this pack is solid, so a dashed one
+ * reads as unfinished at a glance and cannot be mistaken for a component that is done.
+ *
+ * IT MUST HOLD ANY SHAPE. The first version set min-height, so a 48 by 48 placeholder grew to five
+ * times its height to fit the note and spilled text past its own border. A placeholder that
+ * changes the layout it is standing in is worse than no placeholder, because it makes the rest of
+ * the page look wrong too. So `height` is the reserved size and the box clips: the name is first
+ * and survives, the note is supplementary and is allowed to disappear. The full sentence is still
+ * on the element as its accessible name, where a screen reader and a hover both find it.
+ */
+.ds-missing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--ds-missing-gap);
+  box-sizing: border-box;
+  width: var(--frame-w, 100%);
+  max-width: 100%;
+  /* `height` is what reserves the design's footprint. `min-height` is the floor when the reader
+   * could not measure one, and never fights it: an explicit height always wins. */
+  height: var(--frame-h, auto);
+  min-height: var(--ds-missing-min-height);
+  padding: var(--ds-missing-inset);
+  overflow: hidden;
+  background: var(--ds-missing-bg);
+  border: var(--ds-missing-border-width) dashed var(--ds-missing-border);
+  border-radius: var(--ds-missing-radius);
+  color: var(--ds-missing-fg);
+  font-family: var(--ds-font-body);
+  text-align: center;
+}
+
+.ds-missing__name {
+  flex: 0 0 auto;
+  font-size: var(--ds-missing-name-size);
+  font-weight: var(--ds-font-weight-emphasis);
+  line-height: var(--ds-line-height-body);
+  color: var(--ds-text-primary);
+  /* One line, whatever the component is called. A long name in a narrow box would otherwise push
+   * the name itself out of view, which is the one thing here that has to survive. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-missing__note {
+  /* Allowed to shrink to nothing. In a box too small for it, the name is what matters. */
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  font-size: var(--ds-missing-note-size);
+  line-height: var(--ds-line-height-body);
+  color: var(--ds-missing-fg);
+}

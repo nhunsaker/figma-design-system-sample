@@ -53,7 +53,7 @@ auto layout is already Figma's answer to the same question.
 
 ```
 FIGMA_FILE_KEY=IDVXk0yZaJ1CQvIZn14AkA pnpm sync:figma
-pnpm pack
+pnpm build:pack
 ```
 
 The first reads the file and writes `figma/code-connect.json`, one entry per published variant.

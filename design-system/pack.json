@@ -18,7 +18,7 @@
       "design-system/tokens/semantic.harbor.json",
       "design-system/tokens/component.json"
     ],
-    "hash": "7361390f4de5649a",
+    "hash": "8a973dcdd4492a60",
     "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
   },
   "brands": [
@@ -46,7 +46,7 @@
     "file_key": "IDVXk0yZaJ1CQvIZn14AkA",
     "mapped": 9,
     "keys": 30,
-    "of": 11
+    "of": 12
   },
   "components": [
     {
@@ -398,6 +398,31 @@
         "3044e345df15da978c90f7003bd99249d2af8099"
       ],
       "tokens": []
+    },
+    {
+      "name": "Missing",
+      "purpose": "A component the design asked for that the pack cannot build. The frame reader reports any instance its key map cannot place, which is not the same as needing a new component: it is equally a new variant of something that exists, an instance from another library, or a rename. This asserts none of that. It says only that something was here and could not be built, which is true in every case, and is why no classifier is needed. Use it for every unmapped component the issue lists, and say so under Left undone.",
+      "import": "src/components/Missing.tsx",
+      "props": {
+        "name": "string",
+        "width": "number",
+        "height": "number"
+      },
+      "slots": [],
+      "figma": null,
+      "figma_keys": [],
+      "tokens": [
+        "--ds-missing-bg",
+        "--ds-missing-fg",
+        "--ds-missing-border",
+        "--ds-missing-border-width",
+        "--ds-missing-radius",
+        "--ds-missing-inset",
+        "--ds-missing-gap",
+        "--ds-missing-name-size",
+        "--ds-missing-note-size",
+        "--ds-missing-min-height"
+      ]
     }
   ],
   "tokens": {
@@ -1180,6 +1205,56 @@
         "var": "--ds-meter-track-height",
         "type": "dimension",
         "resolves_to": "--ds-control-track"
+      },
+      "missing.bg": {
+        "var": "--ds-missing-bg",
+        "type": "color",
+        "resolves_to": "--ds-surface-sunken"
+      },
+      "missing.fg": {
+        "var": "--ds-missing-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-secondary"
+      },
+      "missing.border": {
+        "var": "--ds-missing-border",
+        "type": "color",
+        "resolves_to": "--ds-border-strong"
+      },
+      "missing.border-width": {
+        "var": "--ds-missing-border-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-hairline"
+      },
+      "missing.radius": {
+        "var": "--ds-missing-radius",
+        "type": "dimension",
+        "resolves_to": "--ds-radius-surface"
+      },
+      "missing.inset": {
+        "var": "--ds-missing-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inset-compact"
+      },
+      "missing.gap": {
+        "var": "--ds-missing-gap",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inline"
+      },
+      "missing.name-size": {
+        "var": "--ds-missing-name-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-body"
+      },
+      "missing.note-size": {
+        "var": "--ds-missing-note-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-label"
+      },
+      "missing.min-height": {
+        "var": "--ds-missing-min-height",
+        "type": "dimension",
+        "resolves_to": "--ds-control-height-compact"
       }
     }
   },

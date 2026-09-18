@@ -311,5 +311,47 @@
       "$value": "{semantic.control.track}",
       "$type": "dimension"
     }
+  },
+  "missing": {
+    "bg": {
+      "$value": "{semantic.surface.sunken}",
+      "$type": "color"
+    },
+    "fg": {
+      "$value": "{semantic.text.secondary}",
+      "$type": "color"
+    },
+    "border": {
+      "$value": "{semantic.border.strong}",
+      "$type": "color"
+    },
+    "border-width": {
+      "$value": "{semantic.border-width.hairline}",
+      "$type": "dimension"
+    },
+    "radius": {
+      "$value": "{semantic.radius.surface}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.inset-compact}",
+      "$type": "dimension"
+    },
+    "gap": {
+      "$value": "{semantic.space.inline}",
+      "$type": "dimension"
+    },
+    "name-size": {
+      "$value": "{semantic.font-size.body}",
+      "$type": "dimension"
+    },
+    "note-size": {
+      "$value": "{semantic.font-size.label}",
+      "$type": "dimension"
+    },
+    "min-height": {
+      "$value": "{semantic.control.height-compact}",
+      "$type": "dimension"
+    }
   }
 }

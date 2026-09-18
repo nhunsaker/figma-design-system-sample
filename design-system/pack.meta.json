@@ -164,6 +164,18 @@
       },
       "slots": [],
       "figma": "RecordRow"
+    },
+    {
+      "name": "Missing",
+      "purpose": "A component the design asked for that the pack cannot build. The frame reader reports any instance its key map cannot place, which is not the same as needing a new component: it is equally a new variant of something that exists, an instance from another library, or a rename. This asserts none of that. It says only that something was here and could not be built, which is true in every case, and is why no classifier is needed. Use it for every unmapped component the issue lists, and say so under Left undone.",
+      "import": "src/components/Missing.tsx",
+      "props": {
+        "name": "string",
+        "width": "number",
+        "height": "number"
+      },
+      "slots": [],
+      "figma": null
     }
   ],
   "rules": [

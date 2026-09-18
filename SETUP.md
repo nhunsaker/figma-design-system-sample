@@ -38,13 +38,13 @@ Node 22 and pnpm 9.
 
 ```
 pnpm install
-pnpm pack          # build the design pack from the token files
+pnpm build:pack          # build the design pack from the token files
 pnpm test:all      # the same gate the pull request runs
 pnpm storybook     # the components, with a brand switcher
 pnpm dev           # the page that uses them
 ```
 
-`pnpm pack` writes `design-system/pack.json` and the stylesheets. They are generated and
+`pnpm build:pack` writes `design-system/pack.json` and the stylesheets. They are generated and
 committed on purpose, so a build never needs a live design connection and every commit builds the
 same way. If you change anything under `design-system/tokens/`, run it again and commit both.
 
@@ -95,7 +95,7 @@ service spawns none, so the narrower thing costs nothing.
 
 ```
 FIGMA_FILE_KEY=<key> pnpm sync:figma
-pnpm pack
+pnpm build:pack
 ```
 
 The first reads the file and writes `figma/code-connect.json`, one entry per published variant.
@@ -361,7 +361,7 @@ a refusal and writes nothing, which is correct behaviour and looks identical to 
 quick tunnel that restarted has a new address and the old webhook now points at nothing.
 
 **The issue opens but says every component is unmapped.** The key map is empty or stale. Run
-`pnpm sync:figma` and `pnpm pack` again, and check that the component names in Figma match the
+`pnpm sync:figma` and `pnpm build:pack` again, and check that the component names in Figma match the
 names in `design-system/pack.meta.json`.
 
 **A check failed and you want to know which kind.** `check-contract` exits 1 when the code is

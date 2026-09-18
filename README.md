@@ -97,7 +97,7 @@ check refuse it.
 
 ```
 pnpm install
-pnpm pack          # build the design pack from the token files
+pnpm build:pack          # build the design pack from the token files
 pnpm storybook     # the components, with a brand switcher
 pnpm dev           # the page that uses them
 pnpm test:all      # the gate, the same one the pull request runs

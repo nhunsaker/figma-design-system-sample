@@ -29,7 +29,8 @@
     "test:everything": "pnpm test:all && pnpm test:worker && pnpm test:bridge",
     "worker:deploy": "pnpm --filter figma-bridge-worker run deploy",
     "worker:check": "pnpm --filter figma-bridge-worker run deploy --dry-run",
-    "worker:bench": "pnpm --filter figma-bridge-worker run bench"
+    "worker:bench": "pnpm --filter figma-bridge-worker run bench",
+    "build:pack": "node design-system/build-pack.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",

@@ -86,7 +86,7 @@ try {
 } catch (e) {
   throw new CannotRun(
     `cannot read the design pack at ${rel(PACK)}: ${e.message}\n` +
-      'Run `pnpm pack` to generate it. Without the pack there is nothing to check against, ' +
+      'Run `pnpm build:pack` to generate it. Without the pack there is nothing to check against, ' +
       'and a check with nothing to check against must not pass.',
   )
 }
@@ -126,7 +126,7 @@ for (const file of cssFiles) {
         'raw-value',
         name,
         `uses ${varName}, which the pack does not define`,
-        'either the name is a typo, or the token layer is missing something. If it is missing, add it to design-system/tokens and run `pnpm pack`.',
+        'either the name is a typo, or the token layer is missing something. If it is missing, add it to design-system/tokens and run `pnpm build:pack`.',
       )
     }
   }

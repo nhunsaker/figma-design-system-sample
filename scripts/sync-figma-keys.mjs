@@ -94,4 +94,4 @@ if (missing.length) {
   console.log(`not in that file yet: ${missing.join(', ')}`)
   console.log('Check the component name in Figma matches the name in pack.meta.json.')
 }
-console.log('Run `pnpm pack` to carry the keys into pack.json, then commit both.')
+console.log('Run `pnpm build:pack` to carry the keys into pack.json, then commit both.')
