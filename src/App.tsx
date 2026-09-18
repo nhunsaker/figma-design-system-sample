@@ -57,12 +57,19 @@ const TABS: Tab[] = [
   { id: 'venues', label: 'Venues' },
 ]
 
+const ROLL_HISTORY = [
+  { label: 'Peak', value: '$12,480' },
+  { label: 'Low', value: '$1,205' },
+  { label: 'Now', value: '$8,930' },
+]
+
 export function App() {
   const [tab, setTab] = useState('overview')
   const [dismissed, setDismissed] = useState(false)
 
   const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
   const showWeakSpot = isOn('weak-spot') && weakest
+  const showRollHistory = isOn('roll-history')
 
   return (
     <main className="app">
@@ -93,6 +100,17 @@ export function App() {
               <Stat label="Biggest pot" value={PROFILE.biggestPot} />
               <Stat label="Sessions" value={PROFILE.sessions} />
             </Stack>
+            {showRollHistory ? (
+              <Stack gap="inline">
+                <h2>Roll over the last 90 days</h2>
+                <Stack direction="horizontal" gap="gutter" fill wrap>
+                  {ROLL_HISTORY.map((row) => (
+                    <Stat key={row.label} label={row.label} value={row.value} />
+                  ))}
+                </Stack>
+                <p>Roll over the last 90 days</p>
+              </Stack>
+            ) : null}
             <Card title="How you play">
               <Stack gap="stack">
                 {STYLE.map((row) => (
