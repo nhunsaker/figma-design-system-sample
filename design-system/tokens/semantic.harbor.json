@@ -1,0 +1,191 @@
+{
+  "$description": "Tier 2, semantic, brand Harbor. Cool neutrals and a blue accent. This is the only tier a brand may edit. Every key here also exists in every other brand file, and the build fails if that stops being true.",
+  "$extensions": {
+    "com.nhunsaker.dss": {
+      "brand": "harbor",
+      "tier": "semantic"
+    }
+  },
+  "surface": {
+    "$type": "color",
+    "page": {
+      "$value": "{primitive.color.slate.50}"
+    },
+    "raised": {
+      "$value": "{primitive.color.white}"
+    },
+    "sunken": {
+      "$value": "{primitive.color.slate.100}"
+    },
+    "inverse": {
+      "$value": "{primitive.color.slate.900}"
+    }
+  },
+  "text": {
+    "$type": "color",
+    "primary": {
+      "$value": "{primitive.color.slate.900}"
+    },
+    "secondary": {
+      "$value": "{primitive.color.slate.600}"
+    },
+    "muted": {
+      "$value": "{primitive.color.slate.500}"
+    },
+    "inverse": {
+      "$value": "{primitive.color.slate.50}"
+    }
+  },
+  "accent": {
+    "$type": "color",
+    "base": {
+      "$value": "{primitive.color.blue.600}"
+    },
+    "hover": {
+      "$value": "{primitive.color.blue.700}"
+    },
+    "subtle": {
+      "$value": "{primitive.color.blue.50}"
+    },
+    "contrast": {
+      "$value": "{primitive.color.white}"
+    }
+  },
+  "border": {
+    "$type": "color",
+    "subtle": {
+      "$value": "{primitive.color.slate.200}"
+    },
+    "strong": {
+      "$value": "{primitive.color.slate.400}"
+    },
+    "focus": {
+      "$value": "{primitive.color.blue.600}"
+    }
+  },
+  "status": {
+    "$type": "color",
+    "success-fg": {
+      "$value": "{primitive.color.green.700}"
+    },
+    "success-bg": {
+      "$value": "{primitive.color.green.50}"
+    },
+    "warning-fg": {
+      "$value": "{primitive.color.amber.700}"
+    },
+    "warning-bg": {
+      "$value": "{primitive.color.amber.50}"
+    },
+    "danger-fg": {
+      "$value": "{primitive.color.red.700}"
+    },
+    "danger-bg": {
+      "$value": "{primitive.color.red.50}"
+    },
+    "info-fg": {
+      "$value": "{primitive.color.slate.700}"
+    },
+    "info-bg": {
+      "$value": "{primitive.color.slate.100}"
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset-compact": {
+      "$value": "{primitive.space.2}"
+    },
+    "inset": {
+      "$value": "{primitive.space.4}"
+    },
+    "stack": {
+      "$value": "{primitive.space.3}"
+    },
+    "inline": {
+      "$value": "{primitive.space.2}"
+    },
+    "gutter": {
+      "$value": "{primitive.space.5}"
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "control": {
+      "$value": "{primitive.radius.sm}"
+    },
+    "surface": {
+      "$value": "{primitive.radius.md}"
+    }
+  },
+  "control": {
+    "$type": "dimension",
+    "height": {
+      "$value": "{primitive.size.control}"
+    },
+    "height-compact": {
+      "$value": "{primitive.size.control-compact}"
+    }
+  },
+  "border-width": {
+    "$type": "dimension",
+    "hairline": {
+      "$value": "{primitive.size.border-hairline}"
+    },
+    "focus": {
+      "$value": "{primitive.size.border-thick}"
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "body": {
+      "$value": "{primitive.font.sans}"
+    },
+    "figure": {
+      "$value": "{primitive.font.mono}"
+    }
+  },
+  "font-size": {
+    "$type": "dimension",
+    "label": {
+      "$value": "{primitive.fontSize.sm}"
+    },
+    "body": {
+      "$value": "{primitive.fontSize.md}"
+    },
+    "heading": {
+      "$value": "{primitive.fontSize.lg}"
+    }
+  },
+  "font-weight": {
+    "$type": "fontWeight",
+    "body": {
+      "$value": "{primitive.fontWeight.regular}"
+    },
+    "emphasis": {
+      "$value": "{primitive.fontWeight.semibold}"
+    }
+  },
+  "line-height": {
+    "$type": "number",
+    "body": {
+      "$value": "{primitive.lineHeight.normal}"
+    },
+    "heading": {
+      "$value": "{primitive.lineHeight.tight}"
+    }
+  },
+  "motion": {
+    "duration-fast": {
+      "$type": "duration",
+      "$value": "{primitive.duration.fast}"
+    },
+    "duration-base": {
+      "$type": "duration",
+      "$value": "{primitive.duration.base}"
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$value": "{primitive.easing.standard}"
+    }
+  }
+}

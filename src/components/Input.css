@@ -1,0 +1,45 @@
+.ds-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-inline);
+  font-family: var(--ds-font-body);
+}
+
+.ds-input__label {
+  font-size: var(--ds-input-label-size);
+  color: var(--ds-input-label-fg);
+  font-weight: var(--ds-font-weight-emphasis);
+}
+
+.ds-input__control {
+  min-height: var(--ds-input-height);
+  padding-inline: var(--ds-input-inset);
+  background: var(--ds-input-bg);
+  color: var(--ds-input-fg);
+  border: var(--ds-input-border-width) solid var(--ds-input-border);
+  border-radius: var(--ds-input-radius);
+  font-family: inherit;
+  font-size: var(--ds-input-font-size);
+  line-height: var(--ds-line-height-body);
+}
+
+.ds-input__control::placeholder {
+  color: var(--ds-input-placeholder);
+}
+
+.ds-input__control:focus-visible {
+  outline: var(--ds-border-width-focus) solid var(--ds-input-border-focus);
+  outline-offset: var(--ds-input-border-width);
+}
+
+.ds-input__control[aria-invalid='true'] {
+  border-color: var(--ds-input-border-invalid);
+  border-width: var(--ds-border-width-focus);
+}
+
+.ds-input__error {
+  margin: 0;
+  color: var(--ds-input-error-fg);
+  font-size: var(--ds-input-label-size);
+  line-height: var(--ds-line-height-body);
+}

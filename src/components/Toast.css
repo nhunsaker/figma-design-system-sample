@@ -1,0 +1,58 @@
+.ds-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-toast-gap);
+  padding: var(--ds-toast-inset);
+  background: var(--ds-toast-bg);
+  color: var(--ds-toast-fg);
+  border-radius: var(--ds-toast-radius);
+  font-family: var(--ds-font-body);
+  font-size: var(--ds-toast-font-size);
+  line-height: var(--ds-line-height-body);
+  animation: ds-toast-in var(--ds-toast-duration) var(--ds-toast-easing);
+}
+
+.ds-toast__message {
+  flex: 1;
+}
+
+.ds-toast--success .ds-toast__message::before {
+  content: 'Done. ';
+  font-weight: var(--ds-font-weight-emphasis);
+}
+
+.ds-toast--danger .ds-toast__message::before {
+  content: 'Failed. ';
+  font-weight: var(--ds-font-weight-emphasis);
+}
+
+.ds-toast__dismiss {
+  min-height: var(--ds-control-height-compact);
+  padding-inline: var(--ds-space-inline);
+  background: none;
+  border: var(--ds-border-width-hairline) solid currentcolor;
+  border-radius: var(--ds-radius-control);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ds-toast__dismiss:focus-visible {
+  outline: var(--ds-border-width-focus) solid currentcolor;
+  outline-offset: var(--ds-border-width-hairline);
+}
+
+@keyframes ds-toast-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-toast {
+    animation-duration: 0s;
+  }
+}

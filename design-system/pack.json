@@ -1,0 +1,1034 @@
+{
+  "v": 1,
+  "id": "DSS-1.0",
+  "name": "Sample Design System",
+  "premise": "A small design system that exists to be held to. Two brands, six components, three token tiers, and a set of rules a machine can check. It is deliberately ordinary: the interesting part is not the components, it is that an agent can be told what it may do here and then be checked against it.",
+  "north_stars": [
+    "The design system is a contract, not a suggestion. If a rule cannot be checked it is an intention, and it is labelled as one.",
+    "A brand skins at the semantic tier or it does not skin. Anything else is a fork with a nicer name.",
+    "A check that did not run is not a check that passed.",
+    "The agent is not asked to write good code. It is asked to satisfy a schema, and the schema is this pack."
+  ],
+  "source": {
+    "generated_by": "design-system/build-pack.mjs",
+    "editorial": "design-system/pack.meta.json",
+    "tokens": [
+      "design-system/tokens/primitive.json",
+      "design-system/tokens/semantic.ember.json",
+      "design-system/tokens/semantic.harbor.json",
+      "design-system/tokens/component.json"
+    ],
+    "hash": "c14ea11c3f1fc516",
+    "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
+  },
+  "brands": [
+    {
+      "name": "ember",
+      "class": "brand-ember",
+      "stylesheet": "design-system/tokens.ember.css",
+      "description": "Tier 2, semantic, brand Ember. Warm neutrals, a violet accent, and rounder geometry. Same keys as Harbor, different choices. A brand that needs a key Harbor does not have is a change to the semantic tier, reviewed once, for everyone.",
+      "accent": "#6d28d9"
+    },
+    {
+      "name": "harbor",
+      "class": "brand-harbor",
+      "stylesheet": "design-system/tokens.harbor.css",
+      "description": "Tier 2, semantic, brand Harbor. Cool neutrals and a blue accent. This is the only tier a brand may edit. Every key here also exists in every other brand file, and the build fails if that stops being true.",
+      "accent": "#1d4ed8"
+    }
+  ],
+  "tiers": {
+    "primitive": "Raw values. Never emitted as a custom property, so nothing can reach past the semantic tier. The core team owns it.",
+    "semantic": "The only tier a brand may edit. Every brand declares the identical key set.",
+    "component": "Resolves from semantic only, so it compiles once for every brand."
+  },
+  "components": [
+    {
+      "name": "Button",
+      "purpose": "The one control that performs an action. Primary is the action the screen exists for, secondary is everything else, and there is at most one primary on a screen.",
+      "import": "src/components/Button.tsx",
+      "props": {
+        "variant": [
+          "primary",
+          "secondary"
+        ],
+        "size": [
+          "default",
+          "compact"
+        ],
+        "disabled": "boolean",
+        "type": [
+          "button",
+          "submit"
+        ]
+      },
+      "slots": [
+        "children"
+      ],
+      "figma": "Button",
+      "tokens": [
+        "--ds-button-height",
+        "--ds-button-height-compact",
+        "--ds-button-radius",
+        "--ds-button-border-width",
+        "--ds-button-inset",
+        "--ds-button-gap",
+        "--ds-button-font-size",
+        "--ds-button-font-weight",
+        "--ds-button-focus-ring",
+        "--ds-button-focus-width",
+        "--ds-button-primary-bg",
+        "--ds-button-primary-bg-hover",
+        "--ds-button-primary-fg",
+        "--ds-button-secondary-bg",
+        "--ds-button-secondary-bg-hover",
+        "--ds-button-secondary-fg",
+        "--ds-button-secondary-border",
+        "--ds-button-disabled-bg",
+        "--ds-button-disabled-fg"
+      ]
+    },
+    {
+      "name": "Badge",
+      "purpose": "Standing, as a word. Never the only carrier of a state: the badge says the word, the colour agrees with it.",
+      "import": "src/components/Badge.tsx",
+      "props": {
+        "tone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger"
+        ]
+      },
+      "slots": [
+        "children"
+      ],
+      "figma": "Badge",
+      "tokens": [
+        "--ds-badge-radius",
+        "--ds-badge-inset",
+        "--ds-badge-font-size",
+        "--ds-badge-font-weight",
+        "--ds-badge-neutral-bg",
+        "--ds-badge-neutral-fg",
+        "--ds-badge-success-bg",
+        "--ds-badge-success-fg",
+        "--ds-badge-warning-bg",
+        "--ds-badge-warning-fg",
+        "--ds-badge-danger-bg",
+        "--ds-badge-danger-fg"
+      ]
+    },
+    {
+      "name": "Card",
+      "purpose": "A raised surface that groups one subject. It has a title and a body and it does not nest inside another card.",
+      "import": "src/components/Card.tsx",
+      "props": {
+        "title": "string",
+        "as": [
+          "section",
+          "article",
+          "div"
+        ]
+      },
+      "slots": [
+        "children",
+        "footer"
+      ],
+      "figma": "Card",
+      "tokens": [
+        "--ds-card-bg",
+        "--ds-card-fg",
+        "--ds-card-border",
+        "--ds-card-border-width",
+        "--ds-card-radius",
+        "--ds-card-inset",
+        "--ds-card-stack",
+        "--ds-card-title-size",
+        "--ds-card-title-line-height"
+      ]
+    },
+    {
+      "name": "Input",
+      "purpose": "A single line of text from a person, with its label always present and its error message always adjacent. The label is not a placeholder.",
+      "import": "src/components/Input.tsx",
+      "props": {
+        "label": "string",
+        "invalid": "boolean",
+        "error": "string",
+        "type": [
+          "text",
+          "email",
+          "search"
+        ],
+        "required": "boolean"
+      },
+      "slots": [],
+      "figma": "Input",
+      "tokens": [
+        "--ds-input-bg",
+        "--ds-input-fg",
+        "--ds-input-placeholder",
+        "--ds-input-border",
+        "--ds-input-border-width",
+        "--ds-input-border-focus",
+        "--ds-input-border-invalid",
+        "--ds-input-height",
+        "--ds-input-radius",
+        "--ds-input-inset",
+        "--ds-input-font-size",
+        "--ds-input-label-size",
+        "--ds-input-label-fg",
+        "--ds-input-error-fg"
+      ]
+    },
+    {
+      "name": "Tabs",
+      "purpose": "One surface, several views of it. Not navigation, and not a wizard: the views are peers and the choice is cheap.",
+      "import": "src/components/Tabs.tsx",
+      "props": {
+        "tabs": "{ id: string; label: string }[]",
+        "selected": "string",
+        "onSelect": "(id: string) => void"
+      },
+      "slots": [
+        "children"
+      ],
+      "figma": "Tabs",
+      "tokens": [
+        "--ds-tabs-fg",
+        "--ds-tabs-fg-selected",
+        "--ds-tabs-indicator",
+        "--ds-tabs-indicator-width",
+        "--ds-tabs-border",
+        "--ds-tabs-border-width",
+        "--ds-tabs-height",
+        "--ds-tabs-inset",
+        "--ds-tabs-font-size",
+        "--ds-tabs-font-weight"
+      ]
+    },
+    {
+      "name": "Toast",
+      "purpose": "A short report that something happened, on the inverse surface so it reads as a different layer. It reports, it never asks.",
+      "import": "src/components/Toast.tsx",
+      "props": {
+        "tone": [
+          "neutral",
+          "success",
+          "danger"
+        ],
+        "onDismiss": "() => void"
+      },
+      "slots": [
+        "children"
+      ],
+      "figma": "Toast",
+      "tokens": [
+        "--ds-toast-bg",
+        "--ds-toast-fg",
+        "--ds-toast-radius",
+        "--ds-toast-inset",
+        "--ds-toast-gap",
+        "--ds-toast-font-size",
+        "--ds-toast-duration",
+        "--ds-toast-easing"
+      ]
+    }
+  ],
+  "tokens": {
+    "semantic": {
+      "surface.page": {
+        "var": "--ds-surface-page",
+        "type": "color",
+        "means": "The ground the interface sits on. Never carries content directly.",
+        "values": {
+          "ember": "#fafaf9",
+          "harbor": "#f8fafc"
+        }
+      },
+      "surface.raised": {
+        "var": "--ds-surface-raised",
+        "type": "color",
+        "means": "Anything that sits above the page: cards, inputs, menus.",
+        "values": {
+          "ember": "#ffffff",
+          "harbor": "#ffffff"
+        }
+      },
+      "surface.sunken": {
+        "var": "--ds-surface-sunken",
+        "type": "color",
+        "means": "A well inside a raised surface, and the resting state of a secondary control.",
+        "values": {
+          "ember": "#f5f5f4",
+          "harbor": "#f1f5f9"
+        }
+      },
+      "surface.inverse": {
+        "var": "--ds-surface-inverse",
+        "type": "color",
+        "means": "The far end of the scale, for the few things that must read as a different layer entirely.",
+        "values": {
+          "ember": "#1c1917",
+          "harbor": "#0f172a"
+        }
+      },
+      "text.primary": {
+        "var": "--ds-text-primary",
+        "type": "color",
+        "means": "Content. The default. Anything a person is meant to read.",
+        "values": {
+          "ember": "#1c1917",
+          "harbor": "#0f172a"
+        }
+      },
+      "text.secondary": {
+        "var": "--ds-text-secondary",
+        "type": "color",
+        "means": "Labels and supporting text that is still meant to be read.",
+        "values": {
+          "ember": "#57534e",
+          "harbor": "#475569"
+        }
+      },
+      "text.muted": {
+        "var": "--ds-text-muted",
+        "type": "color",
+        "means": "Text that is present but not addressed to the reader: placeholders, disabled states.",
+        "values": {
+          "ember": "#78716c",
+          "harbor": "#64748b"
+        }
+      },
+      "text.inverse": {
+        "var": "--ds-text-inverse",
+        "type": "color",
+        "means": "Text on surface-inverse, and nowhere else.",
+        "values": {
+          "ember": "#fafaf9",
+          "harbor": "#f8fafc"
+        }
+      },
+      "accent.base": {
+        "var": "--ds-accent-base",
+        "type": "color",
+        "means": "Exactly one thing: the action this screen exists for, plus the focus ring. It is not a brand colour to decorate with. The moment it means two things it means nothing.",
+        "values": {
+          "ember": "#6d28d9",
+          "harbor": "#1d4ed8"
+        }
+      },
+      "accent.hover": {
+        "var": "--ds-accent-hover",
+        "type": "color",
+        "means": "The same action under a pointer.",
+        "values": {
+          "ember": "#5b21b6",
+          "harbor": "#1e40af"
+        }
+      },
+      "accent.subtle": {
+        "var": "--ds-accent-subtle",
+        "type": "color",
+        "means": "A wash of the accent, for the background of a selected row. Never for text.",
+        "values": {
+          "ember": "#f5f3ff",
+          "harbor": "#eff6ff"
+        }
+      },
+      "accent.contrast": {
+        "var": "--ds-accent-contrast",
+        "type": "color",
+        "means": "The text colour that is legible on accent-base.",
+        "values": {
+          "ember": "#ffffff",
+          "harbor": "#ffffff"
+        }
+      },
+      "border.subtle": {
+        "var": "--ds-border-subtle",
+        "type": "color",
+        "means": "The edge of a surface. Structural, not decorative.",
+        "values": {
+          "ember": "#e7e5e4",
+          "harbor": "#e2e8f0"
+        }
+      },
+      "border.strong": {
+        "var": "--ds-border-strong",
+        "type": "color",
+        "means": "The edge of a control a person can act on.",
+        "values": {
+          "ember": "#a8a29e",
+          "harbor": "#94a3b8"
+        }
+      },
+      "border.focus": {
+        "var": "--ds-border-focus",
+        "type": "color",
+        "means": "Keyboard focus. Always visible, always two pixels, never removed.",
+        "values": {
+          "ember": "#6d28d9",
+          "harbor": "#1d4ed8"
+        }
+      },
+      "status.success-fg": {
+        "var": "--ds-status-success-fg",
+        "type": "color",
+        "values": {
+          "ember": "#15803d",
+          "harbor": "#15803d"
+        }
+      },
+      "status.success-bg": {
+        "var": "--ds-status-success-bg",
+        "type": "color",
+        "values": {
+          "ember": "#f0fdf4",
+          "harbor": "#f0fdf4"
+        }
+      },
+      "status.warning-fg": {
+        "var": "--ds-status-warning-fg",
+        "type": "color",
+        "values": {
+          "ember": "#92400e",
+          "harbor": "#92400e"
+        }
+      },
+      "status.warning-bg": {
+        "var": "--ds-status-warning-bg",
+        "type": "color",
+        "values": {
+          "ember": "#fffbeb",
+          "harbor": "#fffbeb"
+        }
+      },
+      "status.danger-fg": {
+        "var": "--ds-status-danger-fg",
+        "type": "color",
+        "values": {
+          "ember": "#b91c1c",
+          "harbor": "#b91c1c"
+        }
+      },
+      "status.danger-bg": {
+        "var": "--ds-status-danger-bg",
+        "type": "color",
+        "values": {
+          "ember": "#fef2f2",
+          "harbor": "#fef2f2"
+        }
+      },
+      "status.info-fg": {
+        "var": "--ds-status-info-fg",
+        "type": "color",
+        "values": {
+          "ember": "#44403c",
+          "harbor": "#334155"
+        }
+      },
+      "status.info-bg": {
+        "var": "--ds-status-info-bg",
+        "type": "color",
+        "values": {
+          "ember": "#f5f5f4",
+          "harbor": "#f1f5f9"
+        }
+      },
+      "space.inset-compact": {
+        "var": "--ds-space-inset-compact",
+        "type": "dimension",
+        "values": {
+          "ember": "8px",
+          "harbor": "8px"
+        }
+      },
+      "space.inset": {
+        "var": "--ds-space-inset",
+        "type": "dimension",
+        "values": {
+          "ember": "16px",
+          "harbor": "16px"
+        }
+      },
+      "space.stack": {
+        "var": "--ds-space-stack",
+        "type": "dimension",
+        "values": {
+          "ember": "12px",
+          "harbor": "12px"
+        }
+      },
+      "space.inline": {
+        "var": "--ds-space-inline",
+        "type": "dimension",
+        "values": {
+          "ember": "8px",
+          "harbor": "8px"
+        }
+      },
+      "space.gutter": {
+        "var": "--ds-space-gutter",
+        "type": "dimension",
+        "values": {
+          "ember": "24px",
+          "harbor": "24px"
+        }
+      },
+      "radius.control": {
+        "var": "--ds-radius-control",
+        "type": "dimension",
+        "values": {
+          "ember": "999px",
+          "harbor": "4px"
+        }
+      },
+      "radius.surface": {
+        "var": "--ds-radius-surface",
+        "type": "dimension",
+        "values": {
+          "ember": "12px",
+          "harbor": "8px"
+        }
+      },
+      "control.height": {
+        "var": "--ds-control-height",
+        "type": "dimension",
+        "values": {
+          "ember": "44px",
+          "harbor": "44px"
+        }
+      },
+      "control.height-compact": {
+        "var": "--ds-control-height-compact",
+        "type": "dimension",
+        "values": {
+          "ember": "36px",
+          "harbor": "36px"
+        }
+      },
+      "border-width.hairline": {
+        "var": "--ds-border-width-hairline",
+        "type": "dimension",
+        "values": {
+          "ember": "1px",
+          "harbor": "1px"
+        }
+      },
+      "border-width.focus": {
+        "var": "--ds-border-width-focus",
+        "type": "dimension",
+        "values": {
+          "ember": "2px",
+          "harbor": "2px"
+        }
+      },
+      "font.body": {
+        "var": "--ds-font-body",
+        "type": "fontFamily",
+        "values": {
+          "ember": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+          "harbor": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+        }
+      },
+      "font.figure": {
+        "var": "--ds-font-figure",
+        "type": "fontFamily",
+        "values": {
+          "ember": "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+          "harbor": "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
+        }
+      },
+      "font-size.label": {
+        "var": "--ds-font-size-label",
+        "type": "dimension",
+        "values": {
+          "ember": "14px",
+          "harbor": "14px"
+        }
+      },
+      "font-size.body": {
+        "var": "--ds-font-size-body",
+        "type": "dimension",
+        "values": {
+          "ember": "16px",
+          "harbor": "16px"
+        }
+      },
+      "font-size.heading": {
+        "var": "--ds-font-size-heading",
+        "type": "dimension",
+        "values": {
+          "ember": "20px",
+          "harbor": "20px"
+        }
+      },
+      "font-weight.body": {
+        "var": "--ds-font-weight-body",
+        "type": "fontWeight",
+        "values": {
+          "ember": "400",
+          "harbor": "400"
+        }
+      },
+      "font-weight.emphasis": {
+        "var": "--ds-font-weight-emphasis",
+        "type": "fontWeight",
+        "values": {
+          "ember": "600",
+          "harbor": "600"
+        }
+      },
+      "line-height.body": {
+        "var": "--ds-line-height-body",
+        "type": "number",
+        "values": {
+          "ember": "1.5",
+          "harbor": "1.5"
+        }
+      },
+      "line-height.heading": {
+        "var": "--ds-line-height-heading",
+        "type": "number",
+        "values": {
+          "ember": "1.25",
+          "harbor": "1.25"
+        }
+      },
+      "motion.duration-fast": {
+        "var": "--ds-motion-duration-fast",
+        "type": "duration",
+        "values": {
+          "ember": "120ms",
+          "harbor": "120ms"
+        }
+      },
+      "motion.duration-base": {
+        "var": "--ds-motion-duration-base",
+        "type": "duration",
+        "values": {
+          "ember": "200ms",
+          "harbor": "200ms"
+        }
+      },
+      "motion.easing": {
+        "var": "--ds-motion-easing",
+        "type": "cubicBezier",
+        "values": {
+          "ember": "cubic-bezier(0.2, 0, 0.2, 1)",
+          "harbor": "cubic-bezier(0.2, 0, 0.2, 1)"
+        }
+      }
+    },
+    "component": {
+      "button.height": {
+        "var": "--ds-button-height",
+        "type": "dimension",
+        "resolves_to": "--ds-control-height"
+      },
+      "button.height-compact": {
+        "var": "--ds-button-height-compact",
+        "type": "dimension",
+        "resolves_to": "--ds-control-height-compact"
+      },
+      "button.radius": {
+        "var": "--ds-button-radius",
+        "type": "dimension",
+        "resolves_to": "--ds-radius-control"
+      },
+      "button.border-width": {
+        "var": "--ds-button-border-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-hairline"
+      },
+      "button.inset": {
+        "var": "--ds-button-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inset"
+      },
+      "button.gap": {
+        "var": "--ds-button-gap",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inline"
+      },
+      "button.font-size": {
+        "var": "--ds-button-font-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-label"
+      },
+      "button.font-weight": {
+        "var": "--ds-button-font-weight",
+        "type": "fontWeight",
+        "resolves_to": "--ds-font-weight-emphasis"
+      },
+      "button.focus-ring": {
+        "var": "--ds-button-focus-ring",
+        "type": "color",
+        "resolves_to": "--ds-border-focus"
+      },
+      "button.focus-width": {
+        "var": "--ds-button-focus-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-focus"
+      },
+      "button.primary-bg": {
+        "var": "--ds-button-primary-bg",
+        "type": "color",
+        "resolves_to": "--ds-accent-base"
+      },
+      "button.primary-bg-hover": {
+        "var": "--ds-button-primary-bg-hover",
+        "type": "color",
+        "resolves_to": "--ds-accent-hover"
+      },
+      "button.primary-fg": {
+        "var": "--ds-button-primary-fg",
+        "type": "color",
+        "resolves_to": "--ds-accent-contrast"
+      },
+      "button.secondary-bg": {
+        "var": "--ds-button-secondary-bg",
+        "type": "color",
+        "resolves_to": "--ds-surface-raised"
+      },
+      "button.secondary-bg-hover": {
+        "var": "--ds-button-secondary-bg-hover",
+        "type": "color",
+        "resolves_to": "--ds-surface-sunken"
+      },
+      "button.secondary-fg": {
+        "var": "--ds-button-secondary-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-primary"
+      },
+      "button.secondary-border": {
+        "var": "--ds-button-secondary-border",
+        "type": "color",
+        "resolves_to": "--ds-border-strong"
+      },
+      "button.disabled-bg": {
+        "var": "--ds-button-disabled-bg",
+        "type": "color",
+        "resolves_to": "--ds-surface-sunken"
+      },
+      "button.disabled-fg": {
+        "var": "--ds-button-disabled-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-muted"
+      },
+      "badge.radius": {
+        "var": "--ds-badge-radius",
+        "type": "dimension",
+        "resolves_to": "--ds-radius-control"
+      },
+      "badge.inset": {
+        "var": "--ds-badge-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inset-compact"
+      },
+      "badge.font-size": {
+        "var": "--ds-badge-font-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-label"
+      },
+      "badge.font-weight": {
+        "var": "--ds-badge-font-weight",
+        "type": "fontWeight",
+        "resolves_to": "--ds-font-weight-emphasis"
+      },
+      "badge.neutral-bg": {
+        "var": "--ds-badge-neutral-bg",
+        "type": "color",
+        "resolves_to": "--ds-status-info-bg"
+      },
+      "badge.neutral-fg": {
+        "var": "--ds-badge-neutral-fg",
+        "type": "color",
+        "resolves_to": "--ds-status-info-fg"
+      },
+      "badge.success-bg": {
+        "var": "--ds-badge-success-bg",
+        "type": "color",
+        "resolves_to": "--ds-status-success-bg"
+      },
+      "badge.success-fg": {
+        "var": "--ds-badge-success-fg",
+        "type": "color",
+        "resolves_to": "--ds-status-success-fg"
+      },
+      "badge.warning-bg": {
+        "var": "--ds-badge-warning-bg",
+        "type": "color",
+        "resolves_to": "--ds-status-warning-bg"
+      },
+      "badge.warning-fg": {
+        "var": "--ds-badge-warning-fg",
+        "type": "color",
+        "resolves_to": "--ds-status-warning-fg"
+      },
+      "badge.danger-bg": {
+        "var": "--ds-badge-danger-bg",
+        "type": "color",
+        "resolves_to": "--ds-status-danger-bg"
+      },
+      "badge.danger-fg": {
+        "var": "--ds-badge-danger-fg",
+        "type": "color",
+        "resolves_to": "--ds-status-danger-fg"
+      },
+      "card.bg": {
+        "var": "--ds-card-bg",
+        "type": "color",
+        "resolves_to": "--ds-surface-raised"
+      },
+      "card.fg": {
+        "var": "--ds-card-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-primary"
+      },
+      "card.border": {
+        "var": "--ds-card-border",
+        "type": "color",
+        "resolves_to": "--ds-border-subtle"
+      },
+      "card.border-width": {
+        "var": "--ds-card-border-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-hairline"
+      },
+      "card.radius": {
+        "var": "--ds-card-radius",
+        "type": "dimension",
+        "resolves_to": "--ds-radius-surface"
+      },
+      "card.inset": {
+        "var": "--ds-card-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-gutter"
+      },
+      "card.stack": {
+        "var": "--ds-card-stack",
+        "type": "dimension",
+        "resolves_to": "--ds-space-stack"
+      },
+      "card.title-size": {
+        "var": "--ds-card-title-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-heading"
+      },
+      "card.title-line-height": {
+        "var": "--ds-card-title-line-height",
+        "type": "number",
+        "resolves_to": "--ds-line-height-heading"
+      },
+      "input.bg": {
+        "var": "--ds-input-bg",
+        "type": "color",
+        "resolves_to": "--ds-surface-raised"
+      },
+      "input.fg": {
+        "var": "--ds-input-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-primary"
+      },
+      "input.placeholder": {
+        "var": "--ds-input-placeholder",
+        "type": "color",
+        "resolves_to": "--ds-text-muted"
+      },
+      "input.border": {
+        "var": "--ds-input-border",
+        "type": "color",
+        "resolves_to": "--ds-border-strong"
+      },
+      "input.border-width": {
+        "var": "--ds-input-border-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-hairline"
+      },
+      "input.border-focus": {
+        "var": "--ds-input-border-focus",
+        "type": "color",
+        "resolves_to": "--ds-border-focus"
+      },
+      "input.border-invalid": {
+        "var": "--ds-input-border-invalid",
+        "type": "color",
+        "resolves_to": "--ds-status-danger-fg"
+      },
+      "input.height": {
+        "var": "--ds-input-height",
+        "type": "dimension",
+        "resolves_to": "--ds-control-height"
+      },
+      "input.radius": {
+        "var": "--ds-input-radius",
+        "type": "dimension",
+        "resolves_to": "--ds-radius-control"
+      },
+      "input.inset": {
+        "var": "--ds-input-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inset"
+      },
+      "input.font-size": {
+        "var": "--ds-input-font-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-body"
+      },
+      "input.label-size": {
+        "var": "--ds-input-label-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-label"
+      },
+      "input.label-fg": {
+        "var": "--ds-input-label-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-secondary"
+      },
+      "input.error-fg": {
+        "var": "--ds-input-error-fg",
+        "type": "color",
+        "resolves_to": "--ds-status-danger-fg"
+      },
+      "tabs.fg": {
+        "var": "--ds-tabs-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-secondary"
+      },
+      "tabs.fg-selected": {
+        "var": "--ds-tabs-fg-selected",
+        "type": "color",
+        "resolves_to": "--ds-text-primary"
+      },
+      "tabs.indicator": {
+        "var": "--ds-tabs-indicator",
+        "type": "color",
+        "resolves_to": "--ds-accent-base"
+      },
+      "tabs.indicator-width": {
+        "var": "--ds-tabs-indicator-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-focus"
+      },
+      "tabs.border": {
+        "var": "--ds-tabs-border",
+        "type": "color",
+        "resolves_to": "--ds-border-subtle"
+      },
+      "tabs.border-width": {
+        "var": "--ds-tabs-border-width",
+        "type": "dimension",
+        "resolves_to": "--ds-border-width-hairline"
+      },
+      "tabs.height": {
+        "var": "--ds-tabs-height",
+        "type": "dimension",
+        "resolves_to": "--ds-control-height"
+      },
+      "tabs.inset": {
+        "var": "--ds-tabs-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inset"
+      },
+      "tabs.font-size": {
+        "var": "--ds-tabs-font-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-label"
+      },
+      "tabs.font-weight": {
+        "var": "--ds-tabs-font-weight",
+        "type": "fontWeight",
+        "resolves_to": "--ds-font-weight-emphasis"
+      },
+      "toast.bg": {
+        "var": "--ds-toast-bg",
+        "type": "color",
+        "resolves_to": "--ds-surface-inverse"
+      },
+      "toast.fg": {
+        "var": "--ds-toast-fg",
+        "type": "color",
+        "resolves_to": "--ds-text-inverse"
+      },
+      "toast.radius": {
+        "var": "--ds-toast-radius",
+        "type": "dimension",
+        "resolves_to": "--ds-radius-surface"
+      },
+      "toast.inset": {
+        "var": "--ds-toast-inset",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inset"
+      },
+      "toast.gap": {
+        "var": "--ds-toast-gap",
+        "type": "dimension",
+        "resolves_to": "--ds-space-inline"
+      },
+      "toast.font-size": {
+        "var": "--ds-toast-font-size",
+        "type": "dimension",
+        "resolves_to": "--ds-font-size-body"
+      },
+      "toast.duration": {
+        "var": "--ds-toast-duration",
+        "type": "duration",
+        "resolves_to": "--ds-motion-duration-base"
+      },
+      "toast.easing": {
+        "var": "--ds-toast-easing",
+        "type": "cubicBezier",
+        "resolves_to": "--ds-motion-easing"
+      }
+    }
+  },
+  "rules": [
+    "Every value in a stylesheet is a var(--ds-*). A raw colour, length or duration the token layer already carries is a bug. If the layer is missing something, add it to the layer.",
+    "At most one accented action per screen. The accent means the action this screen exists for, and the focus ring. Nothing else.",
+    "Anything said with colour is also said with a word. Colour is never the only carrier of a state.",
+    "Every actionable control is at least 44 pixels effective, and keyboard focus is always visible at two pixels in the focus colour.",
+    "Figures are tabular and do not reflow as they change. A screenshot at rest looks identical to the interface at rest.",
+    "Honour prefers-reduced-motion. Durations collapse and the state change still happens.",
+    "Only the components in this pack may be used. A design that needs something else is a request to add it here, not a local component in a feature folder.",
+    "Every change ships behind a flag that is off. Merging is not releasing."
+  ],
+  "refuses": [
+    {
+      "id": "raw-value",
+      "says": "No raw hex, rgb, or pixel value in a component where a token exists.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "outside-pack",
+      "says": "No component imported from outside this pack.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "accent-spread",
+      "says": "The accent colour is not used for decoration, headers, or borders that are not focus.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "brand-fork",
+      "says": "A brand may not set a component-tier token, and may not omit a semantic key another brand has.",
+      "enforced_by": "build-pack"
+    },
+    {
+      "id": "motion-unguarded",
+      "says": "A component that animates carries a prefers-reduced-motion guard in the same stylesheet.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "colour-alone",
+      "says": "A state is never carried by colour alone.",
+      "enforced_by": "review"
+    }
+  ],
+  "visual": {
+    "threshold": 0.02,
+    "_comment": "Fraction of pixels allowed to differ between a story screenshot and the Figma frame export before the visual check comments on the pull request. Advisory in v1, see docs/DECISIONS.md."
+  }
+}

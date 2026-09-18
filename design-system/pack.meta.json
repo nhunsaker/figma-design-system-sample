@@ -1,0 +1,144 @@
+{
+  "_comment": "The editorial half of the pack. No parser can derive what a colour MEANS, what a component is FOR, or what a builder must not do, so those live here by hand and build-pack.mjs merges them with the derived half. Everything not in this file is generated and must not be hand edited.",
+  "id": "DSS-1.0",
+  "name": "Sample Design System",
+  "premise": "A small design system that exists to be held to. Two brands, six components, three token tiers, and a set of rules a machine can check. It is deliberately ordinary: the interesting part is not the components, it is that an agent can be told what it may do here and then be checked against it.",
+  "north_stars": [
+    "The design system is a contract, not a suggestion. If a rule cannot be checked it is an intention, and it is labelled as one.",
+    "A brand skins at the semantic tier or it does not skin. Anything else is a fork with a nicer name.",
+    "A check that did not run is not a check that passed.",
+    "The agent is not asked to write good code. It is asked to satisfy a schema, and the schema is this pack."
+  ],
+  "roles": {
+    "surface-page": "The ground the interface sits on. Never carries content directly.",
+    "surface-raised": "Anything that sits above the page: cards, inputs, menus.",
+    "surface-sunken": "A well inside a raised surface, and the resting state of a secondary control.",
+    "surface-inverse": "The far end of the scale, for the few things that must read as a different layer entirely.",
+    "text-primary": "Content. The default. Anything a person is meant to read.",
+    "text-secondary": "Labels and supporting text that is still meant to be read.",
+    "text-muted": "Text that is present but not addressed to the reader: placeholders, disabled states.",
+    "text-inverse": "Text on surface-inverse, and nowhere else.",
+    "accent-base": "Exactly one thing: the action this screen exists for, plus the focus ring. It is not a brand colour to decorate with. The moment it means two things it means nothing.",
+    "accent-hover": "The same action under a pointer.",
+    "accent-subtle": "A wash of the accent, for the background of a selected row. Never for text.",
+    "accent-contrast": "The text colour that is legible on accent-base.",
+    "border-subtle": "The edge of a surface. Structural, not decorative.",
+    "border-strong": "The edge of a control a person can act on.",
+    "border-focus": "Keyboard focus. Always visible, always two pixels, never removed.",
+    "status-success": "A thing finished and it worked.",
+    "status-warning": "A thing that needs attention but is not yet wrong.",
+    "status-danger": "A thing that failed or is about to destroy something.",
+    "status-info": "Neutral standing. The default badge."
+  },
+  "components": [
+    {
+      "name": "Button",
+      "purpose": "The one control that performs an action. Primary is the action the screen exists for, secondary is everything else, and there is at most one primary on a screen.",
+      "import": "src/components/Button.tsx",
+      "props": {
+        "variant": ["primary", "secondary"],
+        "size": ["default", "compact"],
+        "disabled": "boolean",
+        "type": ["button", "submit"]
+      },
+      "slots": ["children"],
+      "figma": "Button"
+    },
+    {
+      "name": "Badge",
+      "purpose": "Standing, as a word. Never the only carrier of a state: the badge says the word, the colour agrees with it.",
+      "import": "src/components/Badge.tsx",
+      "props": { "tone": ["neutral", "success", "warning", "danger"] },
+      "slots": ["children"],
+      "figma": "Badge"
+    },
+    {
+      "name": "Card",
+      "purpose": "A raised surface that groups one subject. It has a title and a body and it does not nest inside another card.",
+      "import": "src/components/Card.tsx",
+      "props": { "title": "string", "as": ["section", "article", "div"] },
+      "slots": ["children", "footer"],
+      "figma": "Card"
+    },
+    {
+      "name": "Input",
+      "purpose": "A single line of text from a person, with its label always present and its error message always adjacent. The label is not a placeholder.",
+      "import": "src/components/Input.tsx",
+      "props": {
+        "label": "string",
+        "invalid": "boolean",
+        "error": "string",
+        "type": ["text", "email", "search"],
+        "required": "boolean"
+      },
+      "slots": [],
+      "figma": "Input"
+    },
+    {
+      "name": "Tabs",
+      "purpose": "One surface, several views of it. Not navigation, and not a wizard: the views are peers and the choice is cheap.",
+      "import": "src/components/Tabs.tsx",
+      "props": {
+        "tabs": "{ id: string; label: string }[]",
+        "selected": "string",
+        "onSelect": "(id: string) => void"
+      },
+      "slots": ["children"],
+      "figma": "Tabs"
+    },
+    {
+      "name": "Toast",
+      "purpose": "A short report that something happened, on the inverse surface so it reads as a different layer. It reports, it never asks.",
+      "import": "src/components/Toast.tsx",
+      "props": { "tone": ["neutral", "success", "danger"], "onDismiss": "() => void" },
+      "slots": ["children"],
+      "figma": "Toast"
+    }
+  ],
+  "rules": [
+    "Every value in a stylesheet is a var(--ds-*). A raw colour, length or duration the token layer already carries is a bug. If the layer is missing something, add it to the layer.",
+    "At most one accented action per screen. The accent means the action this screen exists for, and the focus ring. Nothing else.",
+    "Anything said with colour is also said with a word. Colour is never the only carrier of a state.",
+    "Every actionable control is at least 44 pixels effective, and keyboard focus is always visible at two pixels in the focus colour.",
+    "Figures are tabular and do not reflow as they change. A screenshot at rest looks identical to the interface at rest.",
+    "Honour prefers-reduced-motion. Durations collapse and the state change still happens.",
+    "Only the components in this pack may be used. A design that needs something else is a request to add it here, not a local component in a feature folder.",
+    "Every change ships behind a flag that is off. Merging is not releasing."
+  ],
+  "refuses": [
+    {
+      "id": "raw-value",
+      "says": "No raw hex, rgb, or pixel value in a component where a token exists.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "outside-pack",
+      "says": "No component imported from outside this pack.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "accent-spread",
+      "says": "The accent colour is not used for decoration, headers, or borders that are not focus.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "brand-fork",
+      "says": "A brand may not set a component-tier token, and may not omit a semantic key another brand has.",
+      "enforced_by": "build-pack"
+    },
+    {
+      "id": "motion-unguarded",
+      "says": "A component that animates carries a prefers-reduced-motion guard in the same stylesheet.",
+      "enforced_by": "check-contract"
+    },
+    {
+      "id": "colour-alone",
+      "says": "A state is never carried by colour alone.",
+      "enforced_by": "review"
+    }
+  ],
+  "visual": {
+    "threshold": 0.02,
+    "_comment": "Fraction of pixels allowed to differ between a story screenshot and the Figma frame export before the visual check comments on the pull request. Advisory in v1, see docs/DECISIONS.md."
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "$description": "Tier 3, component. Every value here resolves from the semantic tier and nothing else, so this file is brand independent: it compiles once, to one stylesheet, for every brand. A brand that wants a different button colour changes its accent, not this file. A brand that cannot express what it needs through the semantic tier has found a gap in the semantic tier, and that is a change reviewed once for everyone rather than a fork.",
+  "button": {
+    "height": {
+      "$value": "{semantic.control.height}",
+      "$type": "dimension"
+    },
+    "height-compact": {
+      "$value": "{semantic.control.height-compact}",
+      "$type": "dimension"
+    },
+    "radius": {
+      "$value": "{semantic.radius.control}",
+      "$type": "dimension"
+    },
+    "border-width": {
+      "$value": "{semantic.border-width.hairline}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.inset}",
+      "$type": "dimension"
+    },
+    "gap": {
+      "$value": "{semantic.space.inline}",
+      "$type": "dimension"
+    },
+    "font-size": {
+      "$value": "{semantic.font-size.label}",
+      "$type": "dimension"
+    },
+    "font-weight": {
+      "$value": "{semantic.font-weight.emphasis}",
+      "$type": "fontWeight"
+    },
+    "focus-ring": {
+      "$value": "{semantic.border.focus}",
+      "$type": "color"
+    },
+    "focus-width": {
+      "$value": "{semantic.border-width.focus}",
+      "$type": "dimension"
+    },
+    "primary-bg": {
+      "$value": "{semantic.accent.base}",
+      "$type": "color"
+    },
+    "primary-bg-hover": {
+      "$value": "{semantic.accent.hover}",
+      "$type": "color"
+    },
+    "primary-fg": {
+      "$value": "{semantic.accent.contrast}",
+      "$type": "color"
+    },
+    "secondary-bg": {
+      "$value": "{semantic.surface.raised}",
+      "$type": "color"
+    },
+    "secondary-bg-hover": {
+      "$value": "{semantic.surface.sunken}",
+      "$type": "color"
+    },
+    "secondary-fg": {
+      "$value": "{semantic.text.primary}",
+      "$type": "color"
+    },
+    "secondary-border": {
+      "$value": "{semantic.border.strong}",
+      "$type": "color"
+    },
+    "disabled-bg": {
+      "$value": "{semantic.surface.sunken}",
+      "$type": "color"
+    },
+    "disabled-fg": {
+      "$value": "{semantic.text.muted}",
+      "$type": "color"
+    }
+  },
+  "badge": {
+    "radius": {
+      "$value": "{semantic.radius.control}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.inset-compact}",
+      "$type": "dimension"
+    },
+    "font-size": {
+      "$value": "{semantic.font-size.label}",
+      "$type": "dimension"
+    },
+    "font-weight": {
+      "$value": "{semantic.font-weight.emphasis}",
+      "$type": "fontWeight"
+    },
+    "neutral-bg": {
+      "$value": "{semantic.status.info-bg}",
+      "$type": "color"
+    },
+    "neutral-fg": {
+      "$value": "{semantic.status.info-fg}",
+      "$type": "color"
+    },
+    "success-bg": {
+      "$value": "{semantic.status.success-bg}",
+      "$type": "color"
+    },
+    "success-fg": {
+      "$value": "{semantic.status.success-fg}",
+      "$type": "color"
+    },
+    "warning-bg": {
+      "$value": "{semantic.status.warning-bg}",
+      "$type": "color"
+    },
+    "warning-fg": {
+      "$value": "{semantic.status.warning-fg}",
+      "$type": "color"
+    },
+    "danger-bg": {
+      "$value": "{semantic.status.danger-bg}",
+      "$type": "color"
+    },
+    "danger-fg": {
+      "$value": "{semantic.status.danger-fg}",
+      "$type": "color"
+    }
+  },
+  "card": {
+    "bg": {
+      "$value": "{semantic.surface.raised}",
+      "$type": "color"
+    },
+    "fg": {
+      "$value": "{semantic.text.primary}",
+      "$type": "color"
+    },
+    "border": {
+      "$value": "{semantic.border.subtle}",
+      "$type": "color"
+    },
+    "border-width": {
+      "$value": "{semantic.border-width.hairline}",
+      "$type": "dimension"
+    },
+    "radius": {
+      "$value": "{semantic.radius.surface}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.gutter}",
+      "$type": "dimension"
+    },
+    "stack": {
+      "$value": "{semantic.space.stack}",
+      "$type": "dimension"
+    },
+    "title-size": {
+      "$value": "{semantic.font-size.heading}",
+      "$type": "dimension"
+    },
+    "title-line-height": {
+      "$value": "{semantic.line-height.heading}",
+      "$type": "number"
+    }
+  },
+  "input": {
+    "bg": {
+      "$value": "{semantic.surface.raised}",
+      "$type": "color"
+    },
+    "fg": {
+      "$value": "{semantic.text.primary}",
+      "$type": "color"
+    },
+    "placeholder": {
+      "$value": "{semantic.text.muted}",
+      "$type": "color"
+    },
+    "border": {
+      "$value": "{semantic.border.strong}",
+      "$type": "color"
+    },
+    "border-width": {
+      "$value": "{semantic.border-width.hairline}",
+      "$type": "dimension"
+    },
+    "border-focus": {
+      "$value": "{semantic.border.focus}",
+      "$type": "color"
+    },
+    "border-invalid": {
+      "$value": "{semantic.status.danger-fg}",
+      "$type": "color"
+    },
+    "height": {
+      "$value": "{semantic.control.height}",
+      "$type": "dimension"
+    },
+    "radius": {
+      "$value": "{semantic.radius.control}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.inset}",
+      "$type": "dimension"
+    },
+    "font-size": {
+      "$value": "{semantic.font-size.body}",
+      "$type": "dimension"
+    },
+    "label-size": {
+      "$value": "{semantic.font-size.label}",
+      "$type": "dimension"
+    },
+    "label-fg": {
+      "$value": "{semantic.text.secondary}",
+      "$type": "color"
+    },
+    "error-fg": {
+      "$value": "{semantic.status.danger-fg}",
+      "$type": "color"
+    }
+  },
+  "tabs": {
+    "fg": {
+      "$value": "{semantic.text.secondary}",
+      "$type": "color"
+    },
+    "fg-selected": {
+      "$value": "{semantic.text.primary}",
+      "$type": "color"
+    },
+    "indicator": {
+      "$value": "{semantic.accent.base}",
+      "$type": "color"
+    },
+    "indicator-width": {
+      "$value": "{semantic.border-width.focus}",
+      "$type": "dimension"
+    },
+    "border": {
+      "$value": "{semantic.border.subtle}",
+      "$type": "color"
+    },
+    "border-width": {
+      "$value": "{semantic.border-width.hairline}",
+      "$type": "dimension"
+    },
+    "height": {
+      "$value": "{semantic.control.height}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.inset}",
+      "$type": "dimension"
+    },
+    "font-size": {
+      "$value": "{semantic.font-size.label}",
+      "$type": "dimension"
+    },
+    "font-weight": {
+      "$value": "{semantic.font-weight.emphasis}",
+      "$type": "fontWeight"
+    }
+  },
+  "toast": {
+    "bg": {
+      "$value": "{semantic.surface.inverse}",
+      "$type": "color"
+    },
+    "fg": {
+      "$value": "{semantic.text.inverse}",
+      "$type": "color"
+    },
+    "radius": {
+      "$value": "{semantic.radius.surface}",
+      "$type": "dimension"
+    },
+    "inset": {
+      "$value": "{semantic.space.inset}",
+      "$type": "dimension"
+    },
+    "gap": {
+      "$value": "{semantic.space.inline}",
+      "$type": "dimension"
+    },
+    "font-size": {
+      "$value": "{semantic.font-size.body}",
+      "$type": "dimension"
+    },
+    "duration": {
+      "$value": "{semantic.motion.duration-base}",
+      "$type": "duration"
+    },
+    "easing": {
+      "$value": "{semantic.motion.easing}",
+      "$type": "cubicBezier"
+    }
+  }
+}
