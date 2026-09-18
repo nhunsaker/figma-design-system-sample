@@ -32,6 +32,16 @@
   },
   "components": [
     {
+      "name": "DesignSystem",
+      "purpose": "The root every surface sits inside. It picks the brand and supplies the vendor library the structural theme it needs, so those are one decision made once rather than two decisions made in every application. Nothing else in the repository may import the vendor, which is why this is a component rather than a stray provider file.",
+      "import": "src/components/DesignSystem.tsx",
+      "props": {
+        "brand": ["harbor", "ember"]
+      },
+      "slots": ["children"],
+      "figma": null
+    },
+    {
       "name": "Button",
       "purpose": "The one control that performs an action. Primary is the action the screen exists for, secondary is everything else, and there is at most one primary on a screen.",
       "import": "src/components/Button.tsx",
@@ -101,6 +111,56 @@
       },
       "slots": ["children"],
       "figma": "Toast"
+    },
+    {
+      "name": "Stack",
+      "purpose": "The only way to space things. Layout is a design decision, so it comes from the pack rather than from whatever stylesheet a feature happens to own. Wraps the vendor stack for the flex plumbing and supplies the gap from the token layer.",
+      "import": "src/components/Stack.tsx",
+      "props": {
+        "direction": ["vertical", "horizontal"],
+        "gap": ["inline", "stack", "gutter"],
+        "align": ["start", "center", "baseline", "stretch"]
+      },
+      "slots": ["children"],
+      "figma": "Stack"
+    },
+    {
+      "name": "Stat",
+      "purpose": "One figure and what it means. The figure is tabular and never reflows as it changes, so a screen full of these is readable at a glance and a screenshot at rest looks like the screen at rest.",
+      "import": "src/components/Stat.tsx",
+      "props": {
+        "label": "string",
+        "value": "string",
+        "hint": "string",
+        "size": ["default", "large"]
+      },
+      "slots": [],
+      "figma": "Stat"
+    },
+    {
+      "name": "Meter",
+      "purpose": "A proportion, shown as a bar and said as a number. The bar is the quick read and the number is the actual answer, because a bar alone is a shape nobody can quote.",
+      "import": "src/components/Meter.tsx",
+      "props": {
+        "label": "string",
+        "value": "number",
+        "tone": ["neutral", "success", "warning", "danger"]
+      },
+      "slots": [],
+      "figma": "Meter"
+    },
+    {
+      "name": "RecordRow",
+      "purpose": "One line of a record: what it is, how it is doing, and the figure. Built from Badge so standing is said as a word here too, rather than as a colour this row invented.",
+      "import": "src/components/RecordRow.tsx",
+      "props": {
+        "label": "string",
+        "value": "string",
+        "tone": ["neutral", "success", "warning", "danger"],
+        "standing": "string"
+      },
+      "slots": [],
+      "figma": "RecordRow"
     }
   ],
   "rules": [

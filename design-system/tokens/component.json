@@ -299,5 +299,17 @@
       "$value": "{semantic.motion.easing}",
       "$type": "cubicBezier"
     }
+  },
+  "stat": {
+    "large-size": {
+      "$value": "{semantic.font-size.display}",
+      "$type": "dimension"
+    }
+  },
+  "meter": {
+    "track-height": {
+      "$value": "{semantic.control.track}",
+      "$type": "dimension"
+    }
   }
 }

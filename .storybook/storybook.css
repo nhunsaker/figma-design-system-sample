@@ -6,6 +6,12 @@
  */
 body {
   margin: 0;
+}
+
+/* DesignSystem renders a wrapper, and a wrapper that does not fill the canvas crops the story. */
+.brand-harbor,
+.brand-ember {
+  min-width: 100%;
   background: var(--ds-surface-page);
   color: var(--ds-text-primary);
   font-family: var(--ds-font-body);
