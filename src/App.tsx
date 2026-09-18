@@ -3,6 +3,7 @@ import { Badge } from './components/Badge'
 import { Button } from './components/Button'
 import { Card } from './components/Card'
 import { Meter } from './components/Meter'
+import { Missing } from './components/Missing'
 import { RecordRow } from './components/RecordRow'
 import { Stack } from './components/Stack'
 import { Stat } from './components/Stat'
@@ -63,6 +64,7 @@ export function App() {
 
   const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
   const showWeakSpot = isOn('weak-spot') && weakest
+  const showRollHistory = isOn('roll-history')
 
   return (
     <main className="app">
@@ -83,6 +85,18 @@ export function App() {
       <Tabs tabs={TABS} selected={tab} onSelect={setTab}>
         {tab === 'overview' ? (
           <Stack gap="gutter">
+            {showRollHistory ? (
+              <Card title="Roll over the last 90 days">
+                <Stack gap="gutter">
+                  <Missing name="Sparkline" width={672} height={80} />
+                  <Stack direction="horizontal" gap="gutter" fill wrap>
+                    <Stat label="Peak" value="$12,480" />
+                    <Stat label="Low" value="$1,205" />
+                    <Stat label="Now" value="$8,930" />
+                  </Stack>
+                </Stack>
+              </Card>
+            ) : null}
             <Stack direction="horizontal" gap="gutter" fill wrap>
               <Stat label="Hands played" value={PROFILE.hands} />
               <Stat

@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { App } from './App'
 import { expectNoAxeViolations } from './a11y.test-utils'
 import { DesignSystem } from './components/DesignSystem'
@@ -13,6 +13,10 @@ const renderApp = () =>
   )
 
 describe('App', () => {
+  afterEach(() => {
+    window.history.pushState({}, '', '/')
+  })
+
   it('opens on the overview, which is the tab that answers the first question', () => {
     renderApp()
     expect(screen.getByText('Hands played')).toBeInTheDocument()
@@ -42,6 +46,28 @@ describe('App', () => {
     renderApp()
     await userEvent.click(screen.getByRole('tab', { name: 'Venues' }))
     expect(screen.getByText('The Kitchen Table')).toBeInTheDocument()
+  })
+
+  it('keeps roll history behind its flag until a person turns it on', () => {
+    renderApp()
+    expect(screen.queryByRole('heading', { name: 'Roll over the last 90 days' })).toBeNull()
+  })
+
+  it('shows roll history when a person turns the flag on in the URL', () => {
+    window.history.pushState({}, '', '/?roll-history=true')
+    renderApp()
+    const heading = screen.getByRole('heading', { name: 'Roll over the last 90 days' })
+    const card = heading.closest('section')
+    if (!card) throw new Error('roll history card not found')
+
+    expect(heading).toBeInTheDocument()
+    expect(within(card).getByText('Peak')).toBeInTheDocument()
+    expect(within(card).getByText('$12,480')).toBeInTheDocument()
+    expect(within(card).getByText('Low')).toBeInTheDocument()
+    expect(within(card).getByText('$1,205')).toBeInTheDocument()
+    expect(within(card).getByText('Now')).toBeInTheDocument()
+    expect(within(card).getByText('$8,930')).toBeInTheDocument()
+    expect(within(card).getByLabelText('Sparkline, not built')).toBeInTheDocument()
   })
 
   it('has no accessibility violations', async () => {
