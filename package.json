@@ -41,7 +41,9 @@
     "vitest": "^5.0.1"
   },
   "dependencies": {
+    "@metatoy/bootstrap-styled": "^1.0.1",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "styled-components": "^6.5.3"
   }
 }

@@ -138,6 +138,17 @@ describe('build-pack', () => {
     expect(result.stderr).toContain('means neither')
   })
 
+  it('refuses a vendor property wired to something that is not a semantic token', () => {
+    const dir = designSystemCopy()
+    editJson(join(dir, 'pack.meta.json'), (d) => {
+      d.vendor.map.primary = 'color.blue.600'
+    })
+    const result = build(dir)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('--bs-primary')
+    expect(result.stderr).toContain('not a semantic token')
+  })
+
   it('refuses a brand whose text cannot be read on its own surface', () => {
     const dir = designSystemCopy()
     editJson(join(dir, 'tokens', 'semantic.harbor.json'), (d) => {
@@ -275,6 +286,49 @@ describe('check-contract', () => {
       `${readFileSync(join(root, 'src', 'main.tsx'), 'utf8')}\nimport { Settings } from './Settings'\nvoid Settings\n`,
     )
     expect(contract(root).status).toBe(0)
+  })
+
+  it('lets a pack component wrap the vendor library', () => {
+    const root = checkoutCopy()
+    const file = join(root, 'src', 'components', 'Card.tsx')
+    writeFileSync(
+      file,
+      `import { Stack } from '@metatoy/bootstrap-styled'\nvoid Stack\n${readFileSync(file, 'utf8')}`,
+    )
+    expect(contract(root).status).toBe(0)
+  })
+
+  it('refuses a feature reaching past the pack to the vendor library', () => {
+    const root = checkoutCopy()
+    const file = join(root, 'src', 'App.tsx')
+    writeFileSync(
+      file,
+      `import { Stack } from '@metatoy/bootstrap-styled'\nvoid Stack\n${readFileSync(file, 'utf8')}`,
+    )
+    const result = contract(root)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('outside src/components')
+  })
+
+  it('refuses a raw colour hidden in a styled template literal', () => {
+    const root = checkoutCopy()
+    const file = join(root, 'src', 'components', 'Card.tsx')
+    writeFileSync(
+      file,
+      `const x = styled.div\`color: #ff0000;\`\nvoid x\n${readFileSync(file, 'utf8')}`,
+    )
+    const result = contract(root)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('styled block carries the literal colour')
+  })
+
+  it('refuses a raw length hidden in a styled template literal', () => {
+    const root = checkoutCopy()
+    const file = join(root, 'src', 'components', 'Card.tsx')
+    writeFileSync(file, `const x = css\`padding: 13px;\`\nvoid x\n${readFileSync(file, 'utf8')}`)
+    const result = contract(root)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('styled block carries the literal length 13px')
   })
 
   it('refuses a component in the pack that has no story', () => {

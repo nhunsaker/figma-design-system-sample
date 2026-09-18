@@ -171,5 +171,43 @@
       ["border-strong", "surface-raised"],
       ["accent-base", "surface-page"]
     ]
+  },
+  "vendor": {
+    "_comment": "The component library underneath the pack. Its runtime --bs-* custom properties are driven by this system's semantic tier, so switching brand re-skins every vendor component with no rebuild. The map below is compiled to design-system/tokens.vendor.css by build-pack.mjs and must not be hand maintained. An entry whose right side is not a semantic token stops the build.",
+    "package": "@metatoy/bootstrap-styled",
+    "allowed_in": "src/components",
+    "map": {
+      "primary": "accent.base",
+      "primary-text-emphasis": "accent.hover",
+      "primary-bg-subtle": "accent.subtle",
+      "secondary": "text.secondary",
+      "success": "status.success-fg",
+      "success-bg-subtle": "status.success-bg",
+      "danger": "status.danger-fg",
+      "danger-bg-subtle": "status.danger-bg",
+      "warning": "status.warning-fg",
+      "warning-bg-subtle": "status.warning-bg",
+      "info": "status.info-fg",
+      "info-bg-subtle": "status.info-bg",
+      "body-bg": "surface.page",
+      "body-color": "text.primary",
+      "secondary-color": "text.secondary",
+      "tertiary-color": "text.muted",
+      "secondary-bg": "surface.sunken",
+      "tertiary-bg": "surface.raised",
+      "emphasis-color": "text.primary",
+      "border-color": "border.subtle",
+      "border-width": "border-width.hairline",
+      "border-radius": "radius.control",
+      "border-radius-lg": "radius.surface",
+      "body-font-family": "font.body",
+      "body-font-size": "font-size.body",
+      "body-line-height": "line-height.body",
+      "font-monospace": "font.figure",
+      "link-color": "accent.base",
+      "link-hover-color": "accent.hover",
+      "focus-ring-color": "border.focus",
+      "focus-ring-width": "border-width.focus"
+    }
   }
 }
