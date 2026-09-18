@@ -69,6 +69,10 @@ const pack = JSON.parse(readFileSync(join(ROOT, 'design-system', 'pack.meta.json
 const components = {}
 const missing = []
 for (const component of pack.components) {
+  // A component with `figma: null` is structural, not visual. A layout primitive and a provider
+  // have no counterpart in a design tool, and listing them as missing would be noise that trains
+  // everybody to ignore the one line that matters.
+  if (component.figma === null) continue
   const keys = byName.get(component.figma ?? component.name) ?? []
   if (keys.length === 0) {
     missing.push(component.name)
@@ -81,9 +85,10 @@ const existing = JSON.parse(readFileSync(OUT, 'utf8'))
 writeFileSync(OUT, `${JSON.stringify({ ...existing, file_key: fileKey, components }, null, 2)}\n`)
 
 const named = new Set(Object.values(components))
+const visual = pack.components.filter((c) => c.figma !== null).length
 console.log(
-  `mapped ${named.size} of ${pack.components.length} components, ` +
-    `${Object.keys(components).length} published keys including variants`,
+  `mapped ${named.size} of ${visual} visual components, ` +
+    `${Object.keys(components).length} keys including variants`,
 )
 if (missing.length) {
   console.log(`not in that file yet: ${missing.join(', ')}`)

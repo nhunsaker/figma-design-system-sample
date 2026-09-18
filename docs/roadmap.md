@@ -35,14 +35,9 @@ how to tell it worked.
 **A recorded run.** Mark a frame, watch the issue open, let the agent build it, approve, merge,
 and see the pull request appear on the frame. Screenshots into `docs/images/`.
 
-**The stats screen.** The components it needs are built: Stack, Stat, Meter and RecordRow. The
-screen itself and its Figma frames are not. It is the screen worth showing because it is dense
-with figures, which is the only way the rule about tabular figures can be seen to be true.
-
-**A frame designed to fail.** The frames that exist are clean enough that a first run will
-probably pass, and a demonstration where nothing fails proves nothing about guardrails. A frame
-asking for something the pack cannot express gives either an honest Left undone, which proves the
-instructions work, or a refused pull request, which proves the checks work.
+**The visual check.** A story screenshot compared against the Figma export, commenting on the
+pull request. Advisory until its false positive rate on real pull requests earns otherwise. See
+`DECISIONS.md`.
 
 **Code Connect proper.** Optional. It changes what a designer sees in Dev Mode and changes
 nothing about what the pipeline can do, because the pipeline works from the key map, which is
@@ -52,6 +47,7 @@ read from the file itself and needs no library publish.
 the `gh` CLI, and that half is written but unexercised until the repository exists. The Figma
 half is exercised.
 
-**The visual check.** A story screenshot against the Figma export, commenting on the pull
-request. It needs the file to exist before it can be written honestly, and it stays advisory
-until its false positive rate earns otherwise. See `DECISIONS.md`.
+The three request frames: the populated record, the empty state, and Roll history, which asks
+for a chart the pack does not have. That third one is deliberate. A demonstration where nothing
+fails proves nothing about guardrails, so one frame asks for something real that the system
+cannot express, and the run gets to show what honest looks like.
