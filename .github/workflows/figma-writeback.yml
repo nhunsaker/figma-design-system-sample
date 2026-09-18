@@ -1,0 +1,58 @@
+name: figma writeback
+
+# Pin the pull request back to the frame it came from, and say what happened when it closes.
+#
+# This workflow holds no Figma credential. It asks GitHub for a short lived OIDC token and the
+# bridge verifies that token against GitHub's public keys before it does anything, so the only
+# place a Figma token exists is on the machine running the bridge. A repository secret would
+# have been simpler and would have put a long lived credential somewhere every workflow, and
+# every future workflow, could read.
+#
+# BRIDGE_URL is a repository variable, not a secret. It is a public address that refuses
+# everything unsigned.
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  writeback:
+    if: vars.BRIDGE_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tell the bridge what happened
+        env:
+          BRIDGE_URL: ${{ vars.BRIDGE_URL }}
+          EVENT: ${{ github.event.action }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
+          URL: ${{ github.event.pull_request.html_url }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          token=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=figma-bridge" | jq -r '.value')
+          jq -n \
+            --arg event "$EVENT" \
+            --argjson merged "${MERGED:-false}" \
+            --argjson number "$NUMBER" \
+            --arg title "$TITLE" \
+            --arg url "$URL" \
+            --arg body "$BODY" \
+            '{event: $event, merged: $merged, number: $number, title: $title, url: $url, body: $body}' \
+            > payload.json
+          code=$(curl -sS -o response.json -w '%{http_code}' \
+            -X POST "$BRIDGE_URL/github/pull-request" \
+            -H "Authorization: Bearer $token" \
+            -H 'Content-Type: application/json' \
+            --data @payload.json)
+          cat response.json
+          echo
+          # A bridge that is down must not silently drop the write back. It fails here, visibly,
+          # on a job that changes nothing in the repository.
+          test "$code" = "200"

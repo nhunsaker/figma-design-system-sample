@@ -1,0 +1,8 @@
+# The design system and the pipeline change on a slower clock than the code that uses them,
+# because a change to either changes every surface at once. An agent may open a pull request
+# that touches these paths. It may not merge one.
+
+/design-system/   @nhunsaker
+/.github/         @nhunsaker
+/scripts/         @nhunsaker
+/AGENTS.md        @nhunsaker

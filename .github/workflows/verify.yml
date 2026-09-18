@@ -1,0 +1,63 @@
+name: verify
+
+# The gate. Everything here is blocking, including the checks that report they could not run,
+# because a check that did not run is not a check that passed.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Types
+        run: pnpm test:types
+
+      - name: Lint
+        run: pnpm test:lint
+
+      - name: Design pack is in sync with the token files
+        run: pnpm test:pack
+
+      - name: Source obeys the design pack
+        run: pnpm test:contract
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Application builds
+        run: pnpm exec vite build
+
+      - name: Storybook builds
+        run: pnpm build-storybook --quiet
+
+  pull-request-contract:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Pull request body fills the contract
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/check-pr-contract.mjs
