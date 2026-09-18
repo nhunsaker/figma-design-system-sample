@@ -9,12 +9,13 @@ A designer marked **Empty state** ready for development.
 ## What the frame is made of
 
 - `Button` from the design pack
-- **Avatar** — not mapped to a pack component
-- **Timeline** — not mapped to a pack component
+- **Avatar** — not mapped to a pack component (48 by 48)
+- **Timeline** — not mapped to a pack component (672 by 80)
 
 > Some of this frame is not mapped to code. Do not guess which component was meant.
-> If the design needs something the pack does not have, say so in the pull request
-> under Left undone and build the part you are sure about.
+> Use `Missing` from the pack for each one, passing the name and the size above, and
+> build the rest of the frame normally. Say what you used it for in the pull request
+> under Left undone.
 
 ## The words in the frame
 

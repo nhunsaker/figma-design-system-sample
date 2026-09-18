@@ -12,9 +12,16 @@ agent told the truth vaguely does better work than an agent told a guess confide
 
 from __future__ import annotations
 
-from .figma import FrameRead
+from .figma import FrameRead, UnmappedComponent
 
 MARKER = "<!-- figma-bridge:{key} -->"
+
+
+def _size_of(component: UnmappedComponent) -> str:
+    """` (672 by 80)` when the reader measured it, and nothing when it could not."""
+    if component.width and component.height:
+        return f" ({component.width} by {component.height})"
+    return ""
 
 
 def marker_for(file_key: str, node_id: str) -> str:
@@ -51,7 +58,7 @@ def body_for(frame: FrameRead, image_url: str | None, pack_id: str) -> str:
         lines += [f"- `{name}` from the design pack" for name in frame.components]
     if frame.unknown_components:
         lines += [
-            f"- **{component.name}** — not mapped to a pack component"
+            f"- **{component.name}** — not mapped to a pack component{_size_of(component)}"
             for component in frame.unknown_components
         ]
     if not frame.components and not frame.unknown_components:
@@ -61,8 +68,9 @@ def body_for(frame: FrameRead, image_url: str | None, pack_id: str) -> str:
     if frame.unknown_components:
         lines += [
             "> Some of this frame is not mapped to code. Do not guess which component was meant.",
-            "> If the design needs something the pack does not have, say so in the pull request",
-            "> under Left undone and build the part you are sure about.",
+            "> Use `Missing` from the pack for each one, passing the name and the size above, and",
+            "> build the rest of the frame normally. Say what you used it for in the pull request",
+            "> under Left undone.",
             "",
         ]
 

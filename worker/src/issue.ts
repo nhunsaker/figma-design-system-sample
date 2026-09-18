@@ -26,6 +26,12 @@ export function titleFor(frame: FrameRead): string {
   return `Build ${frame.name}${where}`
 }
 
+/** ` (672 by 80)` when the reader measured it, and nothing when it could not. */
+function sizeOf(component: { width: number | null; height: number | null }): string {
+  const { width, height } = component
+  return width && height ? ` (${width} by ${height})` : ''
+}
+
 export function bodyFor(frame: FrameRead, imageUrl: string | null, packId: string): string {
   const lines: string[] = [
     markerFor(frame.fileKey, frame.nodeId),
@@ -50,7 +56,7 @@ export function bodyFor(frame: FrameRead, imageUrl: string | null, packId: strin
   for (const name of frame.components) lines.push(`- \`${name}\` from the design pack`)
   // The em dash below is deliberate and has to match the Python character for character.
   for (const component of frame.unknownComponents) {
-    lines.push(`- **${component.name}** — not mapped to a pack component`)
+    lines.push(`- **${component.name}** — not mapped to a pack component${sizeOf(component)}`)
   }
   if (frame.components.length === 0 && frame.unknownComponents.length === 0) {
     lines.push('- Nothing the bridge could identify. Read the frame before you build.')
@@ -60,8 +66,9 @@ export function bodyFor(frame: FrameRead, imageUrl: string | null, packId: strin
   if (frame.unknownComponents.length > 0) {
     lines.push(
       '> Some of this frame is not mapped to code. Do not guess which component was meant.',
-      '> If the design needs something the pack does not have, say so in the pull request',
-      '> under Left undone and build the part you are sure about.',
+      '> Use `Missing` from the pack for each one, passing the name and the size above, and',
+      '> build the rest of the frame normally. Say what you used it for in the pull request',
+      '> under Left undone.',
       '',
     )
   }
