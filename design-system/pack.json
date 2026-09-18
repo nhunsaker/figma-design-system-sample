@@ -18,7 +18,7 @@
       "design-system/tokens/semantic.harbor.json",
       "design-system/tokens/component.json"
     ],
-    "hash": "5518200f1224f49a",
+    "hash": "751d8f56fcf85831",
     "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
   },
   "brands": [
@@ -360,8 +360,8 @@
         "type": "color",
         "means": "The edge of a control a person can act on.",
         "values": {
-          "ember": "#a8a29e",
-          "harbor": "#94a3b8"
+          "ember": "#78716c",
+          "harbor": "#64748b"
         }
       },
       "border.focus": {
@@ -992,6 +992,77 @@
         "resolves_to": "--ds-motion-easing"
       }
     }
+  },
+  "contrast": {
+    "_comment": "Every pairing the system actually puts on screen, and the ratio it must clear. The build computes these from each brand and refuses to compile a brand that fails one, so an illegal palette is a broken build rather than an accessibility finding six months later. Text needs 4.5 to 1 and anything structural needs 3 to 1, per WCAG 2.2 AA.",
+    "text": [
+      [
+        "text-primary",
+        "surface-page"
+      ],
+      [
+        "text-primary",
+        "surface-raised"
+      ],
+      [
+        "text-secondary",
+        "surface-page"
+      ],
+      [
+        "text-secondary",
+        "surface-raised"
+      ],
+      [
+        "text-muted",
+        "surface-raised"
+      ],
+      [
+        "text-inverse",
+        "surface-inverse"
+      ],
+      [
+        "accent-contrast",
+        "accent-base"
+      ],
+      [
+        "accent-contrast",
+        "accent-hover"
+      ],
+      [
+        "status-success-fg",
+        "status-success-bg"
+      ],
+      [
+        "status-warning-fg",
+        "status-warning-bg"
+      ],
+      [
+        "status-danger-fg",
+        "status-danger-bg"
+      ],
+      [
+        "status-info-fg",
+        "status-info-bg"
+      ]
+    ],
+    "structural": [
+      [
+        "border-focus",
+        "surface-page"
+      ],
+      [
+        "border-focus",
+        "surface-raised"
+      ],
+      [
+        "border-strong",
+        "surface-raised"
+      ],
+      [
+        "accent-base",
+        "surface-page"
+      ]
+    ]
   },
   "rules": [
     "Every value in a stylesheet is a var(--ds-*). A raw colour, length or duration the token layer already carries is a bug. If the layer is missing something, add it to the layer.",

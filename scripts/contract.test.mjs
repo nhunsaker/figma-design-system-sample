@@ -132,6 +132,38 @@ describe('build-pack', () => {
     expect(result.stderr).toContain('means neither')
   })
 
+  it('refuses a brand whose text cannot be read on its own surface', () => {
+    const dir = designSystemCopy()
+    editJson(join(dir, 'tokens', 'semantic.harbor.json'), (d) => {
+      d.text.secondary.$value = '{primitive.color.slate.300}'
+    })
+    const result = build(dir)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('text-secondary on surface-page')
+    expect(result.stderr).toContain('below the 4.5')
+  })
+
+  it('refuses a control border too faint to find, at the lower structural ratio', () => {
+    const dir = designSystemCopy()
+    editJson(join(dir, 'tokens', 'semantic.ember.json'), (d) => {
+      d.border.strong.$value = '{primitive.color.stone.200}'
+    })
+    const result = build(dir)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('border-strong on surface-raised')
+    expect(result.stderr).toContain('below the 3')
+  })
+
+  it('checks contrast for every brand, not only the first one', () => {
+    const dir = designSystemCopy()
+    editJson(join(dir, 'tokens', 'semantic.harbor.json'), (d) => {
+      d.accent.contrast.$value = '{primitive.color.blue.500}'
+    })
+    const result = build(dir)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('brand harbor')
+  })
+
   it('reports stale artifacts rather than quietly rewriting them under --check', () => {
     const dir = designSystemCopy()
     writeFileSync(join(dir, 'tokens.harbor.css'), '/* hand edited */\n')

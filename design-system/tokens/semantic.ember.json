@@ -57,7 +57,7 @@
       "$value": "{primitive.color.stone.200}"
     },
     "strong": {
-      "$value": "{primitive.color.stone.400}"
+      "$value": "{primitive.color.stone.500}"
     },
     "focus": {
       "$value": "{primitive.color.violet.600}"

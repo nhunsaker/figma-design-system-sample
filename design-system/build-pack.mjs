@@ -253,6 +253,61 @@ for (const brand of brands) {
   }
 }
 
+// ─── contrast: an illegal brand does not compile ────────────────────────────
+//
+// Accessibility that is audited after the fact is accessibility that ships broken and gets
+// fixed at the least convenient moment. Every pairing the system actually puts on screen is
+// declared in pack.meta.json and computed here, per brand, from the resolved values. A brand
+// whose palette cannot carry its own text is a build failure, which is the only feedback fast
+// enough to change what somebody picks.
+
+/** sRGB relative luminance, WCAG 2.2 definition. */
+function luminance(hex) {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex.trim())
+  if (!m)
+    throw new BuildError(
+      `cannot measure the contrast of ${hex}`,
+      'colours are six digit hex so they can be checked.',
+    )
+  const channels = [0, 2, 4].map((i) => Number.parseInt(m[1].slice(i, i + 2), 16) / 255)
+  const linear = channels.map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+}
+
+const ratio = (a, b) => {
+  const [l1, l2] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (l1 + 0.05) / (l2 + 0.05)
+}
+
+/** A declared pair name such as `text-primary` back to the token path `text.primary`. */
+const pathOf = (varName) => {
+  for (const key of reference.tokens.keys()) {
+    if (cssVar(key) === VAR_PREFIX + varName) return key
+  }
+  throw new BuildError(
+    `pack.meta.json declares a contrast pair for ${varName}, which is not a semantic token`,
+    'the pairs name semantic tokens by their custom property, without the --ds- prefix.',
+  )
+}
+
+for (const [kind, minimum] of [
+  ['text', 4.5],
+  ['structural', 3],
+]) {
+  for (const [fgName, bgName] of meta.contrast?.[kind] ?? []) {
+    const [fg, bg] = [pathOf(fgName), pathOf(bgName)]
+    for (const brand of brands) {
+      const measured = ratio(brand.resolved.get(fg), brand.resolved.get(bg))
+      if (measured + 1e-9 < minimum) {
+        throw new BuildError(
+          `brand ${brand.name}: ${fgName} on ${bgName} is ${measured.toFixed(2)} to 1, below the ${minimum} this pairing needs`,
+          `${brand.resolved.get(fg)} on ${brand.resolved.get(bg)}. Pick a different step on the primitive scale, or stop pairing these two.`,
+        )
+      }
+    }
+  }
+}
+
 // ─── emit ───────────────────────────────────────────────────────────────────
 
 const BANNER = (what) =>
@@ -331,6 +386,7 @@ const pack = {
       .map((p) => cssVar(p)),
   })),
   tokens: packTokens,
+  contrast: meta.contrast,
   rules: meta.rules,
   refuses: meta.refuses,
   visual: meta.visual,
