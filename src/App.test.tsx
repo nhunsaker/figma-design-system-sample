@@ -1,27 +1,51 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { App } from './App'
 import { expectNoAxeViolations } from './a11y.test-utils'
+import { DesignSystem } from './components/DesignSystem'
+
+const renderApp = () =>
+  render(
+    <DesignSystem>
+      <App />
+    </DesignSystem>,
+  )
 
 describe('App', () => {
-  it('opens on the frames that are ready, which is the only list anyone acts on', () => {
-    render(<App />)
-    expect(screen.getByRole('heading', { name: 'Empty state' })).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Request row' })).toBeNull()
+  it('opens on the overview, which is the tab that answers the first question', () => {
+    renderApp()
+    expect(screen.getByText('Hands played')).toBeInTheDocument()
+    expect(screen.queryByText('Starting hands')).toBeNull()
   })
 
-  it('keeps the search behind its flag until a person turns the flag on', () => {
-    render(<App />)
-    expect(screen.queryByLabelText('Find a frame')).toBeNull()
+  it('says the figures are examples rather than passing them off as a record', () => {
+    renderApp()
+    expect(screen.getByText(/example figures/i)).toBeInTheDocument()
   })
 
-  it('says every status as a word as well as a colour', () => {
-    render(<App />)
-    expect(screen.getAllByText('Ready for development').length).toBeGreaterThan(0)
+  it('keeps the weak spot callout behind its flag until a person turns it on', async () => {
+    renderApp()
+    await userEvent.click(screen.getByRole('tab', { name: 'Drills' }))
+    expect(screen.getByText('Starting hands')).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Your weak spot' })).toBeNull()
+  })
+
+  it('says every standing as a word as well as a colour', async () => {
+    renderApp()
+    await userEvent.click(screen.getByRole('tab', { name: 'Drills' }))
+    expect(screen.getByText('Weak spot')).toBeInTheDocument()
+    expect(screen.getByText('Best')).toBeInTheDocument()
+  })
+
+  it('moves between tabs', async () => {
+    renderApp()
+    await userEvent.click(screen.getByRole('tab', { name: 'Venues' }))
+    expect(screen.getByText('The Kitchen Table')).toBeInTheDocument()
   })
 
   it('has no accessibility violations', async () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
     await expectNoAxeViolations(container)
   })
 })

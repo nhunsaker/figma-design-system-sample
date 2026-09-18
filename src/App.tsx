@@ -2,136 +2,139 @@ import { useMemo, useState } from 'react'
 import { Badge } from './components/Badge'
 import { Button } from './components/Button'
 import { Card } from './components/Card'
-import { Input } from './components/Input'
+import { Meter } from './components/Meter'
+import { RecordRow } from './components/RecordRow'
+import { Stack } from './components/Stack'
+import { Stat } from './components/Stat'
 import { type Tab, Tabs } from './components/Tabs'
 import { Toast } from './components/Toast'
 import { isOn } from './flags'
 
 /**
- * The surface an agent changes.
+ * A player's record in a poker practice app: what they have played, how it went, and where they
+ * are weakest.
  *
- * It is small on purpose. What matters is that every visible thing here comes from the pack, so
- * a change that breaks the design system breaks a check rather than a review, and the page
- * shell owns nothing but layout.
+ * Every visible thing here comes from the pack, so a change that breaks the design system breaks
+ * a check rather than a review. The page shell owns the page frame and nothing else, because
+ * spacing comes from Stack.
+ *
+ * The figures are example data and say so. A screen that opens empty shows nothing about what it
+ * does, and a screen that opens with invented figures presented as real is worse than either.
  */
 
-type Status = 'ready' | 'building' | 'merged'
-
-interface Request {
-  id: string
-  frame: string
-  page: string
-  status: Status
-  pull?: number
-  checks?: string
+const PROFILE = {
+  name: 'Example player',
+  rank: 'Rounder',
+  peakRoll: '$12,480',
+  hands: '1,284',
+  winRate: '42%',
+  biggestPot: '$2,140',
+  sessions: '96',
 }
 
-const REQUESTS: Request[] = [
-  { id: '1', frame: 'Empty state', page: 'Requests', status: 'ready' },
-  { id: '2', frame: 'Filter bar', page: 'Requests', status: 'ready' },
-  {
-    id: '3',
-    frame: 'Request row',
-    page: 'Requests',
-    status: 'building',
-    pull: 14,
-    checks: '6 of 8',
-  },
-  {
-    id: '4',
-    frame: 'Status badge',
-    page: 'Components',
-    status: 'merged',
-    pull: 11,
-    checks: '8 of 8',
-  },
+const STYLE = [
+  { label: 'Aggression', value: 68, tone: 'neutral' as const },
+  { label: 'Showdowns won', value: 62, tone: 'success' as const },
+  { label: 'Position awareness', value: 34, tone: 'warning' as const },
+]
+
+const DRILLS = [
+  { label: 'Starting hands', value: '96', standing: 'Best', tone: 'success' as const },
+  { label: 'Pot odds', value: '84' },
+  { label: 'Bet sizing', value: '71' },
+  { label: 'Position', value: '31', standing: 'Weak spot', tone: 'warning' as const },
+]
+
+const VENUES = [
+  { label: 'The Kitchen Table', value: '48' },
+  { label: 'Riverboat', value: '31' },
+  { label: 'The Back Room', value: '17' },
 ]
 
 const TABS: Tab[] = [
-  { id: 'ready', label: 'Ready' },
-  { id: 'building', label: 'In build' },
-  { id: 'merged', label: 'Merged' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'drills', label: 'Drills' },
+  { id: 'venues', label: 'Venues' },
 ]
 
-const TONE = {
-  ready: 'neutral',
-  building: 'warning',
-  merged: 'success',
-} as const
-
-const WORD = {
-  ready: 'Ready for development',
-  building: 'In build',
-  merged: 'Merged behind a flag',
-} as const
-
 export function App() {
-  const [tab, setTab] = useState<Status>('ready')
-  const [query, setQuery] = useState('')
+  const [tab, setTab] = useState('overview')
   const [dismissed, setDismissed] = useState(false)
 
-  const shown = useMemo(() => {
-    const needle = query.trim().toLowerCase()
-    return REQUESTS.filter(
-      (r) => r.status === tab && (needle === '' || r.frame.toLowerCase().includes(needle)),
-    )
-  }, [tab, query])
+  const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
+  const showWeakSpot = isOn('weak-spot') && weakest
 
   return (
     <main className="app">
-      <header className="app__header">
-        <div>
-          <h1 className="app__title">Design requests</h1>
-          <p className="app__subtitle">
-            Frames marked ready for development, and what happened next.
-          </p>
-        </div>
-        <Button variant="primary">Open the Figma file</Button>
-      </header>
+      <Stack direction="horizontal" gap="gutter" align="baseline" wrap>
+        <Stack gap="inline">
+          <h1 className="app__title">{PROFILE.name}</h1>
+          <Badge>{PROFILE.rank}</Badge>
+        </Stack>
+        <Stat label="Peak roll" value={PROFILE.peakRoll} size="large" />
+      </Stack>
 
       {!dismissed ? (
-        <Toast tone="success" onDismiss={() => setDismissed(true)}>
-          Pull request 14 is open and pinned to the frame it came from.
+        <Toast onDismiss={() => setDismissed(true)}>
+          These are example figures, not a real record.
         </Toast>
       ) : null}
 
-      <Tabs tabs={TABS} selected={tab} onSelect={(id) => setTab(id as Status)}>
-        <div className="app__list-wrap">
-          {isOn('sample-feature') ? (
-            <Input
-              label="Find a frame"
-              type="search"
-              placeholder="Empty state"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-          ) : null}
+      <Tabs tabs={TABS} selected={tab} onSelect={setTab}>
+        {tab === 'overview' ? (
+          <Stack gap="gutter">
+            <Stack direction="horizontal" gap="gutter" wrap>
+              <Stat label="Hands played" value={PROFILE.hands} />
+              <Stat
+                label="Win rate"
+                value={PROFILE.winRate}
+                hint={`Across ${PROFILE.hands} hands`}
+              />
+              <Stat label="Biggest pot" value={PROFILE.biggestPot} />
+              <Stat label="Sessions" value={PROFILE.sessions} />
+            </Stack>
+            <Card title="How you play">
+              <Stack gap="stack">
+                {STYLE.map((row) => (
+                  <Meter key={row.label} label={row.label} value={row.value} tone={row.tone} />
+                ))}
+              </Stack>
+            </Card>
+          </Stack>
+        ) : null}
 
-          {shown.length === 0 ? (
-            <p className="app__empty">
-              Nothing here yet. A frame arrives when a designer marks it ready.
-            </p>
-          ) : (
-            <ul className="app__list">
-              {shown.map((request) => (
-                <li key={request.id}>
-                  <Card title={request.frame}>
-                    <div className="app__meta">
-                      <Badge tone={TONE[request.status]}>{WORD[request.status]}</Badge>
-                      <span>on the {request.page} page</span>
-                      {request.pull ? (
-                        <span className="app__figure">pull request {request.pull}</span>
-                      ) : null}
-                      {request.checks ? (
-                        <span className="app__figure">{request.checks} checks passed</span>
-                      ) : null}
-                    </div>
-                  </Card>
-                </li>
+        {tab === 'drills' ? (
+          <Stack gap="gutter">
+            {showWeakSpot ? (
+              <Card
+                title="Your weak spot"
+                footer={<Button variant="primary">Practise position</Button>}
+              >
+                <p>
+                  {weakest.label} is your lowest drill at {weakest.value} out of 100. Ten minutes
+                  here is worth an hour anywhere else on this list.
+                </p>
+              </Card>
+            ) : null}
+            <Card title="Drills">
+              <div>
+                {DRILLS.map((row) => (
+                  <RecordRow key={row.label} {...row} />
+                ))}
+              </div>
+            </Card>
+          </Stack>
+        ) : null}
+
+        {tab === 'venues' ? (
+          <Card title="Venues">
+            <div>
+              {VENUES.map((row) => (
+                <RecordRow key={row.label} {...row} />
               ))}
-            </ul>
-          )}
-        </div>
+            </div>
+          </Card>
+        ) : null}
       </Tabs>
     </main>
   )
