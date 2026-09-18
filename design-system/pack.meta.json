@@ -114,7 +114,7 @@
     },
     {
       "name": "Stack",
-      "purpose": "The only way to space things. Layout is a design decision, so it comes from the pack rather than from whatever stylesheet a feature happens to own. Wraps the vendor stack for the flex plumbing and supplies the gap from the token layer.",
+      "purpose": "The only way to space things. Layout is a design decision, so it comes from the pack rather than from whatever stylesheet a feature happens to own. Wraps the vendor stack for the flex plumbing and supplies the gap from the token layer. It has no Figma counterpart, because auto layout is already the design tool's answer to the same question.",
       "import": "src/components/Stack.tsx",
       "props": {
         "direction": ["vertical", "horizontal"],
@@ -122,7 +122,7 @@
         "align": ["start", "center", "baseline", "stretch"]
       },
       "slots": ["children"],
-      "figma": "Stack"
+      "figma": null
     },
     {
       "name": "Stat",

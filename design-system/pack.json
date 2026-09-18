@@ -18,7 +18,7 @@
       "design-system/tokens/semantic.harbor.json",
       "design-system/tokens/component.json"
     ],
-    "hash": "589884a7dd73df1f",
+    "hash": "885e2fec57c12b7b",
     "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
   },
   "brands": [
@@ -44,8 +44,8 @@
   },
   "figma": {
     "file_key": "IDVXk0yZaJ1CQvIZn14AkA",
-    "mapped": 6,
-    "keys": 21,
+    "mapped": 9,
+    "keys": 30,
     "of": 11
   },
   "components": [
@@ -293,7 +293,7 @@
     },
     {
       "name": "Stack",
-      "purpose": "The only way to space things. Layout is a design decision, so it comes from the pack rather than from whatever stylesheet a feature happens to own. Wraps the vendor stack for the flex plumbing and supplies the gap from the token layer.",
+      "purpose": "The only way to space things. Layout is a design decision, so it comes from the pack rather than from whatever stylesheet a feature happens to own. Wraps the vendor stack for the flex plumbing and supplies the gap from the token layer. It has no Figma counterpart, because auto layout is already the design tool's answer to the same question.",
       "import": "src/components/Stack.tsx",
       "props": {
         "direction": [
@@ -315,7 +315,7 @@
       "slots": [
         "children"
       ],
-      "figma": "Stack",
+      "figma": null,
       "figma_keys": [],
       "tokens": []
     },
@@ -334,7 +334,10 @@
       },
       "slots": [],
       "figma": "Stat",
-      "figma_keys": [],
+      "figma_keys": [
+        "778afabdb25de9e77a2bcc73a2828a50500cfb40",
+        "5652b5452ff6d3c93aeb04bda5907164cc275ddd"
+      ],
       "tokens": [
         "--ds-stat-large-size"
       ]
@@ -355,7 +358,12 @@
       },
       "slots": [],
       "figma": "Meter",
-      "figma_keys": [],
+      "figma_keys": [
+        "c900664d9542071358901d52f0d5435cd12033f1",
+        "28f2d3ea0dd250d7ac6cf37c0feb72d66ab799d4",
+        "e776f7891080149884ba9ebd4ed7925887408d4f",
+        "79eb3c3847c22e66d3a244b7960ba5a1d36a5376"
+      ],
       "tokens": [
         "--ds-meter-track-height"
       ]
@@ -377,7 +385,11 @@
       },
       "slots": [],
       "figma": "RecordRow",
-      "figma_keys": [],
+      "figma_keys": [
+        "4d305e99431a8111753df73a72c2b17a57801c5c",
+        "ffce09d4072db6b241d5ed9f0ed267e2ab0b851d",
+        "3044e345df15da978c90f7003bd99249d2af8099"
+      ],
       "tokens": []
     }
   ],
