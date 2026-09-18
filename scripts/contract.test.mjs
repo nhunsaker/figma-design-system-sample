@@ -39,7 +39,8 @@ function checkoutCopy() {
   return dir
 }
 
-const build = (dir, ...args) => spawnSync('node', [BUILD, '--dir', dir, ...args], { encoding: 'utf8' })
+const build = (dir, ...args) =>
+  spawnSync('node', [BUILD, '--dir', dir, ...args], { encoding: 'utf8' })
 const contract = (root) => spawnSync('node', [CONTRACT, '--root', root], { encoding: 'utf8' })
 
 const editJson = (path, mutate) => {
@@ -154,7 +155,10 @@ describe('check-contract', () => {
   it('refuses a raw colour in a component stylesheet', () => {
     const root = checkoutCopy()
     const css = join(root, 'src', 'components', 'Button.css')
-    writeFileSync(css, `${readFileSync(css, 'utf8')}\n.ds-button--primary { background: #ff0000; }\n`)
+    writeFileSync(
+      css,
+      `${readFileSync(css, 'utf8')}\n.ds-button--primary { background: #ff0000; }\n`,
+    )
     const result = contract(root)
     expect(result.status).toBe(1)
     expect(result.stderr).toContain('literal colour #ff0000')
@@ -181,7 +185,10 @@ describe('check-contract', () => {
   it('refuses a component that helps itself to the accent', () => {
     const root = checkoutCopy()
     const css = join(root, 'src', 'components', 'Card.css')
-    writeFileSync(css, `${readFileSync(css, 'utf8')}\n.ds-card__title { color: var(--ds-accent-base); }\n`)
+    writeFileSync(
+      css,
+      `${readFileSync(css, 'utf8')}\n.ds-card__title { color: var(--ds-accent-base); }\n`,
+    )
     const result = contract(root)
     expect(result.status).toBe(1)
     expect(result.stderr).toContain('accent-spread')
@@ -206,6 +213,30 @@ describe('check-contract', () => {
     const result = contract(root)
     expect(result.status).toBe(1)
     expect(result.stderr).toContain('some-ui-kit')
+  })
+
+  it('refuses a component dropped into src/components that the pack does not list', () => {
+    const root = checkoutCopy()
+    writeFileSync(
+      join(root, 'src', 'components', 'Tooltip.tsx'),
+      'export function Tooltip() {\n  return null\n}\n',
+    )
+    const result = contract(root)
+    expect(result.status).toBe(1)
+    expect(result.stderr).toContain('Tooltip sits in src/components')
+  })
+
+  it('allows a page to import a page, because the fence is the directory not the capital', () => {
+    const root = checkoutCopy()
+    writeFileSync(
+      join(root, 'src', 'Settings.tsx'),
+      'export function Settings() {\n  return null\n}\n',
+    )
+    writeFileSync(
+      join(root, 'src', 'main.tsx'),
+      `${readFileSync(join(root, 'src', 'main.tsx'), 'utf8')}\nimport { Settings } from './Settings'\nvoid Settings\n`,
+    )
+    expect(contract(root).status).toBe(0)
   })
 
   it('refuses a component in the pack that has no story', () => {

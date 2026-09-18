@@ -1,0 +1,79 @@
+/* The application shell.
+ *
+ * One stylesheet, for the page frame only: the band across the top, the column the content sits
+ * in, and the list rhythm. Everything inside it is a component from the pack. check-contract
+ * holds this file to the same token rules as any component, so the shell cannot become the place
+ * where exceptions accumulate.
+ */
+body {
+  margin: 0;
+  background: var(--ds-surface-page);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-body);
+  font-size: var(--ds-font-size-body);
+  line-height: var(--ds-line-height-body);
+}
+
+.app {
+  max-width: var(--ds-layout-measure);
+  margin-inline: auto;
+  padding-inline: var(--ds-space-gutter);
+  padding-block: var(--ds-space-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-gutter);
+}
+
+.app__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ds-space-stack);
+}
+
+.app__title {
+  margin: 0;
+  font-size: var(--ds-font-size-heading);
+  line-height: var(--ds-line-height-heading);
+  font-weight: var(--ds-font-weight-emphasis);
+}
+
+.app__subtitle {
+  margin: 0;
+  color: var(--ds-text-secondary);
+}
+
+.app__list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-stack);
+}
+
+.app__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-stack);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-inline);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-label);
+}
+
+.app__figure {
+  font-family: var(--ds-font-figure);
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-text-primary);
+}
+
+.app__empty {
+  color: var(--ds-text-secondary);
+}

@@ -18,7 +18,7 @@
       "design-system/tokens/semantic.harbor.json",
       "design-system/tokens/component.json"
     ],
-    "hash": "c14ea11c3f1fc516",
+    "hash": "5518200f1224f49a",
     "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
   },
   "brands": [
@@ -619,6 +619,14 @@
         "values": {
           "ember": "cubic-bezier(0.2, 0, 0.2, 1)",
           "harbor": "cubic-bezier(0.2, 0, 0.2, 1)"
+        }
+      },
+      "layout.measure": {
+        "var": "--ds-layout-measure",
+        "type": "dimension",
+        "values": {
+          "ember": "720px",
+          "harbor": "720px"
         }
       }
     },
