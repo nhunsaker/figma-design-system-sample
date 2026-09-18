@@ -39,7 +39,7 @@ six steps, and what happens when a design asks for something the system does not
 | `contract/` | The spec both of them are held to: the behaviour table and the exact issue body |
 | `figma/` | What the Figma file has to contain, and the component key map |
 | `SETUP.md` | Tokens, scopes, storage, and the one step that fails quietly |
-| `docs/` | The runbook, the diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
+| `docs/` | Two runbooks, the diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
 
 Two runtimes, one spec. The only part of this system that has to run somewhere is the translating
 service, and it is deliberately available both ways: on hardware you own, where every credential

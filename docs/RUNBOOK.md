@@ -161,6 +161,9 @@ saying so.**
 `worker/` is the same service as a Worker, and a Worker already has a stable public address. No
 tunnel, no reverse proxy, no machine, and nothing that changes when something restarts.
 
+**`docs/RUNBOOK-CLOUDFLARE.md` is the ordered version of that path**, from the account through the
+deploy to a real run and back out again. What follows here is the short form.
+
 ```
 cd worker
 npx wrangler secret put FIGMA_TOKEN
