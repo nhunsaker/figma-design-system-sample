@@ -1,54 +1,65 @@
+/* Every modifier below doubles its class on purpose.
+ *
+ * The vendor library is styled-components, so its rules are injected at runtime and land AFTER
+ * this stylesheet. At equal specificity the later rule wins, which means a single class here
+ * loses every argument to the vendor's own `gap`, `align-items` and `justify-content`. Doubling
+ * the class takes specificity from 0,1,0 to 0,2,0 and settles it without an !important anywhere.
+ *
+ * This is the price of wrapping a CSS-in-JS library from a static stylesheet, and it is worth
+ * writing down: it was invisible in every test and obvious the moment a person looked at the
+ * running page, where a row of four figures sat on top of each other.
+ */
 .ds-stack {
   display: flex;
 }
 
-.ds-stack--inline {
+.ds-stack.ds-stack--inline {
   gap: var(--ds-space-inline);
 }
 
-.ds-stack--stack {
+.ds-stack.ds-stack--stack {
   gap: var(--ds-space-stack);
 }
 
-.ds-stack--gutter {
+.ds-stack.ds-stack--gutter {
   gap: var(--ds-space-gutter);
 }
 
-.ds-stack--start {
+.ds-stack.ds-stack--start {
   align-items: flex-start;
 }
 
-.ds-stack--center {
+.ds-stack.ds-stack--center {
   align-items: center;
 }
 
-.ds-stack--baseline {
+.ds-stack.ds-stack--baseline {
   align-items: baseline;
 }
 
-.ds-stack--stretch {
+.ds-stack.ds-stack--stretch {
   align-items: stretch;
 }
 
-.ds-stack--wrap {
-  flex-wrap: wrap;
-}
-
-.ds-stack--justify-start {
+.ds-stack.ds-stack--justify-start {
   justify-content: flex-start;
 }
 
-.ds-stack--justify-between {
+.ds-stack.ds-stack--justify-between {
   justify-content: space-between;
 }
 
-.ds-stack--justify-end {
+.ds-stack.ds-stack--justify-end {
   justify-content: flex-end;
 }
 
 /* Equal shares, and min-width zero so a long figure shrinks its own column rather than pushing
    into the next one. Without that, one wide value silently overlaps its neighbour. */
-.ds-stack--fill > * {
+.ds-stack.ds-stack--fill > * {
   flex: 1 1 0;
   min-width: 0;
+}
+
+.ds-stack.ds-stack--wrap {
+  flex-wrap: wrap;
 }
