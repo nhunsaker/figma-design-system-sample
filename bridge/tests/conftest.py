@@ -20,17 +20,45 @@ from bridge.figma import FigmaClient
 from bridge.github import GitHubClient
 from bridge.oidc import ActionsVerifier, NotFromActions
 
-FIXTURES = Path(__file__).parent / "fixtures"
-PACK = Path(__file__).parents[2] / "design-system" / "pack.json"
+ROOT = Path(__file__).parents[2]
+CONTRACT = ROOT / "contract"
+FIXTURES = CONTRACT / "fixtures"
+PACK = ROOT / "design-system" / "pack.json"
 
-FILE_KEY = "AbC123XyZ"
-NODE_ID = "41:207"
-PASSCODE = "a-passcode-the-bridge-chose"
-REPO = "nhunsaker/figma-design-system-sample"
+# The world the cases are written against lives in the contract, not here, so the Python suite
+# and the Worker suite cannot quietly disagree about what file key they are testing.
+CASES = json.loads((CONTRACT / "cases.json").read_text())
+FILE_KEY = CASES["world"]["file_key"]
+NODE_ID = CASES["world"]["node_id"]
+PASSCODE = CASES["world"]["passcode"]
+REPO = CASES["world"]["repo"]
 
 
 def fixture(name: str) -> dict:
     return json.loads((FIXTURES / name).read_text())
+
+
+def write_kind(method: str, url: str) -> str | None:
+    """Name an outbound call the way contract/cases.json names it, or None if it changes nothing.
+
+    The expectation in the contract is a set of these names rather than a list of URLs, so the
+    two implementations can spell a request however their client spells it and still be held to
+    the same behaviour.
+    """
+    if method not in {"POST", "PATCH", "PUT", "DELETE"}:
+        return None
+    path = url.split("?", 1)[0]
+    if path.endswith("/graphql"):
+        return "github.graphql"
+    if "/dev_resources" in path:
+        return "figma.devresource"
+    if "api.figma.com" in path and path.endswith("/comments"):
+        return "figma.comment"
+    if path.endswith("/comments"):
+        return "github.issue.comment"
+    if path.endswith("/issues"):
+        return "github.issue.create"
+    return None
 
 
 class Recorder:
@@ -44,6 +72,10 @@ class Recorder:
 
     def wrote(self) -> list[tuple[str, str]]:
         return [c for c in self.calls if c[0] in {"POST", "PATCH", "PUT", "DELETE"}]
+
+    def kinds(self) -> list[str]:
+        """The writes that happened, named as the contract names them, sorted and deduplicated."""
+        return sorted({k for m, u in self.calls if (k := write_kind(m, u))})
 
 
 @pytest.fixture
