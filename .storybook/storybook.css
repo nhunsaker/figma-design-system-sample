@@ -1,0 +1,12 @@
+/* Storybook's own frame, not part of the pack.
+ *
+ * check-contract does not scan this file, and that is deliberate rather than an oversight: the
+ * canvas a story is previewed on is not a surface the product ships. Anything here that a
+ * component needs is a sign the token layer is missing something.
+ */
+body {
+  margin: 0;
+  background: var(--ds-surface-page);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-body);
+}

@@ -1,0 +1,57 @@
+.ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-button-gap);
+  min-height: var(--ds-button-height);
+  padding-inline: var(--ds-button-inset);
+  border: var(--ds-button-border-width) solid transparent;
+  border-radius: var(--ds-button-radius);
+  font-family: var(--ds-font-body);
+  font-size: var(--ds-button-font-size);
+  font-weight: var(--ds-button-font-weight);
+  line-height: var(--ds-line-height-body);
+  cursor: pointer;
+  transition: background-color var(--ds-motion-duration-fast) var(--ds-motion-easing);
+}
+
+.ds-button:focus-visible {
+  outline: var(--ds-button-focus-width) solid var(--ds-button-focus-ring);
+  outline-offset: var(--ds-button-border-width);
+}
+
+.ds-button--compact {
+  min-height: var(--ds-button-height-compact);
+}
+
+.ds-button--primary {
+  background: var(--ds-button-primary-bg);
+  color: var(--ds-button-primary-fg);
+}
+
+.ds-button--primary:hover:not(:disabled) {
+  background: var(--ds-button-primary-bg-hover);
+}
+
+.ds-button--secondary {
+  background: var(--ds-button-secondary-bg);
+  color: var(--ds-button-secondary-fg);
+  border-color: var(--ds-button-secondary-border);
+}
+
+.ds-button--secondary:hover:not(:disabled) {
+  background: var(--ds-button-secondary-bg-hover);
+}
+
+.ds-button:disabled {
+  background: var(--ds-button-disabled-bg);
+  color: var(--ds-button-disabled-fg);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-button {
+    transition-duration: 0s;
+  }
+}
