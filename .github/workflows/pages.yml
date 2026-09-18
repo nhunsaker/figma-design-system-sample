@@ -1,0 +1,47 @@
+name: pages
+
+# The stage. Storybook is the review surface for the design system and the application sits
+# under /app/, both built from main. Nothing here is a release: every feature in the
+# application is behind a flag that is off, and a reviewer turns one on for their own browser
+# with a query parameter.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build-storybook --quiet --output-dir site
+      - run: pnpm exec vite build --base /figma-design-system-sample/app/ --outDir site/app
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
