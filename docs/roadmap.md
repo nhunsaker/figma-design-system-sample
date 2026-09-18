@@ -26,7 +26,8 @@ runtime custom properties so a brand change re-skins it without a rebuild. It ma
 `src/components` and nowhere else, which is checked.
 
 `docs/RUNBOOK.md` is the ordered list of what a person has to do, with what each step costs and
-how to tell it worked.
+how to tell it worked. `docs/architecture.html` is the drawing of the whole thing, and
+`docs/images/architecture.png` is the render of it that the README shows.
 
 ## Left
 

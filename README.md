@@ -13,11 +13,14 @@ and there is no reason for it to be larger.
 The work is everything else: making a design system into something a machine can hold a builder
 to, and deciding who is allowed to change what.
 
+![A designer marks a frame ready, one service reads it and opens an issue, an agent builds it against the design pack, the checks decide whether it obeyed, a person approves, and the pull request is pinned back on the frame](docs/images/architecture.png)
+
 ## See it
 
 | | |
 |---|---|
 | The design file | https://www.figma.com/design/IDVXk0yZaJ1CQvIZn14AkA/figma-design-system-sample |
+| The diagram above | `docs/architecture.html`, which renders the PNG |
 | Storybook | published from `main` to GitHub Pages |
 | The application | the same, under `/app/` |
 
