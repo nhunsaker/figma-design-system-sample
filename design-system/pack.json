@@ -18,7 +18,7 @@
       "design-system/tokens/semantic.harbor.json",
       "design-system/tokens/component.json"
     ],
-    "hash": "751d8f56fcf85831",
+    "hash": "d24bb5c7f4459088",
     "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
   },
   "brands": [
@@ -1102,6 +1102,12 @@
         "surface-page"
       ]
     ]
+  },
+  "vendor": {
+    "package": "@metatoy/bootstrap-styled",
+    "allowed_in": "src/components",
+    "stylesheet": "design-system/tokens.vendor.css",
+    "properties": 31
   },
   "rules": [
     "Every value in a stylesheet is a var(--ds-*). A raw colour, length or duration the token layer already carries is a bug. If the layer is missing something, add it to the layer.",

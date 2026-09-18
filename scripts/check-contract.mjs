@@ -105,6 +105,11 @@ const ACCENT_VARS = /--ds-accent-(base|hover|subtle)\b/
 
 // ─── stylesheets ────────────────────────────────────────────────────────────
 
+const TOKEN_FIX =
+  'every value is a var(--ds-*). A value the token layer does not carry is a gap in the token layer, not a local exception.'
+const ACCENT_FIX =
+  'the accent belongs to the action a screen exists for, and to focus. A component that wants it takes it through its own component token, which is reviewable, rather than helping itself.'
+
 const stripComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '')
 
 const cssFiles = walk(SRC, (f) => f.endsWith('.css'))
@@ -177,10 +182,48 @@ for (const file of cssFiles) {
   }
 }
 
+// ─── styled template literals ───────────────────────────────────────────────
+//
+// Styling that moved into a tagged template is styling the stylesheet scan cannot see. The same
+// rules apply wherever the declaration lives, or "put it in a styled component" becomes the way
+// around every rule in the pack.
+
+const STYLED = /(?:styled|css)(?:\.[A-Za-z]+|\([^)]*\))?`([^`]*)`/gs
+
+for (const file of walk(SRC, (f) => f.endsWith('.tsx') || f.endsWith('.ts'))) {
+  const name = rel(file)
+  if (/\.(stories|test|test-utils)\.tsx?$/.test(name)) continue
+  const source = readFileSync(file, 'utf8')
+  for (const [, block] of source.matchAll(STYLED)) {
+    for (const [match] of block.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(/g)) {
+      refuse(
+        'raw-value',
+        name,
+        `a styled block carries the literal colour ${match.trim()}`,
+        TOKEN_FIX,
+      )
+    }
+    for (const [match] of block.matchAll(/(?<![\w-])\d*\.?\d+(px|rem|em)(?![\w-])/g)) {
+      if (/^0(px|rem|em)$/.test(match)) continue
+      refuse('raw-value', name, `a styled block carries the literal length ${match}`, TOKEN_FIX)
+    }
+    if (ACCENT_VARS.test(block)) {
+      refuse('accent-spread', name, 'a styled block reaches for the accent directly', ACCENT_FIX)
+    }
+  }
+}
+
 // ─── modules ────────────────────────────────────────────────────────────────
 
 const tsFiles = walk(SRC, (f) => f.endsWith('.tsx') || f.endsWith('.ts'))
 const ALLOWED_PACKAGES = new Set(['react', 'react-dom', 'react/jsx-runtime'])
+
+// The component library underneath the pack. A pack component may wrap it, because that is what
+// the pack IS: a narrower, checkable API over something broader. Nothing else may touch it. A
+// feature reaching straight for a vendor component gets the vendor's whole surface, which is
+// every prop the pack deliberately did not expose, and the pack stops describing what is shipped.
+const VENDOR = pack.vendor?.package
+const VENDOR_HOME = pack.vendor?.allowed_in ?? 'src/components'
 
 for (const file of tsFiles) {
   const name = rel(file)
@@ -194,6 +237,17 @@ for (const file of tsFiles) {
     const bare = !spec.startsWith('.') && !spec.startsWith('/')
     if (bare) {
       const pkg = spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]
+      if (VENDOR && pkg === VENDOR) {
+        if (!name.startsWith(`${VENDOR_HOME}/`)) {
+          refuse(
+            'outside-pack',
+            name,
+            `imports ${VENDOR} outside ${VENDOR_HOME}`,
+            `the pack may wrap the vendor and a feature may not reach past it. Add what this needs to a component in ${VENDOR_HOME}, where its props are named and its rules are checked.`,
+          )
+        }
+        continue
+      }
       if (!ALLOWED_PACKAGES.has(spec) && !ALLOWED_PACKAGES.has(pkg)) {
         refuse(
           'outside-pack',
