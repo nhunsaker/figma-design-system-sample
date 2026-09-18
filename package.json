@@ -24,7 +24,9 @@
     "demo:reset": "node scripts/demo.mjs reset",
     "demo:webhook": "node scripts/demo.mjs webhook",
     "test:worker": "pnpm --filter figma-bridge-worker test:all",
-    "worker:dev": "pnpm --filter figma-bridge-worker dev"
+    "worker:dev": "pnpm --filter figma-bridge-worker dev",
+    "test:bridge": "cd bridge && uv run ruff check . && uv run ruff format --check . && uv run pytest",
+    "test:everything": "pnpm test:all && pnpm test:worker && pnpm test:bridge"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
