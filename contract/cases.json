@@ -1,0 +1,196 @@
+{
+  "_comment": "The behaviour of the bridge, as data. Two implementations read this file and are held to it: the Python service in bridge/ and the Cloudflare Worker in worker/. Neither may change what it does without this file changing first, which is the only thing standing between two runtimes and two subtly different systems. Most cases below are cases where nothing should happen, because a webhook that acts when it should not is worse than one that is down: the first failure is quiet and lands in somebody else's repository.",
+
+  "world": {
+    "file_key": "AbC123XyZ",
+    "node_id": "41:207",
+    "passcode": "a-passcode-the-bridge-chose",
+    "repo": "nhunsaker/figma-design-system-sample",
+    "frame_url": "https://www.figma.com/design/AbC123XyZ/Sample?node-id=41-207"
+  },
+
+  "_writes": "A write is any request that changes something. Each implementation maps its own outbound calls onto these names so the expectation does not depend on how either one spells a URL. The expected value is a SET, sorted, not a count.",
+  "write_kinds": [
+    "github.issue.create",
+    "github.issue.comment",
+    "github.graphql",
+    "figma.devresource",
+    "figma.comment"
+  ],
+
+  "webhook": [
+    {
+      "name": "a ready frame opens one issue",
+      "payload": {
+        "event_type": "DEV_MODE_STATUS_UPDATE",
+        "passcode": "a-passcode-the-bridge-chose",
+        "file_key": "AbC123XyZ",
+        "node_id": "41:207",
+        "status": "READY_FOR_DEV",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": {
+        "status": 200,
+        "created": true,
+        "issues_after": 1,
+        "writes": ["figma.devresource", "github.graphql", "github.issue.create"]
+      }
+    },
+    {
+      "name": "a redelivery finds the first issue instead of opening a second",
+      "repeat_of": "a ready frame opens one issue",
+      "payload": {
+        "event_type": "DEV_MODE_STATUS_UPDATE",
+        "passcode": "a-passcode-the-bridge-chose",
+        "file_key": "AbC123XyZ",
+        "node_id": "41:207",
+        "status": "READY_FOR_DEV",
+        "timestamp": "2026-09-18T06:00:05Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 200, "created": false, "issues_after": 1, "writes": [] }
+    },
+    {
+      "name": "a wrong passcode writes nothing",
+      "payload": {
+        "event_type": "DEV_MODE_STATUS_UPDATE",
+        "passcode": "guessed",
+        "file_key": "AbC123XyZ",
+        "node_id": "41:207",
+        "status": "READY_FOR_DEV",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 401, "issues_after": 0, "writes": [] }
+    },
+    {
+      "name": "a missing passcode writes nothing",
+      "payload": {
+        "event_type": "DEV_MODE_STATUS_UPDATE",
+        "file_key": "AbC123XyZ",
+        "node_id": "41:207",
+        "status": "READY_FOR_DEV",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 401, "issues_after": 0, "writes": [] }
+    },
+    {
+      "name": "a frame moved to any other status writes nothing",
+      "payload": {
+        "event_type": "DEV_MODE_STATUS_UPDATE",
+        "passcode": "a-passcode-the-bridge-chose",
+        "file_key": "AbC123XyZ",
+        "node_id": "41:207",
+        "status": "COMPLETED",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 204, "issues_after": 0, "writes": [] }
+    },
+    {
+      "name": "another event type writes nothing",
+      "payload": {
+        "event_type": "FILE_UPDATE",
+        "passcode": "a-passcode-the-bridge-chose",
+        "file_key": "AbC123XyZ",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 204, "issues_after": 0, "writes": [] }
+    },
+    {
+      "name": "a payload for another file is refused",
+      "payload": {
+        "event_type": "DEV_MODE_STATUS_UPDATE",
+        "passcode": "a-passcode-the-bridge-chose",
+        "file_key": "SomeoneElsesFile",
+        "node_id": "41:207",
+        "status": "READY_FOR_DEV",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 403, "issues_after": 0, "writes": [] }
+    },
+    {
+      "name": "a ping is answered so registration can succeed",
+      "payload": {
+        "event_type": "PING",
+        "passcode": "a-passcode-the-bridge-chose",
+        "file_key": "AbC123XyZ",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "webhook_id": "wh-1"
+      },
+      "expect": { "status": 200, "issues_after": 0, "writes": [] }
+    }
+  ],
+
+  "writeback": [
+    {
+      "name": "an opened pull request is pinned to the frame",
+      "signed": true,
+      "payload": {
+        "event": "opened",
+        "merged": false,
+        "number": 14,
+        "title": "Build Empty state",
+        "url": "https://github.com/nhunsaker/figma-design-system-sample/pull/14",
+        "body": "## Frame\n\n[Empty state](https://www.figma.com/design/AbC123XyZ/Sample?node-id=41-207)\n"
+      },
+      "expect": { "status": 200, "wrote": "dev resource", "writes": ["figma.devresource"] }
+    },
+    {
+      "name": "a merge leaves a comment saying nothing has shipped",
+      "signed": true,
+      "payload": {
+        "event": "closed",
+        "merged": true,
+        "number": 14,
+        "title": "Build Empty state",
+        "url": "https://github.com/nhunsaker/figma-design-system-sample/pull/14",
+        "body": "## Frame\n\n[Empty state](https://www.figma.com/design/AbC123XyZ/Sample?node-id=41-207)\n"
+      },
+      "expect": { "status": 200, "wrote": "comment", "writes": ["figma.comment"] }
+    },
+    {
+      "name": "a close without merge also reports back",
+      "signed": true,
+      "payload": {
+        "event": "closed",
+        "merged": false,
+        "number": 14,
+        "title": "Build Empty state",
+        "url": "https://github.com/nhunsaker/figma-design-system-sample/pull/14",
+        "body": "## Frame\n\n[Empty state](https://www.figma.com/design/AbC123XyZ/Sample?node-id=41-207)\n"
+      },
+      "expect": { "status": 200, "wrote": "comment", "writes": ["figma.comment"] }
+    },
+    {
+      "name": "an unsigned request writes nothing",
+      "signed": false,
+      "payload": {
+        "event": "opened",
+        "merged": false,
+        "number": 14,
+        "title": "Build Empty state",
+        "url": "https://github.com/nhunsaker/figma-design-system-sample/pull/14",
+        "body": "## Frame\n\n[Empty state](https://www.figma.com/design/AbC123XyZ/Sample?node-id=41-207)\n"
+      },
+      "expect": { "status": 401, "writes": [] }
+    },
+    {
+      "name": "a pull request that names no frame is left alone",
+      "signed": true,
+      "payload": {
+        "event": "opened",
+        "merged": false,
+        "number": 15,
+        "title": "Tidy up",
+        "url": "https://github.com/nhunsaker/figma-design-system-sample/pull/15",
+        "body": "a tidy up, no design behind it"
+      },
+      "expect": { "status": 200, "wrote": false, "writes": [] }
+    }
+  ]
+}
