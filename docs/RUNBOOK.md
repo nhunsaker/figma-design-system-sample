@@ -11,16 +11,20 @@ done without you.
 
 | | |
 |---|---|
-| Repository | local only, twelve commits, nothing pushed |
-| Tests | 93 passing |
+| Repository | public, pushed, both workflows green |
+| Sites | Storybook and the application live on Pages |
+| Tests | 95 passing |
 | Figma file | built: 11 components, 3 request frames, `IDVXk0yZaJ1CQvIZn14AkA` |
 | Figma token | works, all four write scopes confirmed |
 | Keychain | all three items present, bridge starts and answers |
 | Copilot coding agent | confirmed assignable on `nhunsaker` |
-| Bridge | read path tested against the live file, never triggered by a real webhook |
-| Webhook | none registered |
+| Bridge | running, reachable through a tunnel |
+| Webhook | registered against that tunnel |
 
-Steps 2 is done. Step 1 is the only thing blocking a run.
+Every step below is done. What remains is running it, and the one fragility worth knowing:
+a quick tunnel's address dies when the tunnel restarts, and the webhook then points at nothing.
+`pnpm demo:webhook list` shows what is registered and `register` refuses an address that does
+not answer.
 
 ---
 
@@ -42,6 +46,17 @@ gh api -X PUT repos/nhunsaker/figma-design-system-sample/branches/main/protectio
 **How to tell it worked.** The `verify` workflow runs on the first push and goes green. If it
 goes red, read which job failed: a red `bridge` job means Python, a red `verify` job means the
 front end, and both run the same commands you can run locally.
+
+**One thing that fails quietly if you skip it.** The bridge labels every issue `design:ready`,
+and `demo:status` finds issues by that label. Create it once:
+
+```
+gh label create "design:ready" -R nhunsaker/figma-design-system-sample \
+  --color 1d4ed8 --description "A frame was marked ready for development in Figma"
+```
+
+Without it, `demo:status` reports no issues whether or not any exist, which is the worst kind of
+wrong: it looks like the calm before a run rather than a broken query.
 
 **What this unblocks.** Everything. The agent cannot be assigned an issue in a repository that
 does not exist.
