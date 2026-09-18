@@ -1,0 +1,35 @@
+[project]
+name = "figma-bridge"
+version = "0.1.0"
+description = "Turns a frame marked ready for development into a GitHub issue, and pins what happened back onto the frame."
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "pyjwt[crypto]>=2.9",
+  "uvicorn[standard]>=0.30",
+]
+
+[project.scripts]
+figma-bridge = "bridge.__main__:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bridge"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
