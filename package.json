@@ -21,7 +21,8 @@
     "test:all": "pnpm test:types && pnpm test:lint && pnpm test:pack && pnpm test:contract && pnpm test",
     "sync:figma": "node scripts/sync-figma-keys.mjs",
     "demo:status": "node scripts/demo.mjs status",
-    "demo:reset": "node scripts/demo.mjs reset"
+    "demo:reset": "node scripts/demo.mjs reset",
+    "demo:webhook": "node scripts/demo.mjs webhook"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",

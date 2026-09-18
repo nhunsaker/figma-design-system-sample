@@ -124,33 +124,37 @@ stay awake and online.
 
 **You approve, then one command.**
 
-```
-curl -X POST https://api.figma.com/v2/webhooks \
-  -H "X-Figma-Token: $(security find-generic-password -a "$USER" -s sorb-figma-api-token -w)" \
-  -H 'Content-Type: application/json' \
-  -d '{"event_type":"DEV_MODE_STATUS_UPDATE","context":"file",
-       "context_id":"IDVXk0yZaJ1CQvIZn14AkA",
-       "endpoint":"https://YOUR-ADDRESS/figma/webhook",
-       "passcode":"THE-PASSCODE-FROM-STEP-2"}'
-```
-
-Scope it to the **file**, never the team. A team webhook wakes the bridge for every file anyone
-touches.
-
-**How to tell it worked.** Figma sends a PING immediately. The bridge logs it and answers 200. If
-you get no PING, the endpoint is not reachable from the internet, which is a tunnel problem and
-not a Figma problem.
-
-**Check what is registered:**
+Start the bridge and the tunnel first, then:
 
 ```
-pnpm demo:status
+pnpm demo:webhook register https://your-tunnel-address/figma/webhook
 ```
 
-**A warning from experience.** Posting to this endpoint creates a webhook. There is no dry run. I
-made exactly this mistake while testing scopes and had to delete one within the minute.
+It refuses rather than registering if the address is not https, if the host looks like a
+placeholder, if the path is wrong, if nothing answers at that address, if the bridge answering
+serves a different Figma file, or if this file already has a webhook. Only after all of that does
+it read the passcode from the Keychain and register.
 
----
+That list is not paranoia. The first version of this runbook had a `curl` command with
+`YOUR-ADDRESS` in it, and a webhook was registered against the literal string `YOUR-ADDRESS`
+within a day. A command that can be pasted verbatim will be pasted verbatim, so the placeholder
+is gone and the validation is in code.
+
+**Managing them:**
+
+```
+pnpm demo:webhook list
+pnpm demo:webhook delete <id>
+pnpm demo:webhook delete all
+```
+
+**How to tell it worked.** Figma sends a PING immediately and the bridge logs it. If you get no
+PING after the command succeeded, the tunnel died between the health check and the registration,
+which is rare and fixed by deleting and registering again.
+
+**Scope.** Always the file, never the team. A team webhook wakes the bridge for every file anyone
+touches. The command only ever registers file scope, so this is not a decision you have to
+remember.
 
 ## Step 5 — The first run
 
@@ -221,3 +225,4 @@ or a refused pull request, which proves the checks work.
 | `pnpm storybook` | the components, with a brand switcher |
 | `pnpm pack` | rebuild the design pack after a token change |
 | `pnpm sync:figma` | re-read component keys after changing the Figma file |
+| `pnpm demo:webhook list` | what is registered on the file |
