@@ -15,7 +15,9 @@ import goldenMapped from '../../contract/golden/issue-mapped.md?raw'
 import goldenUnmapped from '../../contract/golden/issue-unmapped.md?raw'
 import packJson from '../../design-system/pack.json'
 import { FigmaClient } from '../src/figma'
+import figmaSource from '../src/figma.ts?raw'
 import { GitHubClient } from '../src/github'
+import githubSource from '../src/github.ts?raw'
 import { codeConnectMap, type Deps, handle, nodeIdFrom } from '../src/index'
 import { bodyFor, titleFor } from '../src/issue'
 import { NotFromActions, type Verifier } from '../src/oidc'
@@ -278,4 +280,35 @@ describe('the issue still opens when the coding agent is unavailable', () => {
     expect((await response.json<{ assigned: boolean }>()).assigned).toBe(false)
     expect(world.issues.length).toBe(1)
   })
+})
+
+// ─── the default fetcher, which no runtime test can reach ───────────────────
+
+describe('no client defaults its fetcher to the bare global', () => {
+  /**
+   * This is a source check, and it is a source check on purpose.
+   *
+   * `private readonly fetcher: typeof fetch = fetch` stores the global and then calls it as
+   * `this.fetcher(...)`, so `fetch` receives the client as its `this`. Node tolerates that.
+   * The real edge throws "Illegal invocation" and returns 500. A green suite shipped exactly that,
+   * and Figma's first real webhook got a 500.
+   *
+   * It cannot be caught by running anything here. A stubbed fetch is a plain function and ignores
+   * its receiver, so it never reproduces. The native one cannot reach the network in this runtime,
+   * so it fails as "internal error" before the receiver check would ever show. Both green, both
+   * useless. Measured, not assumed.
+   *
+   * So the rule is enforced where it is visible: the text of the source. Wrap it in an arrow and
+   * the call is a plain global call again.
+   */
+  for (const [name, source] of [
+    ['github.ts', githubSource],
+    ['figma.ts', figmaSource],
+  ] as const) {
+    it(`${name} wraps its default fetcher`, () => {
+      expect(source, `${name} must not default its fetcher to the bare global`).not.toMatch(
+        /:\s*typeof fetch\s*=\s*fetch\s*[,)]/,
+      )
+    })
+  }
 })

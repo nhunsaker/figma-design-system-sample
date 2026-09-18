@@ -16,7 +16,13 @@ export class GitHubClient {
   constructor(
     private readonly token: string,
     private readonly repo: string,
-    private readonly fetcher: typeof fetch = fetch,
+    /**
+     * Wrapped, not `= fetch`. Stored as a property and called as `this.fetcher(...)`, the global
+     * `fetch` receives this client as its `this`, and workerd refuses that with "Illegal
+     * invocation". Node tolerates it, so the whole suite passed and the deployed Worker threw a
+     * 500 on the first real webhook. The arrow keeps the call a plain global call.
+     */
+    private readonly fetcher: typeof fetch = (input, init) => fetch(input, init),
   ) {}
 
   private headers(): Record<string, string> {
