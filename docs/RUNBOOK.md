@@ -48,6 +48,29 @@ does not exist.
 
 ---
 
+## Step 1b — Turn on Pages
+
+**You, one click, once.**
+
+In the repository, Settings, Pages, set **Source** to **GitHub Actions**. Nothing else.
+
+Without it the `pages` workflow runs and fails at the deploy step, having built both sites for
+nothing. There is no way to set this from a workflow, because a workflow that could turn on its
+own publishing would be a workflow that could publish a repository nobody meant to publish.
+
+**What appears, on every push to `main`:**
+
+| | |
+|---|---|
+| `https://nhunsaker.github.io/figma-design-system-sample/` | Storybook: every component, both brands, the a11y panel |
+| `https://nhunsaker.github.io/figma-design-system-sample/app/` | the application |
+| `…/app/?weak-spot=true` | the flagged feature, on for your browser only |
+
+That last URL is the point of the flag rule. The feature is merged and off, and one query
+parameter turns it on for one person without turning it on for anyone.
+
+---
+
 ## Step 2 — Two Keychain items
 
 **You, two commands, about a minute.**

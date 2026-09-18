@@ -13,6 +13,17 @@ and there is no reason for it to be larger.
 The work is everything else: making a design system into something a machine can hold a builder
 to, and deciding who is allowed to change what.
 
+## See it
+
+| | |
+|---|---|
+| The design file | https://www.figma.com/design/IDVXk0yZaJ1CQvIZn14AkA/figma-design-system-sample |
+| Storybook | published from `main` to GitHub Pages |
+| The application | the same, under `/app/` |
+
+The Figma file opens on a cover that says what it is. `How this works` is the page worth reading:
+six steps, and what happens when a design asks for something the system does not have.
+
 ## What is here
 
 | | |
