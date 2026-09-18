@@ -26,7 +26,10 @@
     "test:worker": "pnpm --filter figma-bridge-worker test:all",
     "worker:dev": "pnpm --filter figma-bridge-worker dev",
     "test:bridge": "cd bridge && uv run ruff check . && uv run ruff format --check . && uv run pytest",
-    "test:everything": "pnpm test:all && pnpm test:worker && pnpm test:bridge"
+    "test:everything": "pnpm test:all && pnpm test:worker && pnpm test:bridge",
+    "worker:deploy": "pnpm --filter figma-bridge-worker run deploy",
+    "worker:check": "pnpm --filter figma-bridge-worker run deploy --dry-run",
+    "worker:bench": "pnpm --filter figma-bridge-worker run bench"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",

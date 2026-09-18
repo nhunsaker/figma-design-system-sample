@@ -21,7 +21,7 @@ closes. Tens a day against a hundred thousand. There is no charge for egress or 
 **The limit that could bite is CPU, not requests.** Waiting on Figma and GitHub does not count
 against it, only compute does, and ours is a JSON parse and a walk of a few dozen nodes.
 
-`pnpm --filter figma-bridge-worker bench` drives the real reader and the real issue builder
+`pnpm worker:bench` drives the real reader and the real issue builder
 against synthetic frames and prints what one webhook costs:
 
 | Nodes in the frame | Payload | Per request | Share of the 10ms ceiling |
@@ -65,8 +65,18 @@ account. `docs/DECISIONS.md` states it as a trade rather than burying it.
 ## Deploy
 
 ```
-pnpm --filter figma-bridge-worker deploy
+pnpm worker:check      # bundles and validates the config. Deploys nothing.
+pnpm worker:deploy
 ```
+
+`worker:check` is a `wrangler deploy --dry-run`. It builds the bundle, resolves the bindings and
+prints the upload size without publishing, so a broken configuration is found before the step
+that puts something on the internet.
+
+**Do not reach for `pnpm --filter figma-bridge-worker deploy`.** `deploy` is one of pnpm's own
+commands, so the filter form never reaches this package's script and fails with
+`ERR_PNPM_INVALID_DEPLOY_TARGET`. Only `pnpm run deploy` from inside `worker/`, or the root
+commands above, actually run wrangler.
 
 You get `https://figma-bridge.<your-subdomain>.workers.dev`. Then point the webhook at it:
 

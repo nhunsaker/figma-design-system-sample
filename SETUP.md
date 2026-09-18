@@ -290,8 +290,13 @@ not a free one, and `docs/DECISIONS.md` says so rather than burying it.
 Then:
 
 ```
-pnpm --filter figma-bridge-worker deploy
+pnpm worker:check     # bundles and validates the config, deploys nothing
+pnpm worker:deploy
 ```
+
+**Use those and not `pnpm --filter figma-bridge-worker deploy`.** `deploy` is a pnpm builtin, so
+the filter form never reaches the script and fails with `ERR_PNPM_INVALID_DEPLOY_TARGET`. The
+root commands exist so that is not something you have to know.
 
 You get `https://figma-bridge.<your-subdomain>.workers.dev`. `curl` its `/health` and you should
 see the file key and the repository, the same answer the Python service gives.
