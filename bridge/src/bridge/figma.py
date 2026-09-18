@@ -25,6 +25,27 @@ import httpx
 API = "https://api.figma.com"
 
 
+def _round(value: float | int | None) -> int | None:
+    """Figma reports fractional sizes. Round, and treat a missing or zero value as unknown."""
+    if isinstance(value, (int, float)) and value > 0:
+        return round(value)
+    return None
+
+
+@dataclass(frozen=True)
+class UnmappedComponent:
+    """A component in the frame that the key map could not place.
+
+    Carries the size the design gave it, so a placeholder can reserve the same space rather than
+    collapsing the layout around a hole. None where Figma did not report one.
+    """
+
+    name: str
+    width: int | None = None
+    height: int | None = None
+    radius: int | None = None
+
+
 @dataclass(frozen=True)
 class FrameRead:
     """What the bridge learned about a frame, and what it could not learn."""
@@ -35,7 +56,7 @@ class FrameRead:
     file_key: str
     file_name: str
     components: list[str] = field(default_factory=list)
-    unknown_components: list[str] = field(default_factory=list)
+    unknown_components: list[UnmappedComponent] = field(default_factory=list)
     text: list[str] = field(default_factory=list)
     image_url: str | None = None
 
@@ -81,7 +102,7 @@ class FigmaClient:
         document = entry["document"]
         components_meta = entry.get("components") or {}
         known: list[str] = []
-        unknown: list[str] = []
+        unknown: dict[str, UnmappedComponent] = {}
         text: list[str] = []
 
         def visit(node: dict) -> None:
@@ -92,10 +113,23 @@ class FigmaClient:
                 if name:
                     known.append(name)
                 else:
-                    unknown.append(
-                        (components_meta.get(component_id) or {}).get("name")
-                        or node.get("name", "unnamed")
+                    missing = (components_meta.get(component_id) or {}).get("name") or node.get(
+                        "name", "unnamed"
                     )
+                    if missing not in unknown:
+                        box = node.get("absoluteBoundingBox") or {}
+                        unknown[missing] = UnmappedComponent(
+                            name=missing,
+                            width=_round(box.get("width")),
+                            height=_round(box.get("height")),
+                            radius=_round(node.get("cornerRadius")),
+                        )
+                    # Stop here. Text inside a component that will not be built is copy with
+                    # nowhere to go, and the issue tells the agent to use the words it is given
+                    # exactly. Handing it an orphaned caption produced exactly that: a stray line
+                    # where the component should have been. Text inside a MAPPED instance is still
+                    # wanted, because that is a button's label.
+                    return
             if node.get("type") == "TEXT" and node.get("characters"):
                 text.append(node["characters"])
             for child in node.get("children") or ():
@@ -110,7 +144,7 @@ class FigmaClient:
             file_key=file_key,
             file_name=data.get("name", ""),
             components=sorted(set(known)),
-            unknown_components=sorted(set(unknown)),
+            unknown_components=sorted(unknown.values(), key=lambda c: c.name),
             text=text,
         )
 

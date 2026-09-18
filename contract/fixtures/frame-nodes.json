@@ -1,4 +1,13 @@
 {
+  "_comment": [
+    "One frame, as /v1/files/:key/nodes returns it. Both test suites read this.",
+    "It carries TWO unmapped components on purpose, with different names, different sizes and",
+    "different insides. A mechanism that handles one missing component is easy to write by",
+    "accident; two of different shapes is the cheapest proof that it was not.",
+    "Both hold text. That text must NOT reach the issue's word list, because it belongs to a",
+    "component that will not be built and the issue tells the agent to use those words exactly.",
+    "The mapped Button's text must still reach it, because that is the button's label."
+  ],
   "name": "Design System Sample",
   "nodes": {
     "41:207": {
@@ -15,12 +24,33 @@
             "componentId": "10:1",
             "children": [{ "id": "41:210", "type": "TEXT", "characters": "Open the Figma file" }]
           },
-          { "id": "41:211", "type": "INSTANCE", "name": "Avatar", "componentId": "10:9" }
+          {
+            "id": "41:211",
+            "type": "INSTANCE",
+            "name": "Avatar",
+            "componentId": "10:9",
+            "absoluteBoundingBox": { "x": 0, "y": 0, "width": 48, "height": 48 },
+            "cornerRadius": 24,
+            "children": [{ "id": "41:212", "type": "TEXT", "characters": "Nobody yet" }]
+          },
+          {
+            "id": "41:213",
+            "type": "INSTANCE",
+            "name": "Timeline",
+            "componentId": "10:14",
+            "absoluteBoundingBox": { "x": 0, "y": 0, "width": 672.4, "height": 80 },
+            "cornerRadius": 8,
+            "children": [
+              { "id": "41:214", "type": "TEXT", "characters": "The last 90 days" },
+              { "id": "41:215", "type": "VECTOR", "name": "Line" }
+            ]
+          }
         ]
       },
       "components": {
         "10:1": { "key": "abc123buttonkey", "name": "Button" },
-        "10:9": { "key": "zzz999avatarkey", "name": "Avatar" }
+        "10:9": { "key": "zzz999avatarkey", "name": "Avatar" },
+        "10:14": { "key": "yyy888timelinekey", "name": "Timeline" }
       }
     }
   }

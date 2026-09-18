@@ -51,7 +51,8 @@ def body_for(frame: FrameRead, image_url: str | None, pack_id: str) -> str:
         lines += [f"- `{name}` from the design pack" for name in frame.components]
     if frame.unknown_components:
         lines += [
-            f"- **{name}** — not mapped to a pack component" for name in frame.unknown_components
+            f"- **{component.name}** — not mapped to a pack component"
+            for component in frame.unknown_components
         ]
     if not frame.components and not frame.unknown_components:
         lines.append("- Nothing the bridge could identify. Read the frame before you build.")

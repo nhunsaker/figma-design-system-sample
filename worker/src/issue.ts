@@ -49,8 +49,8 @@ export function bodyFor(frame: FrameRead, imageUrl: string | null, packId: strin
   lines.push('## What the frame is made of', '')
   for (const name of frame.components) lines.push(`- \`${name}\` from the design pack`)
   // The em dash below is deliberate and has to match the Python character for character.
-  for (const name of frame.unknownComponents) {
-    lines.push(`- **${name}** — not mapped to a pack component`)
+  for (const component of frame.unknownComponents) {
+    lines.push(`- **${component.name}** — not mapped to a pack component`)
   }
   if (frame.components.length === 0 && frame.unknownComponents.length === 0) {
     lines.push('- Nothing the bridge could identify. Read the frame before you build.')

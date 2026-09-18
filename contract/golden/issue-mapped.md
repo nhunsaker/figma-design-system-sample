@@ -10,6 +10,7 @@ A designer marked **Empty state** ready for development.
 
 - `Button` from the design pack
 - **Avatar** — not mapped to a pack component
+- **Timeline** — not mapped to a pack component
 
 > Some of this frame is not mapped to code. Do not guess which component was meant.
 > If the design needs something the pack does not have, say so in the pull request

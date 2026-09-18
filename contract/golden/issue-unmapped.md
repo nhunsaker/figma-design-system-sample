@@ -10,6 +10,7 @@ A designer marked **Empty state** ready for development.
 
 - **Avatar** — not mapped to a pack component
 - **Button** — not mapped to a pack component
+- **Timeline** — not mapped to a pack component
 
 > Some of this frame is not mapped to code. Do not guess which component was meant.
 > If the design needs something the pack does not have, say so in the pull request
@@ -20,7 +21,6 @@ A designer marked **Empty state** ready for development.
 Use these exactly. Copy is a design decision.
 
 - No frames are ready yet.
-- Open the Figma file
 
 ## Acceptance
 

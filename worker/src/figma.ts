@@ -17,6 +17,23 @@
  */
 const API = 'https://api.figma.com'
 
+/** Figma reports fractional sizes. Round, and treat a missing or zero value as unknown. */
+const round = (value: number | undefined): number | null =>
+  typeof value === 'number' && value > 0 ? Math.round(value) : null
+
+/**
+ * A component in the frame that the key map could not place.
+ *
+ * Carries the size the design gave it, so a placeholder can reserve the same space rather than
+ * collapsing the layout around a hole. `null` where Figma did not report one.
+ */
+export interface UnmappedComponent {
+  name: string
+  width: number | null
+  height: number | null
+  radius: number | null
+}
+
 export interface FrameRead {
   nodeId: string
   name: string
@@ -24,7 +41,7 @@ export interface FrameRead {
   fileKey: string
   fileName: string
   components: string[]
-  unknownComponents: string[]
+  unknownComponents: UnmappedComponent[]
   text: string[]
 }
 
@@ -39,6 +56,8 @@ interface Node {
   type?: string
   characters?: string
   componentId?: string
+  cornerRadius?: number
+  absoluteBoundingBox?: { width?: number; height?: number }
   children?: Node[]
 }
 
@@ -94,15 +113,32 @@ export class FigmaClient {
 
     const meta: Record<string, { key?: string; name?: string }> = entry.components ?? {}
     const known = new Set<string>()
-    const unknown = new Set<string>()
+    const unknown = new Map<string, UnmappedComponent>()
     const text: string[] = []
 
     const visit = (node: Node): void => {
       if (node.type === 'INSTANCE') {
         const key = meta[node.componentId ?? '']?.key ?? ''
         const name = packComponents[key]
-        if (name) known.add(name)
-        else unknown.add(meta[node.componentId ?? '']?.name ?? node.name ?? 'unnamed')
+        if (name) {
+          known.add(name)
+        } else {
+          const missing = meta[node.componentId ?? '']?.name ?? node.name ?? 'unnamed'
+          if (!unknown.has(missing)) {
+            unknown.set(missing, {
+              name: missing,
+              width: round(node.absoluteBoundingBox?.width),
+              height: round(node.absoluteBoundingBox?.height),
+              radius: round(node.cornerRadius),
+            })
+          }
+          // Stop here. Text inside a component that will not be built is copy with nowhere to
+          // go, and the issue tells the agent to use the words it is given exactly. Handing it
+          // an orphaned caption produced exactly that: a stray line where the component should
+          // have been. Text inside a MAPPED instance is still wanted, because that is a
+          // button's label.
+          return
+        }
       }
       if (node.type === 'TEXT' && node.characters) text.push(node.characters)
       for (const child of node.children ?? []) visit(child)
@@ -116,7 +152,11 @@ export class FigmaClient {
       fileKey,
       fileName: data.name ?? '',
       components: [...known].sort(),
-      unknownComponents: [...unknown].sort(),
+      // Plain codepoint order, matching Python's sorted(). localeCompare would not, and the two
+      // runtimes are diffed byte for byte.
+      unknownComponents: [...unknown.values()].sort((a, b) =>
+        a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
+      ),
       text,
     }
   }
