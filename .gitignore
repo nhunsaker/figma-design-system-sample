@@ -15,3 +15,7 @@ worker/.wrangler/
 # The Worker equivalent of a .env file. Never commit one.
 worker/.dev.vars
 worker/.bench/
+
+# The runbooks name personal infrastructure and live with the plan, not here.
+docs/RUNBOOK.md
+docs/RUNBOOK-CLOUDFLARE.md

@@ -42,6 +42,3 @@ writing a handoff tool has usually not looked at what the seat already includes.
 The webhook to start, REST to read the frame and export a PNG, REST to pin the pull request
 back as a dev resource and to comment when it closes, and the published library's component keys
 so a frame resolves to real component names. That is all of it.
-
-The fuller notes, with sources, are in the Stage 3 working session material under
-`figma-connectivity.html`.

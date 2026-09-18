@@ -39,7 +39,7 @@ six steps, and what happens when a design asks for something the system does not
 | `contract/` | The spec both of them are held to: the behaviour table and the exact issue body |
 | `figma/` | What the Figma file has to contain, and the component key map |
 | `SETUP.md` | Tokens, scopes, storage, and the one step that fails quietly |
-| `docs/` | Two runbooks, the diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
+| `docs/` | The diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
 
 Two runtimes, one spec. The only part of this system that has to run somewhere is the translating
 service, and it is deliberately available both ways: on hardware you own, where every credential
@@ -116,9 +116,8 @@ pnpm test:everything   # all three
 
 **`SETUP.md` is the configuration guide**: the tokens, their scopes, where each one is stored, and
 what holds which credential. It starts with the choice between the two runtimes, because that is
-the decision that cannot be reversed later without rotating tokens. `docs/RUNBOOK.md` is the
-ordered list of what a person has to do. Each runtime has its own instructions in
-`bridge/README.md` and `worker/README.md`.
+the decision that cannot be reversed later without rotating tokens. Each runtime has its own
+instructions in `bridge/README.md` and `worker/README.md`.
 
 The Figma file lives at `figma/FILE.md`, with its key recorded there. The components carry keys
 whether or not the library is published, so the key sync reads the file rather than the published

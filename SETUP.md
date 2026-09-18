@@ -252,9 +252,8 @@ stable name.
 
 Skip this if you followed the section above. The two are alternatives, not steps.
 
-This section is the configuration. `docs/RUNBOOK-CLOUDFLARE.md` is the ordered runbook, with what
-to verify at each step, what to do when a delivery comes back 401, and how to reverse the whole
-thing.
+`worker/README.md` has the limits, the measured cost per request, and what to do at the free
+ceiling.
 
 A Cloudflare account and a login, which is interactive and yours:
 
