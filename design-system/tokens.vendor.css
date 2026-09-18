@@ -5,7 +5,8 @@
  * Change design-system/tokens/, run `pnpm build:pack`, and commit both.
  */
 
-:root {
+.brand-ember,
+.brand-harbor {
   --bs-primary: var(--ds-accent-base);
   --bs-primary-text-emphasis: var(--ds-accent-hover);
   --bs-primary-bg-subtle: var(--ds-accent-subtle);

@@ -345,7 +345,7 @@ function vendorCss() {
   const lines = vendorPairs.map(([property, token]) => `  --bs-${property}: var(${cssVar(token)});`)
   return `${BANNER(
     `Vendor bridge for ${meta.vendor?.package ?? 'the component library'}.\n * Its runtime properties read this system's semantic tier, so a brand change re-skins every\n * vendor component without a rebuild. The pack names the one place the vendor may be imported.`,
-  )}\n:root {\n${lines.join('\n')}\n}\n`
+  )}\n${brands.map((b) => `.brand-${b.name}`).join(',\n')} {\n${lines.join('\n')}\n}\n`
 }
 
 const BANNER = (what) =>
@@ -358,9 +358,16 @@ function brandCss(brand) {
 
 function componentCss() {
   const lines = [...componentResolved].map(([path, value]) => `  ${cssVar(path)}: ${value};`)
+  // Declared ON the brand selectors, not on :root. Every value here is a var() pointing at the
+  // semantic tier, and a custom property resolves where it is DECLARED. On :root, with the brand
+  // class further down the tree, every one of them resolved against semantic tokens that do not
+  // exist there, computed to nothing, and inherited that nothing everywhere. The application put
+  // the brand on <html> so it happened to work; Storybook puts it on a div, and every component
+  // in it rendered with no background, no padding and no radius.
+  const selector = brands.map((b) => `.brand-${b.name}`).join(',\n')
   return `${BANNER(
-    'Component tier. One stylesheet for every brand, because every value here resolves from\n * the semantic tier. This file is the proof that a brand cannot fork a component.',
-  )}\n:root {\n${lines.join('\n')}\n}\n`
+    'Component tier. One block for every brand, because every value here resolves from the\n * semantic tier and must resolve WHERE a brand is, not at the document root. The values are\n * identical in each: this file is the proof that a brand cannot fork a component.',
+  )}\n${selector} {\n${lines.join('\n')}\n}\n`
 }
 
 const sourceHash = createHash('sha256')

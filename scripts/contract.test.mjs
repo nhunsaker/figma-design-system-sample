@@ -194,6 +194,37 @@ describe('build-pack', () => {
 
 // ─── the contract ───────────────────────────────────────────────────────────
 
+/**
+ * Where a tier is DECLARED, not just what it contains.
+ *
+ * A custom property resolves where it is declared. The component and vendor tiers are nothing but
+ * var() references into the semantic tier, so declaring them on :root resolved every one of them
+ * against semantic tokens that are not there, computed each to nothing, and inherited that nothing
+ * everywhere below. The application put its brand class on <html>, so :root happened to be a
+ * brand and it worked. Storybook puts the brand on a div, and every component in it rendered with
+ * no background, no padding and no radius, on a deployed and public page.
+ *
+ * Nothing caught it, because every value was correct and every name was declared. Only the
+ * selector was wrong. So the selector is what is asserted.
+ */
+describe('the tiers that depend on a brand are declared on the brands', () => {
+  for (const file of ['tokens.components.css', 'tokens.vendor.css']) {
+    it(`${file} is scoped to the brand classes, not :root`, () => {
+      const css = readFileSync(join(ROOT, 'design-system', file), 'utf8')
+      const selector = css.slice(css.indexOf('*/') + 2, css.indexOf('{')).trim()
+      expect(selector, `${file} must resolve where a brand is`).not.toBe(':root')
+      expect(selector).toMatch(/^\.brand-[a-z]+(,\s*\.brand-[a-z]+)*$/)
+    })
+  }
+
+  it('the brand tier itself is still one block per brand', () => {
+    for (const brand of ['harbor', 'ember']) {
+      const css = readFileSync(join(ROOT, 'design-system', `tokens.${brand}.css`), 'utf8')
+      expect(css.slice(css.indexOf('*/') + 2, css.indexOf('{')).trim()).toBe(`.brand-${brand}`)
+    }
+  })
+})
+
 describe('check-contract', () => {
   it('passes the committed source', () => {
     const result = contract(checkoutCopy())
