@@ -103,8 +103,8 @@ const refTarget = (value) => {
 // ─── load ───────────────────────────────────────────────────────────────────
 
 /**
- * Pack component name to Figma component key, written by scripts/sync-figma-keys.mjs from the
- * published library. Absent or empty is a normal state, not an error: it means Code Connect has
+ * Figma component key to pack component name, written by scripts/sync-figma-keys.mjs from the
+ * published library, one entry per published variant. Absent or empty is a normal state, not an error: it means Code Connect has
  * not mapped anything yet, and everything downstream says so rather than guessing.
  */
 const codeConnect = (() => {
@@ -392,12 +392,15 @@ const pack = {
   },
   figma: {
     file_key: codeConnect.file_key ?? null,
-    mapped: Object.keys(codeConnect.components ?? {}).length,
+    mapped: new Set(Object.values(codeConnect.components ?? {})).size,
+    keys: Object.keys(codeConnect.components ?? {}).length,
     of: meta.components.length,
   },
   components: meta.components.map((c) => ({
     ...c,
-    figma_key: codeConnect.components?.[c.name] ?? null,
+    figma_keys: Object.entries(codeConnect.components ?? {})
+      .filter(([, name]) => name === c.name)
+      .map(([key]) => key),
     tokens: [...componentResolved.keys()]
       .filter((p) => p.startsWith(`${c.name.toLowerCase()}.`))
       .map((p) => cssVar(p)),

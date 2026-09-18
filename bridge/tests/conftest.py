@@ -145,6 +145,18 @@ class StubVerifier(ActionsVerifier):
 
 
 @pytest.fixture
+def mapped_pack(tmp_path) -> str:
+    """A pack whose Button carries the key the fixture frame instantiates."""
+    pack = json.loads(PACK.read_text())
+    for component in pack["components"]:
+        if component["name"] == "Button":
+            component["figma_keys"] = ["abc123buttonkey"]
+    path = tmp_path / "pack.json"
+    path.write_text(json.dumps(pack))
+    return str(path)
+
+
+@pytest.fixture
 def settings() -> Settings:
     return Settings(
         figma_token="figma-token",

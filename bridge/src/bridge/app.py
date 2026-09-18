@@ -44,9 +44,9 @@ def code_connect_map(pack_path: str) -> tuple[dict[str, str], str]:
     """
     pack = json.loads(Path(pack_path).read_text())
     mapping = {
-        component["figma_key"]: component["name"]
+        key: component["name"]
         for component in pack.get("components", ())
-        if component.get("figma_key")
+        for key in component.get("figma_keys", ())
     }
     return mapping, pack.get("id", "")
 
