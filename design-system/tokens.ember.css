@@ -50,4 +50,5 @@
   --ds-motion-duration-fast: 120ms;
   --ds-motion-duration-base: 200ms;
   --ds-motion-easing: cubic-bezier(0.2, 0, 0.2, 1);
+  --ds-layout-measure: 720px;
 }

@@ -23,7 +23,7 @@
  * Run: node scripts/check-contract.mjs
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 /** `--root` points the check at another checkout, which is how it is tested. */
@@ -34,6 +34,7 @@ const flag = (name) => {
 
 const ROOT = flag('--root') ?? join(dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = join(ROOT, 'src')
+const COMPONENTS = join(SRC, 'components')
 const PACK = join(ROOT, 'design-system', 'pack.json')
 
 /** A check could not run. Distinct from a contract failure on purpose: see the header. */
@@ -204,15 +205,20 @@ for (const file of tsFiles) {
       continue
     }
     if (spec.endsWith('.css')) continue
-    const target = spec.replace(/^\.\//, '').replace(/\.tsx?$/, '')
-    const looksLikeComponent = /^[A-Z]/.test(target.split('/').pop() ?? '')
-    if (!looksLikeComponent) continue
-    const componentName = target.split('/').pop()
-    if (!packComponents.has(componentName)) {
+    // The fence is the components directory, not the capital letter. A page or a hook may be
+    // named like a component and is not one; what makes something a component here is living
+    // where components live, and everything that lives there is in the pack.
+    const target = resolve(dirname(file), spec)
+    if (!target.startsWith(`${COMPONENTS}/`)) continue
+    const componentName = target
+      .split('/')
+      .pop()
+      ?.replace(/\.tsx?$/, '')
+    if (componentName && !packComponents.has(componentName)) {
       refuse(
         'outside-pack',
         name,
-        `imports the component ${componentName}, which is not in the pack`,
+        `imports ${componentName} from src/components, which the pack does not list`,
         'a design that needs something the pack does not have is a request to add it to the pack, reviewed once, rather than a local component in a feature folder.',
       )
     }
@@ -229,6 +235,23 @@ for (const file of tsFiles) {
         'components live in src/components and appear in the pack. A styled thing that does not is a component the system does not know about.',
       )
     }
+  }
+}
+
+// ─── nothing lives in src/components that the pack does not list ────────────
+
+for (const file of walk(COMPONENTS, (f) => f.endsWith('.tsx'))) {
+  const base = rel(file)
+    .split('/')
+    .pop()
+    .replace(/\.(stories|test)?\.?tsx$/, '')
+  if (!packComponents.has(base)) {
+    refuse(
+      'outside-pack',
+      rel(file),
+      `${base} sits in src/components but the pack does not list it`,
+      'the pack is the inventory. A component the pack does not name is a component no designer can find, no check knows the rules for, and no agent may use.',
+    )
   }
 }
 

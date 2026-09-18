@@ -187,5 +187,11 @@
       "$type": "cubicBezier",
       "$value": "{primitive.easing.standard}"
     }
+  },
+  "layout": {
+    "$type": "dimension",
+    "measure": {
+      "$value": "{primitive.size.measure}"
+    }
   }
 }
