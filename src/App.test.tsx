@@ -31,6 +31,11 @@ describe('App', () => {
     expect(screen.queryByRole('heading', { name: 'Your weak spot' })).toBeNull()
   })
 
+  it('keeps roll history behind its flag until a person turns it on', () => {
+    renderApp()
+    expect(screen.queryByRole('heading', { name: 'Roll over the last 90 days' })).toBeNull()
+  })
+
   it('says every standing as a word as well as a colour', async () => {
     renderApp()
     await userEvent.click(screen.getByRole('tab', { name: 'Drills' }))

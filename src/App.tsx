@@ -9,6 +9,7 @@ import { Stat } from './components/Stat'
 import { type Tab, Tabs } from './components/Tabs'
 import { Toast } from './components/Toast'
 import { isOn } from './flags'
+import { RollHistory } from './requests/RollHistory'
 
 /**
  * A player's record in a poker practice app: what they have played, how it went, and where they
@@ -63,6 +64,7 @@ export function App() {
 
   const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
   const showWeakSpot = isOn('weak-spot') && weakest
+  const showRollHistory = isOn('requests-roll-history')
 
   return (
     <main className="app">
@@ -100,6 +102,7 @@ export function App() {
                 ))}
               </Stack>
             </Card>
+            {showRollHistory ? <RollHistory /> : null}
           </Stack>
         ) : null}
 
