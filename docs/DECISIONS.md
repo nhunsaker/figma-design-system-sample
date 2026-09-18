@@ -109,3 +109,53 @@ classes to `src/app.css` and build a component in the page shell.
 person who has decided to route around it. That is the right amount of enforcement for a design
 system, because the alternative is a build system nobody can work in, and the token rules still
 apply to every line of that stylesheet.
+
+## Two implementations of the bridge, held to one spec
+
+The translating service exists twice: `bridge/` in Python on a machine you control, and `worker/`
+in TypeScript on Cloudflare. Both are supported and neither is deprecated.
+
+The reason is that the service is the only part of this system that has to run anywhere, and the
+answer to "what do I have to operate" is the first thing anyone pushes back on. Having one answer
+means arguing for it. Having two, and being able to say what each costs, is a better position.
+
+**What it gives up, and it is the expensive part.** Two implementations of one behaviour drift.
+That is the exact failure this whole repository is arranged against, so shipping a second runtime
+without answering it would have been incoherent.
+
+The answer is `contract/`, read by both test suites. `cases.json` is the behaviour table as data:
+each case names an inbound request and the expected outcome, including which writes happened,
+because most of the cases are ones where nothing should happen and a webhook that acts when it
+should not is worse than one that is down. `golden/` holds the exact issue body, and both suites
+diff against it byte for byte, because that body is the entire contract with the coding agent and
+a word changed in one runtime and not the other hands the agent different instructions depending
+on where the webhook landed.
+
+**The maintenance cost is real and it is bounded.** Every behavioural change is now three edits
+rather than one: the spec, then each implementation. In exchange the drift is loud. Changing one
+word of the unmapped-component warning in the Python service fails a Python test that names the
+file to regenerate and tells you to make the same change in the Worker. The same word in the
+Worker fails three of its tests. That was verified by doing it, not by assuming it.
+
+**What was not done.** Cloud Run would run the existing container with no port at all, and it is
+the better answer if the only goal is to stop maintaining a machine. It is not here because the
+port buys something Cloud Run does not: a runtime that scales to zero, costs nothing at this
+volume, and needs no container registry. The port is the more interesting artefact, and it is
+honest to say that is part of why it exists.
+
+## Where the secrets live differs between the two, and that is the real choice
+
+The Python bridge reads three secrets from the operating system keychain on a machine you control.
+A Worker has no keychain. The same three become encrypted bindings held by Cloudflare.
+
+That is a credential leaving your machine for a third party's configuration. It is a different
+security posture, not a smaller one, and whoever can reach the Cloudflare account can reach the
+Figma token.
+
+**What each gives up.** The machine costs you an address, a process, and something to keep awake,
+and it is the only one of the two where nothing about your credentials depends on another company
+being trustworthy and uncompromised. The Worker costs you that dependency and gives back every
+operational concern the machine has.
+
+`SETUP.md` states this as the row to decide on rather than a footnote, because it is the only
+difference between the two that a reader cannot reverse later without rotating tokens.

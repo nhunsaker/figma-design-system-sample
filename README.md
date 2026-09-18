@@ -34,10 +34,18 @@ six steps, and what happens when a design asks for something the system does not
 | `design-system/` | Three token tiers, two brands, and the build that turns them into stylesheets and into `pack.json` |
 | `src/` | Six components, the pack as code, and a small page that uses them |
 | `scripts/` | The two checks: the source against the pack, and the pull request body against its contract |
-| `bridge/` | The service between a Figma webhook and a GitHub issue |
+| `bridge/` | The service between a Figma webhook and a GitHub issue, in Python, on a machine you control |
+| `worker/` | The same service, in TypeScript, on Cloudflare, with nothing to operate |
+| `contract/` | The spec both of them are held to: the behaviour table and the exact issue body |
 | `figma/` | What the Figma file has to contain, and the component key map |
 | `SETUP.md` | Tokens, scopes, storage, and the one step that fails quietly |
 | `docs/` | The runbook, the diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
+
+Two runtimes, one spec. The only part of this system that has to run somewhere is the translating
+service, and it is deliberately available both ways: on hardware you own, where every credential
+stays in your keychain, or on Cloudflare, where there is nothing to operate and the credentials do
+not. `contract/` is what stops those two from becoming two systems. `SETUP.md` has the table to
+choose from.
 
 ## The design system is a contract
 

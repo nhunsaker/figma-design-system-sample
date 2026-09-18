@@ -11,3 +11,7 @@ __pycache__/
 site/
 .ruff_cache/
 worker/.wrangler/
+
+# The Worker equivalent of a .env file. Never commit one.
+worker/.dev.vars
+worker/.bench/
