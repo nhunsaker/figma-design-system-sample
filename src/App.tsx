@@ -67,7 +67,7 @@ export function App() {
   return (
     <main className="app">
       <Stack direction="horizontal" gap="gutter" align="center" justify="between" wrap>
-        <Stack gap="inline">
+        <Stack gap="inline" align="start">
           <h1 className="app__title">{PROFILE.name}</h1>
           <Badge>{PROFILE.rank}</Badge>
         </Stack>
