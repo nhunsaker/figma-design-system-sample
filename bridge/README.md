@@ -54,18 +54,17 @@ worth the twenty minutes once the thing works.
 
 ## Registering the webhook
 
-One call, with a passcode you generate and keep. Scope it to the one file, never to the team:
-
 ```
-curl -X POST https://api.figma.com/v2/webhooks \
-  -H "X-Figma-Token: $(security find-generic-password -a "$USER" -s sorb-figma-api-token -w)" \
-  -H 'Content-Type: application/json' \
-  -d '{"event_type":"DEV_MODE_STATUS_UPDATE","context":"file","context_id":"<file key>",
-       "endpoint":"https://<your tunnel>/figma/webhook","passcode":"<the passcode>"}'
+pnpm demo:webhook register https://your-tunnel-address/figma/webhook
+pnpm demo:webhook list
+pnpm demo:webhook delete all
 ```
 
-Figma sends a PING immediately. A 200 means it is live. `GET /v2/webhooks?context=file&context_id=<key>`
-lists what is registered, and deleting one is a DELETE on its id.
+Registering refuses unless the bridge actually answers at that address and serves this file. That
+guard exists because posting to Figma's webhook endpoint creates a webhook with no validation and
+no dry run, so a typo becomes a live webhook Figma then retries against nothing.
+
+Always file scope, never team. A team webhook wakes this service for every file anyone touches.
 
 ## The payload
 

@@ -39,8 +39,9 @@ const command = process.argv[2]
 const DRY = process.argv.includes('--dry-run')
 const WITH_WEBHOOK = process.argv.includes('--webhook')
 
-if (!['status', 'reset'].includes(command)) {
+if (!['status', 'reset', 'webhook'].includes(command)) {
   console.error('usage: node scripts/demo.mjs status | reset [--webhook] [--dry-run]')
+  console.error('       node scripts/demo.mjs webhook list | register <url> | delete <id|all>')
   process.exit(2)
 }
 
@@ -122,6 +123,137 @@ async function collect() {
     issues,
     pulls,
   }
+}
+
+// ─── the webhook ────────────────────────────────────────────────────────────
+//
+// This exists because the alternative was a curl command in the runbook with a placeholder in
+// it, and a command that can be pasted verbatim will be pasted verbatim. One was registered
+// against the literal address "YOUR-ADDRESS" within a day of that runbook being written.
+//
+// Posting to Figma's webhook endpoint creates a webhook. There is no dry run and no validation
+// on their side, so the validation is here: the address has to be a real https host, and the
+// bridge has to actually answer at it before anything is registered.
+
+if (command === 'webhook') {
+  const action = process.argv[3] ?? 'list'
+  const hooks = (await figma(`/v2/webhooks?context=file&context_id=${fileKey}`)).webhooks ?? []
+
+  if (action === 'list') {
+    if (hooks.length === 0) console.log('\nNo webhooks on this file.')
+    for (const hook of hooks) {
+      console.log(`\n  ${hook.id}  ${hook.event_type}  ${hook.status}\n  ${hook.endpoint}`)
+    }
+    process.exit(0)
+  }
+
+  if (action === 'delete') {
+    const target = process.argv[4]
+    if (!target) {
+      console.error('which one? node scripts/demo.mjs webhook delete <id|all>')
+      process.exit(2)
+    }
+    const doomed = target === 'all' ? hooks : hooks.filter((h) => String(h.id) === target)
+    if (doomed.length === 0) {
+      console.error(`no webhook ${target} on this file. "webhook list" shows what is there.`)
+      process.exit(2)
+    }
+    for (const hook of doomed) {
+      await figma(`/v2/webhooks/${hook.id}`, { method: 'DELETE' })
+      console.log(`deleted ${hook.id}  ${hook.endpoint}`)
+    }
+    process.exit(0)
+  }
+
+  if (action !== 'register') {
+    console.error('usage: node scripts/demo.mjs webhook list | register <url> | delete <id|all>')
+    process.exit(2)
+  }
+
+  const endpoint = process.argv[4]
+  if (!endpoint) {
+    console.error('node scripts/demo.mjs webhook register https://your-tunnel/figma/webhook')
+    process.exit(2)
+  }
+
+  let url
+  try {
+    url = new URL(endpoint)
+  } catch {
+    console.error(`${endpoint} is not a URL.`)
+    process.exit(2)
+  }
+  if (url.protocol !== 'https:') {
+    console.error('Figma only calls https endpoints.')
+    process.exit(2)
+  }
+  if (!url.hostname.includes('.') || /[A-Z_]/.test(url.hostname)) {
+    console.error(`${url.hostname} does not look like a real host. Did a placeholder survive?`)
+    process.exit(2)
+  }
+  if (!url.pathname.endsWith('/figma/webhook')) {
+    console.error(`the bridge listens on /figma/webhook, not ${url.pathname}.`)
+    process.exit(2)
+  }
+
+  // The guard that matters: talk to the bridge before telling Figma it exists.
+  const health = new URL('/health', url).toString()
+  let reachable
+  try {
+    const response = await fetch(health, { signal: AbortSignal.timeout(8000) })
+    reachable = response.ok ? await response.json() : null
+  } catch (e) {
+    reachable = null
+  }
+  if (!reachable?.ok) {
+    console.error(`nothing answered at ${health}.`)
+    console.error('Start the bridge and the tunnel first. Registering a webhook to an address')
+    console.error('that does not answer leaves a dead webhook Figma keeps retrying.')
+    process.exit(1)
+  }
+  if (reachable.file !== fileKey) {
+    console.error(`that bridge serves ${reachable.file}, not ${fileKey}.`)
+    process.exit(1)
+  }
+
+  const already = hooks.find((h) => h.endpoint === endpoint)
+  if (already) {
+    console.log(`already registered as ${already.id}. Nothing to do.`)
+    process.exit(0)
+  }
+  if (hooks.length > 0) {
+    console.error(`this file already has ${hooks.length} webhook(s). Delete them first:`)
+    for (const hook of hooks) console.error(`  ${hook.id}  ${hook.endpoint}`)
+    console.error('  node scripts/demo.mjs webhook delete all')
+    process.exit(1)
+  }
+
+  const passcode = execFileSync(
+    'security',
+    [
+      'find-generic-password',
+      '-a',
+      process.env.USER ?? '',
+      '-s',
+      'figma-bridge-webhook-passcode',
+      '-w',
+    ],
+    { encoding: 'utf8' },
+  ).trim()
+
+  const created = await figma('/v2/webhooks', {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: 'DEV_MODE_STATUS_UPDATE',
+      context: 'file',
+      context_id: fileKey,
+      endpoint,
+      passcode,
+    }),
+  })
+  console.log(`registered ${created.id} for ${fileKey}`)
+  console.log('Figma sends a PING immediately. The bridge log should show it.')
+  process.exit(0)
 }
 
 const state = await collect()
