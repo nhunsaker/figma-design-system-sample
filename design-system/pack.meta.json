@@ -119,7 +119,10 @@
       "props": {
         "direction": ["vertical", "horizontal"],
         "gap": ["inline", "stack", "gutter"],
-        "align": ["start", "center", "baseline", "stretch"]
+        "align": ["start", "center", "baseline", "stretch"],
+        "justify": ["start", "between", "end"],
+        "fill": "boolean",
+        "wrap": "boolean"
       },
       "slots": ["children"],
       "figma": null

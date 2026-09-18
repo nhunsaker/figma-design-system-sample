@@ -33,3 +33,22 @@
 .ds-stack--wrap {
   flex-wrap: wrap;
 }
+
+.ds-stack--justify-start {
+  justify-content: flex-start;
+}
+
+.ds-stack--justify-between {
+  justify-content: space-between;
+}
+
+.ds-stack--justify-end {
+  justify-content: flex-end;
+}
+
+/* Equal shares, and min-width zero so a long figure shrinks its own column rather than pushing
+   into the next one. Without that, one wide value silently overlaps its neighbour. */
+.ds-stack--fill > * {
+  flex: 1 1 0;
+  min-width: 0;
+}

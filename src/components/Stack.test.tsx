@@ -27,6 +27,30 @@ describe('Stack', () => {
     expect(screen.getByText('one')).toBeInTheDocument()
   })
 
+  it('can push its ends apart, which a row of two things usually needs', () => {
+    const { container } = render(
+      <DesignSystem>
+        <Stack direction="horizontal" justify="between">
+          <span>one</span>
+          <span>two</span>
+        </Stack>
+      </DesignSystem>,
+    )
+    expect(container.querySelector('.ds-stack--justify-between')).not.toBeNull()
+  })
+
+  it('can share its width evenly, which a row of figures usually needs', () => {
+    const { container } = render(
+      <DesignSystem>
+        <Stack direction="horizontal" fill>
+          <span>one</span>
+          <span>two</span>
+        </Stack>
+      </DesignSystem>,
+    )
+    expect(container.querySelector('.ds-stack--fill')).not.toBeNull()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(
       <DesignSystem>
