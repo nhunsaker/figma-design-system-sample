@@ -21,12 +21,28 @@ The demo is repeatable. `pnpm demo:status` says what state the loop is in and `p
 returns Figma and the repository to the state they were in before anyone marked a frame ready. A
 demonstration you can only give once is a demonstration you will get wrong in front of people.
 
+The component library underneath the pack is `@metatoy/bootstrap-styled`, wired through its
+runtime custom properties so a brand change re-skins it without a rebuild. It may be imported in
+`src/components` and nowhere else, which is checked.
+
+`docs/RUNBOOK.md` is the ordered list of what a person has to do, with what each step costs and
+how to tell it worked.
+
 ## Left
 
 **The webhook.** One call, in `bridge/README.md`. It needs a public address for the bridge.
 
 **A recorded run.** Mark a frame, watch the issue open, let the agent build it, approve, merge,
 and see the pull request appear on the frame. Screenshots into `docs/images/`.
+
+**The stats screen.** The components it needs are built: Stack, Stat, Meter and RecordRow. The
+screen itself and its Figma frames are not. It is the screen worth showing because it is dense
+with figures, which is the only way the rule about tabular figures can be seen to be true.
+
+**A frame designed to fail.** The frames that exist are clean enough that a first run will
+probably pass, and a demonstration where nothing fails proves nothing about guardrails. A frame
+asking for something the pack cannot express gives either an honest Left undone, which proves the
+instructions work, or a refused pull request, which proves the checks work.
 
 **Code Connect proper.** Optional. It changes what a designer sees in Dev Mode and changes
 nothing about what the pipeline can do, because the pipeline works from the key map, which is
