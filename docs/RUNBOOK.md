@@ -11,13 +11,16 @@ done without you.
 
 | | |
 |---|---|
-| Repository | local only, 8 commits, nothing pushed |
-| Tests | 91 passing |
-| Figma file | built, `IDVXk0yZaJ1CQvIZn14AkA` |
+| Repository | local only, twelve commits, nothing pushed |
+| Tests | 93 passing |
+| Figma file | built: 11 components, 3 request frames, `IDVXk0yZaJ1CQvIZn14AkA` |
 | Figma token | works, all four write scopes confirmed |
+| Keychain | all three items present, bridge starts and answers |
 | Copilot coding agent | confirmed assignable on `nhunsaker` |
-| Bridge | written and tested, never run against the real world |
+| Bridge | read path tested against the live file, never triggered by a real webhook |
 | Webhook | none registered |
+
+Steps 2 is done. Step 1 is the only thing blocking a run.
 
 ---
 
@@ -161,7 +164,16 @@ remember.
 **You drive. Twenty minutes, most of it waiting for the agent.**
 
 1. `pnpm demo:status` and confirm it says clean.
-2. Open the Figma file, Requests page, select **Empty state**.
+2. Open the Figma file, Requests page. Three frames are there:
+
+   | Frame | What it asks for |
+   |---|---|
+   | Player record | the populated screen, every part of it in the pack |
+   | Player record, no history | the empty state |
+   | Roll history | a chart the pack does not have |
+
+   Start with **Player record**. Save **Roll history** for the second run, because it is the one
+   designed to fail and it is worth watching on purpose rather than by accident.
 3. In Dev Mode, set its status to **Ready for development**.
 4. Within seconds an issue appears, labelled `design:ready`, carrying the frame image, the
    components it is made of, the words in it, and the acceptance list. It is assigned to Copilot.
@@ -176,6 +188,12 @@ demo:status` tells you whether the webhook is still registered.
 
 **If the agent produces something wrong.** That is a good outcome and worth keeping. Screenshot
 the failing check before you fix anything.
+
+**The Roll history run, when you get to it.** That frame contains a Sparkline, which is a
+component in the Figma file that is deliberately not in the pack. The issue names it as unmapped
+and tells the agent not to guess. Either it says so honestly under Left undone, which proves the
+instructions work, or it invents a chart and `check-contract` refuses the pull request, which
+proves the checks work. Both are the demonstration.
 
 ---
 
@@ -199,19 +217,13 @@ Run `pnpm demo:reset --dry-run` first if you want to see what it would do.
 
 ---
 
-## What I still owe you
+## What is left after a first run
 
 | | |
 |---|---|
-| The Stats screen | components are built, the screen and its Figma frame are not |
-| A frame designed to fail | the most valuable fifteen minutes left, see below |
-| The visual check | story screenshot against the Figma export, advisory |
-
-**The frame designed to fail** matters more than it sounds. The two frames that exist are clean
-enough that the agent will probably produce a passing pull request first time, and a demonstration
-where nothing fails proves nothing about guardrails. A third frame asking for something the pack
-cannot express gives you either the agent saying so honestly, which proves the instructions work,
-or a refused pull request, which proves the checks work.
+| The visual check | a story screenshot against the Figma export, advisory at first |
+| A stable address | the virtual machine, so the demo does not depend on a laptop |
+| Code Connect proper | optional, changes what a designer sees and not what the pipeline does |
 
 ---
 
