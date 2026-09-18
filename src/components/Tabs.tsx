@@ -61,7 +61,8 @@ export function Tabs({ tabs, selected, onSelect, children }: TabsProps) {
         role="tabpanel"
         id={`${base}-${selected}-panel`}
         aria-labelledby={`${base}-${selected}-tab`}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: a tabpanel holding no focusable element must take focus itself, or the arrow key that selected it strands the reader on a panel they cannot reach
+        // A tabpanel holding no focusable element must take focus itself, or the arrow key
+        // that selected it strands the reader on a panel they cannot reach.
         tabIndex={0}
       >
         {children}

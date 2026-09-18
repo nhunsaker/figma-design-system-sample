@@ -1,0 +1,57 @@
+%% The system in this repository. Renders in GitHub, VS Code, or mermaid.live.
+%%
+%% Three trust boundaries, drawn as the three subgraphs that hold a credential. The agent sits
+%% inside GitHub with no Figma credential at all: it sees what the issue carries and nothing
+%% more. The bridge is the only process holding a Figma token. Both failure edges are drawn,
+%% because a diagram with no way back is a diagram of a demo.
+flowchart TB
+  subgraph FIGMA["Figma cloud"]
+    DES["Designer"]
+    FRAME["Frame, marked ready for development"]
+    DEV["Dev Mode: the pinned pull request, and the comment when it closes"]
+  end
+
+  subgraph SERVER["The bridge, one small service, the only holder of a Figma token"]
+    HOOK["Webhook door: passcode, one file only"]
+    READ["Read the frame: nodes, words, components resolved against the pack"]
+    BACK["Write back door: GitHub OIDC verified"]
+  end
+
+  subgraph GH["GitHub, where the agent runs with no Figma credential"]
+    ISSUE["Issue: the frame, its words, what it is made of, acceptance"]
+    AGENT["Coding agent, isolated: its own branch, repository scoped token"]
+    PR["Pull request, draft"]
+    CHECKS["Checks: types, lint, pack in sync, contract, contrast, tests, pull request body"]
+    REVIEW["A person reviews. CODEOWNERS on the design system and the checks"]
+    MERGE["Merge, flag off in every environment"]
+    PAGES["Storybook and the application on Pages"]
+  end
+
+  PACK["design-system/pack.json: components, tokens, rules, refuses"]
+
+  DES -->|"marks ready"| FRAME
+  FRAME -->|"DEV_MODE_STATUS_UPDATE"| HOOK
+  HOOK --> READ
+  READ -->|"opens"| ISSUE
+  READ -->|"pins the issue"| DEV
+  PACK -.->|"what a frame is made of"| READ
+  ISSUE -->|"assigned"| AGENT
+  PACK -.->|"the whole vocabulary"| AGENT
+  AGENT --> PR
+  PR --> CHECKS
+  PACK -.->|"the schema checks judge against"| CHECKS
+  CHECKS -->|"fails: the agent tries again"| AGENT
+  CHECKS -->|"passes"| REVIEW
+  REVIEW -->|"changes requested"| AGENT
+  REVIEW -->|"approve"| MERGE
+  MERGE --> PAGES
+  PR -->|"opened"| BACK
+  MERGE -->|"closed, merged"| BACK
+  BACK -->|"pins the pull request, comments on the outcome"| DEV
+  DEV --> DES
+
+  style FIGMA fill:#f5f3ff,stroke:#6d28d9
+  style SERVER fill:#fffbeb,stroke:#b45309
+  style GH fill:#f8fafc,stroke:#1d4ed8
+  style PACK fill:#f0fdf4,stroke:#15803d
+  style REVIEW fill:#dcfce7,stroke:#15803d

@@ -1,0 +1,22 @@
+// Code Connect mapping, one per component. Rename to Button.figma.tsx once the Figma file
+// exists and @figma/code-connect is installed. See FILE.md.
+//
+// What this buys: a designer opening the Button in Dev Mode sees the real props and a real
+// snippet from this repository, instead of the CSS Figma would have guessed at.
+
+import figma from '@figma/code-connect'
+import { Button } from '../src/components/Button'
+
+figma.connect(Button, 'https://www.figma.com/design/<FILE_KEY>/Sample?node-id=<NODE_ID>', {
+  props: {
+    variant: figma.enum('variant', { Primary: 'primary', Secondary: 'secondary' }),
+    size: figma.enum('size', { Default: 'default', Compact: 'compact' }),
+    disabled: figma.boolean('disabled'),
+    children: figma.string('label'),
+  },
+  example: ({ variant, size, disabled, children }) => (
+    <Button variant={variant} size={size} disabled={disabled}>
+      {children}
+    </Button>
+  ),
+})

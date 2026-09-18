@@ -8,3 +8,4 @@ storybook-static/
 __pycache__/
 .venv/
 .pytest_cache/
+site/
