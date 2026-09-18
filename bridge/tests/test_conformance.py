@@ -134,4 +134,3 @@ def test_a_frame_the_pack_cannot_build_warns_rather_than_guesses(settings, figma
     _, body = build_issue(settings, figma_client, mapped=False)
     assert "not mapped to a pack component" in body
     assert "Do not guess which component was meant" in body
-

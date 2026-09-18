@@ -103,10 +103,22 @@ pnpm dev           # the page that uses them
 pnpm test:all      # the gate, the same one the pull request runs
 ```
 
+Three suites, because there are three things to be wrong: the application, the Worker, and the
+Python service. Each mirrors one continuous integration job exactly, and `pnpm test:everything`
+runs all three, so nothing is discoverable only by pushing.
+
+```
+pnpm test:all          # types, lint, the pack, the contract, 95 tests
+pnpm test:worker       # types and 24 tests, in workerd
+pnpm test:bridge       # ruff, the format check, and 42 tests
+pnpm test:everything   # all three
+```
+
 **`SETUP.md` is the configuration guide**: the tokens, their scopes, where each one is stored, and
-what holds which credential. `docs/RUNBOOK.md` is the ordered list of what a person has to do. The
-bridge has its own instructions in `bridge/README.md`, including the two Keychain items it
-needs and the one call that registers the webhook.
+what holds which credential. It starts with the choice between the two runtimes, because that is
+the decision that cannot be reversed later without rotating tokens. `docs/RUNBOOK.md` is the
+ordered list of what a person has to do. Each runtime has its own instructions in
+`bridge/README.md` and `worker/README.md`.
 
 The Figma file lives at `figma/FILE.md`, with its key recorded there. The components carry keys
 whether or not the library is published, so the key sync reads the file rather than the published
@@ -127,5 +139,6 @@ set one, and that is the right place for that line.
 ## What this gives up
 
 `docs/DECISIONS.md`, which names the cost of every choice here: one gate instead of five, two
-brands instead of seventeen, one runtime, an advisory visual check, and a fence around the
-components directory that stops an accident rather than a determined person.
+brands instead of seventeen, two bridge runtimes and what holding them to one spec costs, an
+advisory visual check, and a fence around the components directory that stops an accident rather
+than a determined person.
