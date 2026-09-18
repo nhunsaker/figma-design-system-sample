@@ -16,7 +16,7 @@
 
 <!-- The flag in src/flags.ts that gates this, which must be false. -->
 
-`sample-feature`
+`weak-spot`
 
 ## Left undone
 

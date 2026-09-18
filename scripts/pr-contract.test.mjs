@@ -19,7 +19,7 @@ const good = {
   frame: `[Requests / Empty state](${FRAME})`,
   'what changed': 'The requests list now says what to do when it is empty.',
   acceptance: '- [x] Empty list shows one sentence\n- [x] No new components',
-  flag: '`sample-feature`',
+  flag: '`weak-spot`',
   'left undone': 'Nothing. The copy came straight from the frame.',
 }
 
@@ -90,7 +90,7 @@ describe('check-pr-contract', () => {
     const result = check({ ...good, flag: '`brand-new-flag`' })
     expect(result.status).toBe(1)
     expect(result.stderr).toContain('not in src/flags.ts')
-    expect(result.stderr).toContain('sample-feature')
+    expect(result.stderr).toContain('weak-spot')
   })
 
   it('refuses a flag section that names no flag at all', () => {
