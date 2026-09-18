@@ -134,7 +134,7 @@ returns the file key and the repository name.
 
 **A decision, then either two minutes or twenty.**
 
-Figma has to be able to reach the bridge. Two ways, and they suit different moments.
+Figma has to be able to reach the bridge. Three ways, and they suit different moments.
 
 ### While building: a tunnel
 
@@ -156,8 +156,26 @@ It means two secrets in that machine's environment file, which is the same stand
 accepted for the harness passcode. **This is a gate: I will not put them there without you
 saying so.**
 
-**Recommendation.** Tunnel now, machine before the session. Do not demo from a laptop that has to
-stay awake and online.
+### Or skip the address problem: the Cloudflare Worker
+
+`worker/` is the same service as a Worker, and a Worker already has a stable public address. No
+tunnel, no reverse proxy, no machine, and nothing that changes when something restarts.
+
+```
+cd worker
+npx wrangler secret put FIGMA_TOKEN
+npx wrangler secret put GITHUB_TOKEN
+npx wrangler secret put WEBHOOK_PASSCODE
+pnpm --filter figma-bridge-worker deploy
+```
+
+**This is a gate for a different reason than the machine is.** It is not two secrets on a box you
+already accepted. It is three credentials moving into a third party's configuration, which is the
+standing rule's exact case. I will not run those three commands without you saying so.
+
+**Recommendation.** Tunnel now. Then either the machine or the Worker before the session, and the
+choice between them is the credential question, not a technical one. Do not demo from a laptop
+that has to stay awake and online.
 
 ---
 

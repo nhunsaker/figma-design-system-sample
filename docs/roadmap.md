@@ -9,7 +9,11 @@ Six components with stories and tests, the page that uses them, and the flag mod
 
 The two checks, with the tests that break the repository on purpose to watch each one refuse it.
 
-The bridge, with fake networks in its tests so the whole thing runs offline.
+The bridge, with fake networks in its tests so the whole thing runs offline. It exists twice: in
+Python for a machine you control, and in TypeScript as a Cloudflare Worker for people who would
+rather operate nothing. Both are held to `contract/`, an executable spec both test suites read,
+and the Worker's tests run in workerd rather than in node, because a port whose tests pass
+somewhere the code will never run has proved very little.
 
 The workflows: the gate, the write back over OIDC, and the Pages deploy.
 
@@ -31,7 +35,13 @@ how to tell it worked. `docs/architecture.html` is the drawing of the whole thin
 
 ## Left
 
-**The webhook.** One call, in `bridge/README.md`. It needs a public address for the bridge.
+**The webhook.** One call, in `bridge/README.md`. It needs a public address for the bridge, which
+is either a tunnel, a machine, or a Worker deploy.
+
+**The Worker has never been deployed.** Everything about it is proved locally against the same
+contract the Python service passes, and nothing about it has met the real internet. The deploy is
+gated on three `wrangler secret put` commands, which move credentials into a third party's
+configuration and are therefore the founder's call, not mine.
 
 **A recorded run.** Mark a frame, watch the issue open, let the agent build it, approve, merge,
 and see the pull request appear on the frame. Screenshots into `docs/images/`.

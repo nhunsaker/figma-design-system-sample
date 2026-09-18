@@ -1,5 +1,10 @@
 # The bridge
 
+> There are two runtimes. This one runs on a machine you control and keeps every credential in
+> its operating system keychain. `worker/` is the same service on Cloudflare, with nothing to
+> operate and its secrets held by Cloudflare instead. Both are held to `contract/`. Pick on where
+> you want the credentials to live, not on what the system does.
+
 One small service. It listens for a frame being marked ready for development, reads that frame,
 and opens a GitHub issue an agent can act on. When the pull request opens or closes it pins the
 result back onto the frame.

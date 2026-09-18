@@ -20,6 +20,12 @@ Read this before creating anything, because it is the reason the setup is shaped
 There is no `.env` file in this project and there should never be one. The bridge reads its two
 secrets from the operating system keychain at start up and holds them in memory.
 
+**Unless you run it as a Cloudflare Worker, in which case that row changes and you should know it
+changed.** A Worker has no keychain, so the same three secrets become encrypted bindings held by
+Cloudflare. The credentials leave your machine for a third party's configuration. That is a
+different posture, not a smaller one, and [Choose a runtime](#choose-a-runtime) below is where you
+decide whether you want it.
+
 The write-back workflow proves who it is with a short lived GitHub OIDC token that the bridge
 verifies against GitHub's published keys. That is why there is no shared secret anywhere, and no
 long lived credential sitting in repository secrets for every current and future workflow to read.
@@ -173,7 +179,31 @@ security add-generic-password -a "$USER" -s figma-bridge-github-token -w
 
 ---
 
-## The bridge
+## Choose a runtime
+
+Figma webhooks cannot call GitHub directly. A webhook can post to an address and cannot set an
+`Authorization` header, so something has to translate. That something is the only part of this
+system that runs anywhere, and there are two of it.
+
+| | `bridge/`, on a machine you control | `worker/`, on Cloudflare |
+|---|---|---|
+| Language | Python | TypeScript |
+| Secrets held by | your operating system keychain | Cloudflare, encrypted |
+| You operate | a process, a machine, an address | nothing |
+| Costs | whatever the machine costs | nothing at this volume |
+| A changed pack is live | on the next request | after a redeploy |
+| Credentials leave your machine | no | **yes** |
+
+They are the same service. Both are held to `contract/`, an executable spec both test suites read,
+and both produce the issue body byte for byte identically, because that body is the entire contract
+with the coding agent and two wordings would mean two behaviours.
+
+**Pick the machine if the last row matters to you.** Pick the Worker if you would rather not
+operate anything. Then follow one of the two sections below and skip the other.
+
+---
+
+## The bridge, on a machine you control
 
 One more secret, which the bridge invents rather than receives: the webhook passcode. Figma sends
 it back on every delivery and the bridge compares it.
@@ -216,9 +246,65 @@ The address changes every time the tunnel restarts, which means re-registering t
 anything you intend to leave running, put the bridge behind a reverse proxy on a server with a
 stable name.
 
+---
+
+## The bridge, as a Cloudflare Worker
+
+Skip this if you followed the section above. The two are alternatives, not steps.
+
+A Cloudflare account and a login, which is interactive and yours:
+
+```
+pnpm install
+npx wrangler login
+```
+
+The two non secret values live in `worker/wrangler.toml` under `[vars]`. Set them there:
+
+```
+FIGMA_FILE_KEY = "<key>"
+GITHUB_REPO    = "OWNER/REPO"
+```
+
+The three secrets are put into Cloudflare, one prompt each, values pasted rather than typed on a
+command line where they would land in your shell history:
+
+```
+cd worker
+npx wrangler secret put FIGMA_TOKEN
+npx wrangler secret put GITHUB_TOKEN
+npx wrangler secret put WEBHOOK_PASSCODE
+```
+
+Same three values as the keychain items above, same scopes. The passcode is still one you invent:
+`openssl rand -hex 24`.
+
+**This is the step that changes your security posture.** Three credentials now sit in a third
+party's configuration rather than in a keychain on hardware you own, and whoever can reach your
+Cloudflare account can reach them. It is a reasonable trade for having nothing to operate. It is
+not a free one, and `docs/DECISIONS.md` says so rather than burying it.
+
+Then:
+
+```
+pnpm --filter figma-bridge-worker deploy
+```
+
+You get `https://figma-bridge.<your-subdomain>.workers.dev`. `curl` its `/health` and you should
+see the file key and the repository, the same answer the Python service gives.
+
+There is no tunnel, no reverse proxy, and no address that changes when something restarts. That is
+most of the point.
+
+`worker/README.md` has the limits, what happens at the free ceiling, and the one behavioural
+difference: a Worker has no filesystem, so the pack is bundled at build time and a changed pack
+needs a redeploy.
+
+---
+
 ### The webhook
 
-Start the bridge and the tunnel first, then:
+Whichever runtime you chose, the webhook is registered the same way. Start it first, then:
 
 ```
 pnpm demo:webhook register https://your-address/figma/webhook
