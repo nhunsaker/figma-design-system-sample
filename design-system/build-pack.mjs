@@ -102,6 +102,17 @@ const refTarget = (value) => {
 
 // ─── load ───────────────────────────────────────────────────────────────────
 
+/**
+ * Pack component name to Figma component key, written by scripts/sync-figma-keys.mjs from the
+ * published library. Absent or empty is a normal state, not an error: it means Code Connect has
+ * not mapped anything yet, and everything downstream says so rather than guessing.
+ */
+const codeConnect = (() => {
+  const path = join(HERE, '..', 'figma', 'code-connect.json')
+  if (!existsSync(path)) return { file_key: null, components: {} }
+  return readJson(path)
+})()
+
 const primitiveSrc = readJson(join(TOKENS, 'primitive.json'))
 const componentSrc = readJson(join(TOKENS, 'component.json'))
 const meta = readJson(join(HERE, 'pack.meta.json'))
@@ -379,8 +390,14 @@ const pack = {
     semantic: 'The only tier a brand may edit. Every brand declares the identical key set.',
     component: 'Resolves from semantic only, so it compiles once for every brand.',
   },
+  figma: {
+    file_key: codeConnect.file_key ?? null,
+    mapped: Object.keys(codeConnect.components ?? {}).length,
+    of: meta.components.length,
+  },
   components: meta.components.map((c) => ({
     ...c,
+    figma_key: codeConnect.components?.[c.name] ?? null,
     tokens: [...componentResolved.keys()]
       .filter((p) => p.startsWith(`${c.name.toLowerCase()}.`))
       .map((p) => cssVar(p)),

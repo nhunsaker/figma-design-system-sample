@@ -1,0 +1,10 @@
+{
+  "name": "Design System Sample",
+  "document": {
+    "id": "0:0",
+    "children": [
+      { "id": "0:1", "name": "Components", "children": [{ "id": "10:1" }] },
+      { "id": "0:2", "name": "Requests", "children": [{ "id": "41:207" }] }
+    ]
+  }
+}

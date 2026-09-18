@@ -42,6 +42,11 @@
     "semantic": "The only tier a brand may edit. Every brand declares the identical key set.",
     "component": "Resolves from semantic only, so it compiles once for every brand."
   },
+  "figma": {
+    "file_key": null,
+    "mapped": 0,
+    "of": 6
+  },
   "components": [
     {
       "name": "Button",
@@ -66,6 +71,7 @@
         "children"
       ],
       "figma": "Button",
+      "figma_key": null,
       "tokens": [
         "--ds-button-height",
         "--ds-button-height-compact",
@@ -104,6 +110,7 @@
         "children"
       ],
       "figma": "Badge",
+      "figma_key": null,
       "tokens": [
         "--ds-badge-radius",
         "--ds-badge-inset",
@@ -136,6 +143,7 @@
         "footer"
       ],
       "figma": "Card",
+      "figma_key": null,
       "tokens": [
         "--ds-card-bg",
         "--ds-card-fg",
@@ -165,6 +173,7 @@
       },
       "slots": [],
       "figma": "Input",
+      "figma_key": null,
       "tokens": [
         "--ds-input-bg",
         "--ds-input-fg",
@@ -195,6 +204,7 @@
         "children"
       ],
       "figma": "Tabs",
+      "figma_key": null,
       "tokens": [
         "--ds-tabs-fg",
         "--ds-tabs-fg-selected",
@@ -224,6 +234,7 @@
         "children"
       ],
       "figma": "Toast",
+      "figma_key": null,
       "tokens": [
         "--ds-toast-bg",
         "--ds-toast-fg",

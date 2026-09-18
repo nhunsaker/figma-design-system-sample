@@ -1,0 +1,27 @@
+{
+  "name": "Design System Sample",
+  "nodes": {
+    "41:207": {
+      "document": {
+        "id": "41:207",
+        "name": "Empty state",
+        "type": "FRAME",
+        "children": [
+          { "id": "41:208", "type": "TEXT", "characters": "No frames are ready yet." },
+          {
+            "id": "41:209",
+            "type": "INSTANCE",
+            "name": "Button",
+            "componentId": "10:1",
+            "children": [{ "id": "41:210", "type": "TEXT", "characters": "Open the Figma file" }]
+          },
+          { "id": "41:211", "type": "INSTANCE", "name": "Avatar", "componentId": "10:9" }
+        ]
+      },
+      "components": {
+        "10:1": { "key": "abc123buttonkey", "name": "Button" },
+        "10:9": { "key": "zzz999avatarkey", "name": "Avatar" }
+      }
+    }
+  }
+}

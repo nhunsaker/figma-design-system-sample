@@ -18,7 +18,8 @@
     "test:lint": "biome check .",
     "test:pack": "node design-system/build-pack.mjs --check",
     "test:contract": "node scripts/check-contract.mjs",
-    "test:all": "pnpm test:types && pnpm test:lint && pnpm test:pack && pnpm test:contract && pnpm test"
+    "test:all": "pnpm test:types && pnpm test:lint && pnpm test:pack && pnpm test:contract && pnpm test",
+    "sync:figma": "node scripts/sync-figma-keys.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
