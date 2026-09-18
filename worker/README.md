@@ -64,9 +64,6 @@ account. `docs/DECISIONS.md` states it as a trade rather than burying it.
 
 ## Deploy
 
-**`docs/RUNBOOK-CLOUDFLARE.md` is the step by step**, including what to check after each one and
-how to go back to the machine. The short form:
-
 ```
 pnpm --filter figma-bridge-worker deploy
 ```
