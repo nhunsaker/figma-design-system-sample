@@ -17,11 +17,25 @@ A designer marked **Empty state** ready for development.
 > build the rest of the frame normally. Say what you used it for in the pull request
 > under Left undone.
 
+## How the frame is arranged
+
+Top to bottom, as the designer placed it. Build it in this order.
+
+- "No frames are ready yet."
+- a row of:
+  - **Button** x 3
+- **Avatar**
+- a column of:
+  - "Stacked, not side by side."
+  - **Avatar**
+- **Timeline**
+
 ## The words in the frame
 
 Use these exactly. Copy is a design decision.
 
 - No frames are ready yet.
+- Stacked, not side by side.
 
 ## Acceptance
 

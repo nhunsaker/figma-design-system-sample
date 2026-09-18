@@ -35,6 +35,15 @@ export interface UnmappedComponent {
 }
 
 export interface FrameRead {
+  /**
+   * How the frame is arranged, top to bottom, already rendered as markdown list lines.
+   *
+   * The component list is a SET, sorted, so it says what the frame needs and nothing about where
+   * anything sits. An agent handed only that has to invent an arrangement, and it did: it put a
+   * placeholder above the figures the design puts it below. The tree is walked in order anyway,
+   * so the ordering existed and was being thrown away.
+   */
+  outline: string[]
   nodeId: string
   name: string
   pageName: string
@@ -56,9 +65,82 @@ interface Node {
   type?: string
   characters?: string
   componentId?: string
+  layoutMode?: string
   cornerRadius?: number
   absoluteBoundingBox?: { width?: number; height?: number }
   children?: Node[]
+}
+
+/** A quoted, shortened line of copy. Long strings make an outline unreadable. */
+const quoted = (text: string): string => `"${text.length > 60 ? `${text.slice(0, 57)}...` : text}"`
+
+/**
+ * The frame's arrangement, in document order, as markdown list lines.
+ *
+ * Instances are opaque. The walk does not descend into one, mapped or not, because what is inside
+ * a component is the component's business and listing it invites an agent to rebuild it.
+ *
+ * A frame that lays its children out becomes a level and says which way it runs. A frame that does
+ * not is transparent: it nests nothing and its children are emitted where it sat, because a
+ * grouping with no layout is a drawing convenience rather than structure.
+ *
+ * Adjacent identical entries collapse to `x N`. Three figures in a row is one fact, not three.
+ */
+function outlineOf(
+  root: Node,
+  meta: Record<string, { key?: string; name?: string }>,
+  packComponents: Record<string, string>,
+  depth = 0,
+): string[] {
+  if (depth > 3) return []
+  const lines: string[] = []
+  const pad = '  '.repeat(depth)
+
+  const entries: string[] = []
+  const nested: Record<number, string[]> = {}
+
+  for (const child of root.children ?? []) {
+    if (child.type === 'TEXT' && child.characters) {
+      entries.push(`${pad}- ${quoted(child.characters)}`)
+      continue
+    }
+    if (child.type === 'INSTANCE') {
+      const key = meta[child.componentId ?? '']?.key ?? ''
+      const mapped = packComponents[key]
+      const name = mapped ?? meta[child.componentId ?? '']?.name ?? child.name ?? 'unnamed'
+      entries.push(`${pad}- ${mapped ? `\`${name}\`` : `**${name}**`}`)
+      continue
+    }
+    if (child.children?.length) {
+      const inner = child.layoutMode === 'HORIZONTAL' || child.layoutMode === 'VERTICAL'
+      const label = child.layoutMode === 'HORIZONTAL' ? 'a row of:' : 'a column of:'
+      if (inner) {
+        entries.push(`${pad}- ${label}`)
+        nested[entries.length - 1] = outlineOf(child, meta, packComponents, depth + 1)
+      } else {
+        // Transparent. A grouping with no layout is a drawing convenience, not structure.
+        for (const line of outlineOf(child, meta, packComponents, depth)) entries.push(line)
+      }
+    }
+  }
+
+  // Collapse runs of the same entry. Three of a thing in a row is one fact.
+  let index = 0
+  while (index < entries.length) {
+    let run = 1
+    while (
+      index + run < entries.length &&
+      entries[index + run] === entries[index] &&
+      nested[index] === undefined &&
+      nested[index + run] === undefined
+    ) {
+      run += 1
+    }
+    lines.push(run > 1 ? `${entries[index]} x ${run}` : entries[index])
+    for (const line of nested[index] ?? []) lines.push(line)
+    index += run
+  }
+  return lines
 }
 
 export class FigmaClient {
@@ -145,6 +227,8 @@ export class FigmaClient {
     }
     visit(entry.document)
 
+    const outline = outlineOf(entry.document, meta, packComponents)
+
     return {
       nodeId,
       name: entry.document?.name ?? 'unnamed frame',
@@ -158,6 +242,7 @@ export class FigmaClient {
         a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
       ),
       text,
+      outline,
     }
   }
 

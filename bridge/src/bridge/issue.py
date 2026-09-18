@@ -74,6 +74,16 @@ def body_for(frame: FrameRead, image_url: str | None, pack_id: str) -> str:
             "",
         ]
 
+    if frame.outline:
+        lines += [
+            "## How the frame is arranged",
+            "",
+            "Top to bottom, as the designer placed it. Build it in this order.",
+            "",
+            *frame.outline,
+            "",
+        ]
+
     if frame.text:
         lines += [
             "## The words in the frame",

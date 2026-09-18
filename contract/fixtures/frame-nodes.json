@@ -6,7 +6,15 @@
     "accident; two of different shapes is the cheapest proof that it was not.",
     "Both hold text. That text must NOT reach the issue's word list, because it belongs to a",
     "component that will not be built and the issue tells the agent to use those words exactly.",
-    "The mapped Button's text must still reach it, because that is the button's label."
+    "The mapped Button's text must still reach it, because that is the button's label.",
+    "It also carries the three shapes the OUTLINE has to get right, because a flat frame cannot",
+    "prove any of them: a laid-out row that becomes a level and says which way it runs, a run of",
+    "identical siblings that must collapse to one line, and a plain group with no layoutMode that",
+    "must nest nothing because a grouping without layout is a drawing convenience.",
+    "An unmapped component sits LAST on purpose. The first two runs put a placeholder above the",
+    "figures the design puts below it, because the component list is a sorted set and carried no",
+    "order at all.",
+    "A nested VERTICAL frame is here because the drift proof failed without it: changing the column wording in one runtime changed no golden, since no fixture ever rendered that branch."
   ],
   "name": "Design System Sample",
   "nodes": {
@@ -15,42 +23,132 @@
         "id": "41:207",
         "name": "Empty state",
         "type": "FRAME",
+        "layoutMode": "VERTICAL",
         "children": [
-          { "id": "41:208", "type": "TEXT", "characters": "No frames are ready yet." },
           {
-            "id": "41:209",
-            "type": "INSTANCE",
-            "name": "Button",
-            "componentId": "10:1",
-            "children": [{ "id": "41:210", "type": "TEXT", "characters": "Open the Figma file" }]
+            "id": "41:208",
+            "type": "TEXT",
+            "characters": "No frames are ready yet."
           },
           {
-            "id": "41:211",
-            "type": "INSTANCE",
-            "name": "Avatar",
-            "componentId": "10:9",
-            "absoluteBoundingBox": { "x": 0, "y": 0, "width": 48, "height": 48 },
-            "cornerRadius": 24,
-            "children": [{ "id": "41:212", "type": "TEXT", "characters": "Nobody yet" }]
+            "id": "41:216",
+            "type": "FRAME",
+            "name": "Row",
+            "layoutMode": "HORIZONTAL",
+            "children": [
+              {
+                "id": "41:209",
+                "type": "INSTANCE",
+                "name": "Button",
+                "componentId": "10:1",
+                "children": [
+                  {
+                    "id": "41:210",
+                    "type": "TEXT",
+                    "characters": "Open the Figma file"
+                  }
+                ]
+              },
+              {
+                "id": "41:217",
+                "type": "INSTANCE",
+                "name": "Button",
+                "componentId": "10:1"
+              },
+              {
+                "id": "41:218",
+                "type": "INSTANCE",
+                "name": "Button",
+                "componentId": "10:1"
+              }
+            ]
+          },
+          {
+            "id": "41:219",
+            "type": "GROUP",
+            "name": "Loose group, no layout",
+            "children": [
+              {
+                "id": "41:211",
+                "type": "INSTANCE",
+                "name": "Avatar",
+                "componentId": "10:9",
+                "absoluteBoundingBox": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 48,
+                  "height": 48
+                },
+                "cornerRadius": 24,
+                "children": [
+                  {
+                    "id": "41:212",
+                    "type": "TEXT",
+                    "characters": "Nobody yet"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "41:220",
+            "type": "FRAME",
+            "name": "Column",
+            "layoutMode": "VERTICAL",
+            "children": [
+              {
+                "id": "41:221",
+                "type": "TEXT",
+                "characters": "Stacked, not side by side."
+              },
+              {
+                "id": "41:222",
+                "type": "INSTANCE",
+                "name": "Avatar",
+                "componentId": "10:9"
+              }
+            ]
           },
           {
             "id": "41:213",
             "type": "INSTANCE",
             "name": "Timeline",
             "componentId": "10:14",
-            "absoluteBoundingBox": { "x": 0, "y": 0, "width": 672.4, "height": 80 },
+            "absoluteBoundingBox": {
+              "x": 0,
+              "y": 0,
+              "width": 672.4,
+              "height": 80
+            },
             "cornerRadius": 8,
             "children": [
-              { "id": "41:214", "type": "TEXT", "characters": "The last 90 days" },
-              { "id": "41:215", "type": "VECTOR", "name": "Line" }
+              {
+                "id": "41:214",
+                "type": "TEXT",
+                "characters": "The last 90 days"
+              },
+              {
+                "id": "41:215",
+                "type": "VECTOR",
+                "name": "Line"
+              }
             ]
           }
         ]
       },
       "components": {
-        "10:1": { "key": "abc123buttonkey", "name": "Button" },
-        "10:9": { "key": "zzz999avatarkey", "name": "Avatar" },
-        "10:14": { "key": "yyy888timelinekey", "name": "Timeline" }
+        "10:1": {
+          "key": "abc123buttonkey",
+          "name": "Button"
+        },
+        "10:9": {
+          "key": "zzz999avatarkey",
+          "name": "Avatar"
+        },
+        "10:14": {
+          "key": "yyy888timelinekey",
+          "name": "Timeline"
+        }
       }
     }
   }

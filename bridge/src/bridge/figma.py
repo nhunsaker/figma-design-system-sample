@@ -58,6 +58,10 @@ class FrameRead:
     components: list[str] = field(default_factory=list)
     unknown_components: list[UnmappedComponent] = field(default_factory=list)
     text: list[str] = field(default_factory=list)
+    # How the frame is arranged, top to bottom, already rendered as markdown list lines. The
+    # component list is a SET, sorted, so it says what the frame needs and nothing about where
+    # anything sits. An agent handed only that has to invent an arrangement, and it did.
+    outline: list[str] = field(default_factory=list)
     image_url: str | None = None
 
     @property
@@ -65,6 +69,76 @@ class FrameRead:
         """The link a person opens. Figma writes 41-207 in a URL and 41:207 in the API."""
         node = self.node_id.replace(":", "-")
         return f"https://www.figma.com/design/{self.file_key}/?node-id={node}"
+
+
+def _quoted(text: str) -> str:
+    """A quoted, shortened line of copy. Long strings make an outline unreadable."""
+    short = f"{text[:57]}..." if len(text) > 60 else text
+    return f'"{short}"'
+
+
+def _outline_of(
+    root: dict,
+    meta: dict,
+    pack_components: dict[str, str],
+    depth: int = 0,
+) -> list[str]:
+    """The frame's arrangement, in document order, as markdown list lines.
+
+    Instances are opaque. The walk does not descend into one, mapped or not, because what is
+    inside a component is the component's business and listing it invites an agent to rebuild it.
+
+    A frame that lays its children out becomes a level and says which way it runs. A frame that
+    does not is transparent: it nests nothing and its children are emitted where it sat, because a
+    grouping with no layout is a drawing convenience rather than structure.
+
+    Adjacent identical entries collapse to `x N`. Three figures in a row is one fact, not three.
+    """
+    if depth > 3:
+        return []
+    pad = "  " * depth
+    entries: list[str] = []
+    nested: dict[int, list[str]] = {}
+
+    for child in root.get("children") or ():
+        kind = child.get("type")
+        if kind == "TEXT" and child.get("characters"):
+            entries.append(f"{pad}- {_quoted(child['characters'])}")
+            continue
+        if kind == "INSTANCE":
+            component_id = child.get("componentId", "")
+            key = (meta.get(component_id) or {}).get("key", "")
+            mapped = pack_components.get(key)
+            name = (
+                mapped or (meta.get(component_id) or {}).get("name") or child.get("name", "unnamed")
+            )
+            entries.append(f"{pad}- " + (f"`{name}`" if mapped else f"**{name}**"))
+            continue
+        if child.get("children"):
+            layout = child.get("layoutMode")
+            if layout in ("HORIZONTAL", "VERTICAL"):
+                label = "a row of:" if layout == "HORIZONTAL" else "a column of:"
+                entries.append(f"{pad}- {label}")
+                nested[len(entries) - 1] = _outline_of(child, meta, pack_components, depth + 1)
+            else:
+                # Transparent. A grouping with no layout is a drawing convenience, not structure.
+                entries.extend(_outline_of(child, meta, pack_components, depth))
+
+    lines: list[str] = []
+    index = 0
+    while index < len(entries):
+        run = 1
+        while (
+            index + run < len(entries)
+            and entries[index + run] == entries[index]
+            and index not in nested
+            and index + run not in nested
+        ):
+            run += 1
+        lines.append(f"{entries[index]} x {run}" if run > 1 else entries[index])
+        lines.extend(nested.get(index, ()))
+        index += run
+    return lines
 
 
 class FigmaClient:
@@ -137,6 +211,8 @@ class FigmaClient:
 
         visit(document)
 
+        outline = _outline_of(document, components_meta, pack_components)
+
         return FrameRead(
             node_id=node_id,
             name=document.get("name", "unnamed frame"),
@@ -146,6 +222,7 @@ class FigmaClient:
             components=sorted(set(known)),
             unknown_components=sorted(unknown.values(), key=lambda c: c.name),
             text=text,
+            outline=outline,
         )
 
     def _page_of(self, file_key: str, node_id: str) -> str:

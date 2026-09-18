@@ -73,6 +73,17 @@ export function bodyFor(frame: FrameRead, imageUrl: string | null, packId: strin
     )
   }
 
+  if (frame.outline.length > 0) {
+    lines.push(
+      '## How the frame is arranged',
+      '',
+      'Top to bottom, as the designer placed it. Build it in this order.',
+      '',
+      ...frame.outline,
+      '',
+    )
+  }
+
   if (frame.text.length > 0) {
     lines.push('## The words in the frame', '', 'Use these exactly. Copy is a design decision.', '')
     for (const line of frame.text) lines.push(`- ${line}`)
