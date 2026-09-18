@@ -45,6 +45,7 @@
   "figma": {
     "file_key": null,
     "mapped": 0,
+    "keys": 0,
     "of": 6
   },
   "components": [
@@ -71,7 +72,7 @@
         "children"
       ],
       "figma": "Button",
-      "figma_key": null,
+      "figma_keys": [],
       "tokens": [
         "--ds-button-height",
         "--ds-button-height-compact",
@@ -110,7 +111,7 @@
         "children"
       ],
       "figma": "Badge",
-      "figma_key": null,
+      "figma_keys": [],
       "tokens": [
         "--ds-badge-radius",
         "--ds-badge-inset",
@@ -143,7 +144,7 @@
         "footer"
       ],
       "figma": "Card",
-      "figma_key": null,
+      "figma_keys": [],
       "tokens": [
         "--ds-card-bg",
         "--ds-card-fg",
@@ -173,7 +174,7 @@
       },
       "slots": [],
       "figma": "Input",
-      "figma_key": null,
+      "figma_keys": [],
       "tokens": [
         "--ds-input-bg",
         "--ds-input-fg",
@@ -204,7 +205,7 @@
         "children"
       ],
       "figma": "Tabs",
-      "figma_key": null,
+      "figma_keys": [],
       "tokens": [
         "--ds-tabs-fg",
         "--ds-tabs-fg-selected",
@@ -234,7 +235,7 @@
         "children"
       ],
       "figma": "Toast",
-      "figma_key": null,
+      "figma_keys": [],
       "tokens": [
         "--ds-toast-bg",
         "--ds-toast-fg",

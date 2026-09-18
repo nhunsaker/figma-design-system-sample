@@ -40,21 +40,43 @@ if (!response.ok) {
 }
 
 const { meta } = await response.json()
-const published = new Map((meta?.components ?? []).map((c) => [c.name, c.key]))
+
+/**
+ * Every published key, grouped by the name a person sees in the assets panel.
+ *
+ * A component with variants publishes one component per variant, each with its own key and a
+ * name like `variant=Primary, size=Compact`. The name a designer gave the thing is on the
+ * variant's containing state group. An instance in a frame points at the variant's key, never
+ * at the set's, so the map has to carry every variant key or the bridge sees a frame full of
+ * components it does not recognise.
+ */
+const byName = new Map()
+for (const component of meta?.components ?? []) {
+  const name = component.containing_frame?.containingStateGroup?.name ?? component.name
+  if (!byName.has(name)) byName.set(name, [])
+  byName.get(name).push(component.key)
+}
 
 const pack = JSON.parse(readFileSync(join(ROOT, 'design-system', 'pack.meta.json'), 'utf8'))
 const components = {}
 const missing = []
 for (const component of pack.components) {
-  const key = published.get(component.figma ?? component.name)
-  if (key) components[component.name] = key
-  else missing.push(component.name)
+  const keys = byName.get(component.figma ?? component.name) ?? []
+  if (keys.length === 0) {
+    missing.push(component.name)
+    continue
+  }
+  for (const key of keys) components[key] = component.name
 }
 
 const existing = JSON.parse(readFileSync(OUT, 'utf8'))
 writeFileSync(OUT, `${JSON.stringify({ ...existing, file_key: fileKey, components }, null, 2)}\n`)
 
-console.log(`mapped ${Object.keys(components).length} of ${pack.components.length} components`)
+const named = new Set(Object.values(components))
+console.log(
+  `mapped ${named.size} of ${pack.components.length} components, ` +
+    `${Object.keys(components).length} published keys including variants`,
+)
 if (missing.length) {
   console.log(`not published in that file yet: ${missing.join(', ')}`)
   console.log('Publish them as a library, or check the name in pack.meta.json matches Figma.')

@@ -41,6 +41,29 @@ def test_the_issue_carries_the_frame_and_what_it_is_made_of(client, github_state
     assert "`Button` from the design pack" not in body  # nothing is mapped yet
 
 
+def test_a_mapped_component_is_named_by_its_pack_name(
+    settings, figma_client, github_client, mapped_pack, github_state
+):
+    from dataclasses import replace
+
+    from fastapi.testclient import TestClient
+
+    from bridge.app import create_app
+
+    from .conftest import StubVerifier
+
+    app = create_app(
+        settings=replace(settings, pack_path=mapped_pack),
+        figma=figma_client,
+        github=github_client,
+        verifier=StubVerifier(),
+    )
+    TestClient(app).post("/figma/webhook", json=ready())
+    body = github_state["issues"][0]["body"]
+    assert "`Button` from the design pack" in body
+    assert "**Avatar** — not mapped" in body
+
+
 def test_an_unmapped_component_is_named_as_unmapped_rather_than_guessed(client, github_state):
     client.post("/figma/webhook", json=ready())
     body = github_state["issues"][0]["body"]
