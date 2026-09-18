@@ -8,11 +8,15 @@ compatibility_flags = ["nodejs_compat"]
 FIGMA_FILE_KEY = "IDVXk0yZaJ1CQvIZn14AkA"
 GITHUB_REPO = "nhunsaker/figma-design-system-sample"
 
-# Secrets are NOT here and never will be. Set them once per environment:
+# Secrets are NOT here and never will be. Set them once per environment, from inside worker/:
 #
 #   wrangler secret put FIGMA_TOKEN
 #   wrangler secret put GITHUB_TOKEN
 #   wrangler secret put WEBHOOK_PASSCODE
+#
+# Deploying is `pnpm worker:deploy` from the root, or `pnpm run deploy` from here. NOT
+# `pnpm --filter figma-bridge-worker deploy`, because `deploy` is a pnpm builtin and the filter
+# form never reaches this package's script.
 #
 # They are then held encrypted by Cloudflare rather than by the operating system keychain the
 # hosted bridge uses. That is a different security posture, not a smaller one: see
