@@ -22,7 +22,7 @@ to, and deciding who is allowed to change what.
 | `scripts/` | The two checks: the source against the pack, and the pull request body against its contract |
 | `bridge/` | The service between a Figma webhook and a GitHub issue |
 | `figma/` | What the Figma file has to contain, and the component key map |
-| `docs/` | The diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
+| `docs/` | The runbook, the diagram, what Figma can actually do, how this is run, what is left, and what each decision cost |
 
 ## The design system is a contract
 
@@ -80,7 +80,7 @@ pnpm dev           # the page that uses them
 pnpm test:all      # the gate, the same one the pull request runs
 ```
 
-The bridge has its own instructions in `bridge/README.md`, including the two Keychain items it
+**`docs/RUNBOOK.md` is the ordered list of what a person has to do.** The bridge has its own instructions in `bridge/README.md`, including the two Keychain items it
 needs and the one call that registers the webhook.
 
 The Figma file lives at `figma/FILE.md`, with its key recorded there. The components carry keys
