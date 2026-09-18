@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figma design system sample — architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#eceae5; --ink:#1f2937; --muted:#6b7280; --rule:#d8d4cc; --stage:979px; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* The column is the width of the drawing at whatever size it is currently drawn, so the
+     heading, the sentence, the legend and the note all begin on the line the first dashed
+     boundary begins on, and keep doing so at every step down. */
+  .page { width: 100%; max-width: calc(var(--stage) + 48px); margin: 0 auto; padding: 48px 24px 72px; }
+  .eyebrow {
+    margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; color: #7c3aed;
+  }
+  h1 { margin: 8px 0 0; font-size: clamp(22px, 3.2vw, 32px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+  .lede { margin: 12px 0 0; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+
+  /* The drawn geometry is kept and scaled, never redrawn: absolute connectors only stay where
+     they were put if the stage keeps its pixel dimensions. It is drawn at 890 and shown at 1.1
+     so the 8.5px labels sit nearer 9.4, which is the difference between squinting and reading.
+     Below the point where scaling down would make those labels unreadable the diagram scrolls
+     sideways instead of shrinking further. A diagram nobody can read is worse than one they
+     have to swipe. */
+  .stage-outer { margin-top: 32px; overflow-x: auto; padding-bottom: 10px; }
+  .stage-wrap { position: relative; width: 979px; height: 704px; }
+  .stage { position: absolute; top: 0; left: 0; width: 890px; height: 640px; transform-origin: top left; transform: scale(1.1); }
+  @media (max-width: 1026px) {
+    :root { --stage: 890px; }
+    .stage { transform: none; }
+    .stage-wrap { width: 890px; height: 640px; }
+  }
+  @media (max-width: 939px) {
+    :root { --stage: 712px; }
+    .stage { transform: scale(.8); }
+    .stage-wrap { width: 712px; height: 512px; }
+  }
+  @media (max-width: 739px) { .page { padding-inline: 16px; } }
+
+  .legend {
+    margin: 26px 0 0; padding: 16px 0; list-style: none;
+    display: flex; flex-wrap: wrap; gap: 10px 24px;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  }
+  .legend li { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #475569; }
+  .legend .sw { flex: 0 0 20px; width: 20px; height: 13px; border-radius: 3px; }
+
+  .note { margin: 24px 0 0; padding: 20px 24px; border-radius: 12px; background: #fffbeb; border: 1.5px solid #fcd34d; }
+  .note h2 {
+    margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; color: #92590f;
+  }
+  .note p { margin: 8px 0 0; font-size: 14px; line-height: 1.55; color: #4b3a12; }
+
+  .box {
+    position: absolute; border-radius: 10px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 7px 9px;
+  }
+  .box b { font-size: 12.5px; font-weight: 600; line-height: 1.2; margin-top: 3px; }
+  .box span { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; margin-top: 3px; line-height: 1.4; }
+  .zone {
+    position: absolute; top: 61px; background: var(--paper); padding: 0 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase;
+  }
+  .tag {
+    position: absolute; transform: translate(-50%, -50%); background: var(--paper);
+    padding: 1px 6px; font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    color: #64748b; white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <p class="eyebrow">Figma design system sample &mdash; architecture</p>
+  <h1>Three boxes, and only the middle one holds a key</h1>
+  <p class="lede">A designer marks a frame ready for development. That status change is the only trigger, so drawing starts nothing and nobody has to remember a step. One small service reads the frame and opens an issue, and it is the only process anywhere holding a Figma token &mdash; the agent runs on GitHub with none at all, and sees what the issue carries and nothing more. The design pack governs every stage: it is the whole vocabulary the agent may use and the schema the checks judge against. A design asking for something the pack does not have is named as unmapped rather than guessed at, and a person approves before anything merges.</p>
+
+  <div class="stage-outer">
+  <div class="stage-wrap">
+  <div class="stage">
+
+<svg width="890" height="640" viewBox="0 0 890 640" style="position:absolute; inset:0; pointer-events:none;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker>
+    <marker id="fr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
+    <marker id="fg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#d97706"/></marker>
+  </defs>
+  <rect x="0" y="70" width="240" height="558" rx="12" fill="rgba(124,58,237,.05)" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <rect x="270" y="70" width="186" height="558" rx="12" fill="rgba(217,119,6,.05)" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <rect x="490" y="70" width="400" height="558" rx="12" fill="rgba(29,78,216,.04)" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <path d="M120 154 V172" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M224 209 H282" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M363 246 V266" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M282 300 H228" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#fa)"/>
+  <path d="M444 309 H470 V209 H506" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M363 352 V520" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M282 563 H228" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M586 246 V280" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M586 366 V386" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M666 423 H692 V371 H710" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M790 420 V440" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M790 514 V544" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M710 572 H666" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M506 423 H478 V563 H448" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#fa)"/>
+  <path d="M730 322 V258 H550 V280" fill="none" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#fr)"/>
+  <path d="M262 46 V296 H282" fill="none" stroke="#d97706" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#fg)"/>
+  <path d="M688 46 V320 H666" fill="none" stroke="#d97706" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#fg)"/>
+  <path d="M790 46 V322" fill="none" stroke="#d97706" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#fg)"/>
+</svg>
+
+<div class="zone" style="left:14px; color:#7c3aed;">Figma cloud</div>
+<div class="zone" style="left:284px; color:#d97706;">The bridge</div>
+<div class="zone" style="left:504px; color:#1d4ed8;">GitHub</div>
+
+<div class="box" style="left:0; top:0; width:890px; height:46px; background:#fef3c7; border:1.5px solid #d97706; padding:6px 9px;">
+  <div style="display:flex; align-items:center; gap:7px;"><svg width="15" height="15" viewBox="0 0 256 256" fill="#92590f" style="display:block; flex:0 0 auto;" xmlns="http://www.w3.org/2000/svg"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM172.42,72.84l-64,32a8.05,8.05,0,0,0-3.58,3.58l-32,64A8,8,0,0,0,80,184a8.1,8.1,0,0,0,3.58-.84l64-32a8.05,8.05,0,0,0,3.58-3.58l32-64a8,8,0,0,0-10.74-10.74ZM138,138,97.89,158.11,118,118l40.15-20.07Z"/></svg><b style="margin-top:0; color:#7c2d12;">design-system/pack.json &mdash; the components that exist &middot; the tokens &middot; the rules &middot; the refusals</b></div>
+  <span style="color:#92590f;">generated from the token files and committed, so a build never needs a live design connection &middot; five of six refusals are machine checked, and it says which one is not</span>
+</div>
+
+<div class="box" style="left:16px; top:88px; width:208px; height:66px; background:#e2e8f0; border:1.5px solid #94a3b8;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#64748b" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg><b style="color:#334155;">Designer, in Dev Mode</b><span style="color:#64748b;">the only person who starts anything</span>
+</div>
+
+<div class="box" style="left:16px; top:172px; width:208px; height:74px; background:#ede9fe; border:1.5px solid #7c3aed;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#6d28d9" xmlns="http://www.w3.org/2000/svg"><path d="M248,92.68a15.86,15.86,0,0,0-4.69-11.31L174.63,12.68a16,16,0,0,0-22.63,0L123.57,41.11l-58,21.77A16.06,16.06,0,0,0,55.35,75.23L32.11,214.68A8,8,0,0,0,40,224a8.4,8.4,0,0,0,1.32-.11l139.44-23.24a16,16,0,0,0,12.35-10.17l21.77-58L243.31,104A15.87,15.87,0,0,0,248,92.68Zm-69.87,92.19L63.32,204l47.37-47.37a28,28,0,1,0-11.32-11.32L52,192.7,71.13,77.86,126,57.29,198.7,130ZM112,132a12,12,0,1,1,12,12A12,12,0,0,1,112,132Zm96-15.32L139.31,48l24-24L232,92.68Z"/></svg><b style="color:#4c1d95;">A frame, marked ready</b><span style="color:#6d28d9;">the only trigger &middot; nothing<br>here watches for edits</span>
+</div>
+
+<div class="box" style="left:16px; top:262px; width:208px; height:74px; background:#f5f3ff; border:1.5px solid #c4b5fd;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#6d28d9" xmlns="http://www.w3.org/2000/svg"><path d="M232,64a32,32,0,1,0-40,31v17a8,8,0,0,1-8,8H96a23.84,23.84,0,0,0-8,1.38V95a32,32,0,1,0-16,0v66a32,32,0,1,0,16,0V144a8,8,0,0,1,8-8h88a24,24,0,0,0,24-24V95A32.06,32.06,0,0,0,232,64ZM64,64A16,16,0,1,1,80,80,16,16,0,0,1,64,64ZM96,192a16,16,0,1,1-16-16A16,16,0,0,1,96,192ZM200,80a16,16,0,1,1,16-16A16,16,0,0,1,200,80Z"/></svg><b style="color:#4c1d95;">Components and variables</b><span style="color:#6d28d9;">two brands as two modes<br>of one collection</span>
+</div>
+
+<div class="box" style="left:16px; top:520px; width:208px; height:86px; background:#ede9fe; border:1.5px solid #7c3aed;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#6d28d9" xmlns="http://www.w3.org/2000/svg"><path d="M128,24h0A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,168H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,168Zm-3.9-16a140.84,140.84,0,0,1,0-48h59.88a140.84,140.84,0,0,1,0,48ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128ZM154,88H102a115.11,115.11,0,0,1,26-45A115.27,115.27,0,0,1,154,88Zm52.33,0H170.71a135.28,135.28,0,0,0-22.3-45.6A88.29,88.29,0,0,1,206.37,88ZM107.59,42.4A135.28,135.28,0,0,0,85.29,88H49.63A88.29,88.29,0,0,1,107.59,42.4ZM49.63,168H85.29a135.28,135.28,0,0,0,22.3,45.6A88.29,88.29,0,0,1,49.63,168Zm98.78,45.6a135.28,135.28,0,0,0,22.3-45.6h35.66A88.29,88.29,0,0,1,148.41,213.6Z"/></svg><b style="color:#4c1d95;">Dev Mode, back on the frame</b><span style="color:#6d28d9;">the issue, the pull request,<br>and how it ended<br>completed stays a person's click</span>
+</div>
+
+<div class="box" style="left:282px; top:172px; width:162px; height:74px; background:#cffafe; border:1.5px solid #0e7490;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#0e7490" xmlns="http://www.w3.org/2000/svg"><path d="M128,112a28,28,0,0,0-8,54.83V184a8,8,0,0,0,16,0V166.83A28,28,0,0,0,128,112Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,128,152Zm80-72H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Z"/></svg><b style="color:#155e63;">Webhook door</b><span style="color:#0e7490;">passcode &middot; one file only<br>anything else is a no</span>
+</div>
+
+<div class="box" style="left:282px; top:266px; width:162px; height:86px; background:#cffafe; border:1.5px solid #0e7490;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#0e7490" xmlns="http://www.w3.org/2000/svg"><path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/></svg><b style="color:#155e63;">Read the frame</b><span style="color:#0e7490;">the image, the words, and<br>what it is made of<br>unmapped, never guessed</span>
+</div>
+
+<div class="box" style="left:282px; top:520px; width:162px; height:86px; background:#cffafe; border:1.5px solid #0e7490;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#0e7490" xmlns="http://www.w3.org/2000/svg"><path d="M237.66,18.34a8,8,0,0,0-11.32,0l-52.4,52.41-5.37-5.38a32.05,32.05,0,0,0-45.26,0L100,88.69l-6.34-6.35A8,8,0,0,0,82.34,93.66L88.69,100,65.37,123.31a32,32,0,0,0,0,45.26l5.38,5.37-52.41,52.4a8,8,0,0,0,11.32,11.32l52.4-52.41,5.37,5.38a32,32,0,0,0,45.26,0L156,167.31l6.34,6.35a8,8,0,0,0,11.32-11.32L167.31,156l23.32-23.31a32,32,0,0,0,0-45.26l-5.38-5.37,52.41-52.4A8,8,0,0,0,237.66,18.34Z"/></svg><b style="color:#155e63;">Write back door</b><span style="color:#0e7490;">a short GitHub token<br>proves it, no secret kept<br>it cannot change a node</span>
+</div>
+
+<div class="box" style="left:506px; top:172px; width:160px; height:74px; background:#dbeafe; border:1.5px solid #1d4ed8;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#1d4ed8" xmlns="http://www.w3.org/2000/svg"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,176H48V48H208V208ZM88,96a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H96A8,8,0,0,1,88,96Zm0,32a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H96A8,8,0,0,1,88,128Zm0,32a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H96A8,8,0,0,1,88,160Z"/></svg><b style="color:#1e3a8a;">Issue</b><span style="color:#1d4ed8;">the frame, its words, what<br>it is made of, what done is</span>
+</div>
+
+<div class="box" style="left:506px; top:280px; width:160px; height:86px; background:#dbeafe; border:1.5px solid #1d4ed8;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#1d4ed8" xmlns="http://www.w3.org/2000/svg"><path d="M128,128a8,8,0,0,1-3,6.25l-40,32a8,8,0,1,1-10-12.5L107.19,128,75,102.25a8,8,0,1,1,10-12.5l40,32A8,8,0,0,1,128,128Zm48,24H136a8,8,0,0,0,0,16h40a8,8,0,0,0,0-16Zm56-96V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56ZM216,200V56H40V200H216Z"/></svg><b style="color:#1e3a8a;">Coding agent, isolated</b><span style="color:#1d4ed8;">its own branch, no Figma<br>token &middot; may not touch the<br>design system or the checks</span>
+</div>
+
+<div class="box" style="left:506px; top:386px; width:160px; height:74px; background:#eff6ff; border:1.5px solid #93c5fd;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#1d4ed8" xmlns="http://www.w3.org/2000/svg"><path d="M104,64A32,32,0,1,0,64,95v66a32,32,0,1,0,16,0V95A32.06,32.06,0,0,0,104,64ZM56,64A16,16,0,1,1,72,80,16,16,0,0,1,56,64ZM88,192a16,16,0,1,1-16-16A16,16,0,0,1,88,192Zm120-31V110.63a23.85,23.85,0,0,0-7-17L163.31,56H192a8,8,0,0,0,0-16H144a8,8,0,0,0-8,8V96a8,8,0,0,0,16,0V67.31L189.66,105a8,8,0,0,1,2.34,5.66V161a32,32,0,1,0,16,0Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,200,208Z"/></svg><b style="color:#1e3a8a;">Draft pull request</b><span style="color:#1d4ed8;">the body has to say what<br>was left undone</span>
+</div>
+
+<div class="box" style="left:710px; top:322px; width:160px; height:98px; background:#dbeafe; border:1.5px solid #1d4ed8;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#1d4ed8" xmlns="http://www.w3.org/2000/svg"><path d="M207.06,72.67A111.24,111.24,0,0,0,128,40h-.4C66.07,40.21,16,91,16,153.13V176a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V152A111.25,111.25,0,0,0,207.06,72.67ZM224,176H119.71l54.76-75.3a8,8,0,0,0-12.94-9.42L99.92,176H32V153.13c0-3.08.15-6.12.43-9.13H56a8,8,0,0,0,0-16H35.27c10.32-38.86,44-68.24,84.73-71.66V80a8,8,0,0,0,16,0V56.33A96.14,96.14,0,0,1,221,128H200a8,8,0,0,0,0,16h23.67c.21,2.65.33,5.31.33,8Z"/></svg><b style="color:#1e3a8a;">The checks</b><span style="color:#1d4ed8;">types, lint, tests, tokens<br>in sync, only pack parts,<br>no raw values, contrast<br>one that did not run failed</span>
+</div>
+
+<div class="box" style="left:710px; top:440px; width:160px; height:74px; background:#dcfce7; border:1.5px solid #16a34a;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#15803d" xmlns="http://www.w3.org/2000/svg"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg><b style="color:#14532d;">A person approves</b><span style="color:#15803d;">always &middot; the agent cannot<br>merge its own work</span>
+</div>
+
+<div class="box" style="left:710px; top:544px; width:160px; height:62px; background:#f0fdf4; border:1.5px solid #86efac;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#15803d" xmlns="http://www.w3.org/2000/svg"><path d="M104,64A32,32,0,1,0,64,95v66a32,32,0,1,0,16,0V95A32.06,32.06,0,0,0,104,64ZM56,64A16,16,0,1,1,72,80,16,16,0,0,1,56,64ZM88,192a16,16,0,1,1-16-16A16,16,0,0,1,88,192Zm120-31V110.63a23.85,23.85,0,0,0-7-17L163.31,56H192a8,8,0,0,0,0-16H144a8,8,0,0,0-8,8V96a8,8,0,0,0,16,0V67.31L189.66,105a8,8,0,0,1,2.34,5.66V161a32,32,0,1,0,16,0Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,200,208Z"/></svg><b style="color:#14532d;">Merged, flag off</b><span style="color:#15803d;">merging is not releasing</span>
+</div>
+
+<div class="box" style="left:506px; top:532px; width:160px; height:74px; background:#f0fdf4; border:1.5px solid #86efac;">
+  <svg width="15" height="15" viewBox="0 0 256 256" fill="#15803d" xmlns="http://www.w3.org/2000/svg"><path d="M178.34,165.66,160,147.31V208a8,8,0,0,1-16,0V147.31l-18.34,18.35a8,8,0,0,1-11.32-11.32l32-32a8,8,0,0,1,11.32,0l32,32a8,8,0,0,1-11.32,11.32ZM160,40A88.08,88.08,0,0,0,81.29,88.68,64,64,0,1,0,72,216h40a8,8,0,0,0,0-16H72a48,48,0,0,1,0-96c1.1,0,2.2,0,3.29.12A88,88,0,0,0,72,128a8,8,0,0,0,16,0,72,72,0,1,1,100.8,66,8,8,0,0,0,3.2,15.34,7.9,7.9,0,0,0,3.2-.68A88,88,0,0,0,160,40Z"/></svg><b style="color:#14532d;">GitHub Pages</b><span style="color:#15803d;">Storybook, and the app<br>under /app/</span>
+</div>
+
+<div class="tag" style="left:120px; top:163px;">marks ready</div>
+<div class="tag" style="left:253px; top:198px;">status changed</div>
+<div class="tag" style="left:253px; top:291px;">reads</div>
+<div class="tag" style="left:470px; top:235px;">opens</div>
+<div class="tag" style="left:363px; top:440px;">pins the issue</div>
+<div class="tag" style="left:253px; top:553px;">pins it back</div>
+<div class="tag" style="left:586px; top:268px;">assigned</div>
+<div class="tag" style="left:680px; top:258px; color:#dc2626;">fails, or review says no</div>
+<div class="tag" style="left:692px; top:400px;">run</div>
+<div class="tag" style="left:790px; top:430px;">passes</div>
+<div class="tag" style="left:790px; top:529px;">approve</div>
+<div class="tag" style="left:688px; top:572px;">publishes</div>
+<div class="tag" style="left:478px; top:495px;">opened, and closed</div>
+
+  </div>
+  </div>
+  </div>
+
+  <ul class="legend">
+    <li><span class="sw" style="background:#e2e8f0; border:1.5px solid #94a3b8;"></span>Person</li>
+    <li><span class="sw" style="background:#fef3c7; border:1.5px solid #d97706;"></span>Governs everything</li>
+    <li><span class="sw" style="background:#ede9fe; border:1.5px solid #7c3aed;"></span>In the design file</li>
+    <li><span class="sw" style="background:#cffafe; border:1.5px solid #0e7490;"></span>The bridge</li>
+    <li><span class="sw" style="background:#dbeafe; border:1.5px solid #1d4ed8;"></span>On GitHub</li>
+    <li><span class="sw" style="background:#dcfce7; border:1.5px solid #16a34a;"></span>A person decides</li>
+    <li><span class="sw" style="background:#f0fdf4; border:1.5px solid #86efac;"></span>Published</li>
+    <li><svg class="sw" width="20" height="13" aria-hidden="true"><path d="M0 7 H20" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="5 4"/></svg>Back to the agent</li>
+    <li><svg class="sw" width="20" height="13" aria-hidden="true"><path d="M0 7 H20" stroke="#d97706" stroke-width="1.4" stroke-dasharray="4 4"/></svg>Governed by the pack</li>
+  </ul>
+
+  <aside class="note">
+    <h2>If the pack cannot build it</h2>
+    <p>Nothing breaks and nobody guesses. The issue names the part it could not match, the agent is told not to invent it, and the pull request says what was left undone. Needing it often is a request to add it to the system, not a reason to work around it.</p>
+  </aside>
+
+</main>
+</body>
+</html>
