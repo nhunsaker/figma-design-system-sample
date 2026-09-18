@@ -43,9 +43,9 @@
     "component": "Resolves from semantic only, so it compiles once for every brand."
   },
   "figma": {
-    "file_key": null,
-    "mapped": 0,
-    "keys": 0,
+    "file_key": "IDVXk0yZaJ1CQvIZn14AkA",
+    "mapped": 6,
+    "keys": 21,
     "of": 6
   },
   "components": [
@@ -72,7 +72,16 @@
         "children"
       ],
       "figma": "Button",
-      "figma_keys": [],
+      "figma_keys": [
+        "aa8cac83b6689a0a0f0426cbf27b3c5b3d2cabec",
+        "108fdce5bc46167d9c0696ea8978e3b1f94eb39a",
+        "13fb2e29c737d0a21ecdb02ca2ad474de5ce7c05",
+        "26498f638b5353dddbc627a4271e5b3b6515c0e2",
+        "fe7dee95d8fe60a49d3f5749733915a5bcd94752",
+        "6600a903d9ede57d7244101c5634db36e0e65768",
+        "3b80c0364756017f1aaf3e0cb412bdaf70201eb6",
+        "2a8f447241542fcc316fa6c93e60453d292c07ec"
+      ],
       "tokens": [
         "--ds-button-height",
         "--ds-button-height-compact",
@@ -111,7 +120,12 @@
         "children"
       ],
       "figma": "Badge",
-      "figma_keys": [],
+      "figma_keys": [
+        "58f56cc29580e548c86057d172b36d00cc3da637",
+        "e4fc9ec2374821a34429bc5c0ecb0deec7bb289c",
+        "32ae8f0a74fbc5c0995313f7cc0fb2e876888e1a",
+        "5772194414ffd138e07d5da5ab3d2ed5955bbcb3"
+      ],
       "tokens": [
         "--ds-badge-radius",
         "--ds-badge-inset",
@@ -144,7 +158,9 @@
         "footer"
       ],
       "figma": "Card",
-      "figma_keys": [],
+      "figma_keys": [
+        "1709b75fe5aa12bd1e6465b6c52c6f88273d9b30"
+      ],
       "tokens": [
         "--ds-card-bg",
         "--ds-card-fg",
@@ -174,7 +190,10 @@
       },
       "slots": [],
       "figma": "Input",
-      "figma_keys": [],
+      "figma_keys": [
+        "53a193b0f57dbe46387abef66ca8fa363d0f6cc0",
+        "221c0d7ebcd693049a28e7ab5be321b545a91d07"
+      ],
       "tokens": [
         "--ds-input-bg",
         "--ds-input-fg",
@@ -205,7 +224,11 @@
         "children"
       ],
       "figma": "Tabs",
-      "figma_keys": [],
+      "figma_keys": [
+        "dd8ca52bc3449efd3f5d24f083b368cc1facc027",
+        "5c9d9ded73c3fb1b96c42d11afc75e38d2c3ce2e",
+        "1ecacfaab73eec0e5315e50a119a725f8bebb91e"
+      ],
       "tokens": [
         "--ds-tabs-fg",
         "--ds-tabs-fg-selected",
@@ -235,7 +258,11 @@
         "children"
       ],
       "figma": "Toast",
-      "figma_keys": [],
+      "figma_keys": [
+        "c118d20be2b1d0330b3da571196b1261ef19099c",
+        "1c41c822ad447f4dfe386550e651ae8cf14a7573",
+        "e2b74bc28ce0e3aa5b650f77ac7d1427db10f5bd"
+      ],
       "tokens": [
         "--ds-toast-bg",
         "--ds-toast-fg",

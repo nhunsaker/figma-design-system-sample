@@ -31,28 +31,36 @@ const token = execFileSync(
   { encoding: 'utf8' },
 ).trim()
 
-const response = await fetch(`https://api.figma.com/v1/files/${fileKey}/components`, {
+// The file itself, not /components. That endpoint lists only PUBLISHED components, and a
+// component does not need publishing to have a stable key or to be usable here. Reading the file
+// removes a manual "click Publish" step from the demo, which is one less thing to remember and
+// one less thing to get wrong in front of somebody.
+const response = await fetch(`https://api.figma.com/v1/files/${fileKey}?depth=3`, {
   headers: { 'X-Figma-Token': token },
 })
 if (!response.ok) {
-  console.error(`Figma said ${response.status}. Is the file key right, and is it published?`)
+  console.error(`Figma said ${response.status}. Is the file key right, and can this token read it?`)
   process.exit(2)
 }
 
-const { meta } = await response.json()
+const file = await response.json()
 
 /**
- * Every published key, grouped by the name a person sees in the assets panel.
+ * Every component key, grouped by the name a person sees in the assets panel.
  *
- * A component with variants publishes one component per variant, each with its own key and a
- * name like `variant=Primary, size=Compact`. The name a designer gave the thing is on the
- * variant's containing state group. An instance in a frame points at the variant's key, never
- * at the set's, so the map has to carry every variant key or the bridge sees a frame full of
- * components it does not recognise.
+ * A component with variants holds one component per variant, each with its own key and a name
+ * like `variant=Primary, size=Compact`. The name a designer gave the thing lives on the parent
+ * set. An instance in a frame points at the VARIANT's key, never at the set's, so the map has to
+ * carry every variant key or the bridge sees a frame full of components it cannot recognise.
  */
+const sets = file.componentSets ?? {}
 const byName = new Map()
-for (const component of meta?.components ?? []) {
-  const name = component.containing_frame?.containingStateGroup?.name ?? component.name
+for (const [nodeId, component] of Object.entries(file.components ?? {})) {
+  const name = sets[component.componentSetId]?.name ?? component.name
+  if (!component.key) {
+    console.error(`component ${name} (${nodeId}) has no key, which should not happen`)
+    continue
+  }
   if (!byName.has(name)) byName.set(name, [])
   byName.get(name).push(component.key)
 }
@@ -78,7 +86,7 @@ console.log(
     `${Object.keys(components).length} published keys including variants`,
 )
 if (missing.length) {
-  console.log(`not published in that file yet: ${missing.join(', ')}`)
-  console.log('Publish them as a library, or check the name in pack.meta.json matches Figma.')
+  console.log(`not in that file yet: ${missing.join(', ')}`)
+  console.log('Check the component name in Figma matches the name in pack.meta.json.')
 }
 console.log('Run `pnpm pack` to carry the keys into pack.json, then commit both.')

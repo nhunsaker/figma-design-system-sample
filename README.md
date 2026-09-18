@@ -83,9 +83,21 @@ pnpm test:all      # the gate, the same one the pull request runs
 The bridge has its own instructions in `bridge/README.md`, including the two Keychain items it
 needs and the one call that registers the webhook.
 
-The Figma file does not exist yet. `figma/FILE.md` says exactly what to build and what to run
-afterwards. Until then the bridge reports every instance in a frame as unmapped, which is the
-truth rather than a guess, and everything else works.
+The Figma file lives at `figma/FILE.md`, with its key recorded there. The components carry keys
+whether or not the library is published, so the key sync reads the file rather than the published
+library and there is no publish step.
+
+The demo is meant to be run more than once:
+
+```
+pnpm demo:status    # what state the loop is in right now
+pnpm demo:reset     # put Figma and the repository back
+```
+
+Reset unpins the dev resources, deletes the comments the bridge left, and closes the issues and
+pull requests a run produced. It does not touch the components, the frames or anything merged.
+The one step it cannot do is set a frame's dev status back, because Figma's REST surface cannot
+set one, and that is the right place for that line.
 
 ## What this gives up
 

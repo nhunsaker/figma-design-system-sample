@@ -42,7 +42,9 @@ every instance in a frame as unmapped, which is honest and is why the issue it w
 The file key is in the URL, between `/design/` and the file name. It is not a secret and it is
 recorded here once the file exists.
 
-**File key:** not yet created.
+**File key:** `IDVXk0yZaJ1CQvIZn14AkA`
+
+https://www.figma.com/design/IDVXk0yZaJ1CQvIZn14AkA/figma-design-system-sample
 
 ## Code Connect
 
