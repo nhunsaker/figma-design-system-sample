@@ -40,6 +40,18 @@ function check(sections, omit = []) {
 }
 
 describe('check-pr-contract', () => {
+  /** Run the check against a body verbatim, rather than one assembled from sections. */
+  const checkRaw = (body) => {
+    const dir = mkdtempSync(join(tmpdir(), 'pr-'))
+    const file = join(dir, 'body.md')
+    writeFileSync(file, body)
+    const result = spawnSync('node', [CHECK, '--body-file', file, '--root', ROOT], {
+      encoding: 'utf8',
+    })
+    rmSync(dir, { recursive: true, force: true })
+    return result
+  }
+
   it('passes a body that fills the contract', () => {
     const result = check(good)
     expect(result.status).toBe(0)
@@ -125,5 +137,27 @@ describe('check-pr-contract', () => {
     })
     expect(result.status).toBe(2)
     expect(result.stderr).toContain('could not run')
+  })
+
+  /**
+   * The check was correct and its input was not.
+   *
+   * CI passed the body from `github.event.pull_request.body`, a snapshot taken when the event
+   * fired. A coding agent opens a draft whose body is a work-in-progress checklist and fills in
+   * the real description later, so the check read a body nobody meant it to read and failed a
+   * pull request that was right. This asserts the shape of that mistake, so nobody reintroduces
+   * it by handing the check an early body again.
+   */
+  it('a work-in-progress checklist is refused, which is why the body must be read late', () => {
+    const wip = [
+      '- [x] Inspect the pack requirements',
+      '- [x] Add the feature flag',
+      '- [ ] Run `pnpm test:all`',
+      '',
+      '- Fixes #5',
+    ].join('\n')
+    const result = checkRaw(wip)
+    expect(result.status).toBe(1)
+    expect(`${result.stdout}${result.stderr}`).toMatch(/problem/)
   })
 })

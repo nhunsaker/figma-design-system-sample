@@ -4,7 +4,11 @@ name: verify
 # because a check that did not run is not a check that passed.
 
 on:
+  # `ready_for_review` matters. An agent opens a draft with a work-in-progress checklist for a
+  # body and fills in the real description later, so the default trigger list checks a body that
+  # was never meant to be read, and the contract check fails on a pull request that is correct.
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
 
@@ -93,12 +97,25 @@ jobs:
         run: pnpm --filter figma-bridge-worker test
 
   pull-request-contract:
-    if: github.event_name == 'pull_request'
+    # Drafts are exempt on purpose. A draft is a statement that the work is not finished, and
+    # holding one to a contract about finished work is how you teach people to ignore a check.
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v5
 
-      - name: Pull request body fills the contract
+      # Read the body from the API rather than the event payload. The payload is a snapshot from
+      # when the event fired, and a body edited after that is invisible to it. Reading it live
+      # means this check is correct whenever it runs, instead of only when it runs first.
+      - name: Fetch the pull request body as it stands now
         env:
-          PR_BODY: ${{ github.event.pull_request.body }}
-        run: node scripts/check-pr-contract.mjs
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
+            --jq .body > "${RUNNER_TEMP}/pr-body.md"
+
+      - name: Pull request body fills the contract
+        run: node scripts/check-pr-contract.mjs --body-file "${RUNNER_TEMP}/pr-body.md"
