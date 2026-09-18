@@ -1,0 +1,35 @@
+.ds-stack {
+  display: flex;
+}
+
+.ds-stack--inline {
+  gap: var(--ds-space-inline);
+}
+
+.ds-stack--stack {
+  gap: var(--ds-space-stack);
+}
+
+.ds-stack--gutter {
+  gap: var(--ds-space-gutter);
+}
+
+.ds-stack--start {
+  align-items: flex-start;
+}
+
+.ds-stack--center {
+  align-items: center;
+}
+
+.ds-stack--baseline {
+  align-items: baseline;
+}
+
+.ds-stack--stretch {
+  align-items: stretch;
+}
+
+.ds-stack--wrap {
+  flex-wrap: wrap;
+}

@@ -1,0 +1,33 @@
+.ds-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-inline);
+  font-family: var(--ds-font-body);
+}
+
+.ds-meter__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ds-space-inline);
+}
+
+.ds-meter__label {
+  font-size: var(--ds-font-size-label);
+  color: var(--ds-text-secondary);
+}
+
+.ds-meter__value {
+  font-family: var(--ds-font-figure);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--ds-font-size-label);
+  font-weight: var(--ds-font-weight-emphasis);
+  color: var(--ds-text-primary);
+}
+
+.ds-meter__track {
+  height: var(--ds-meter-track-height);
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface-sunken);
+  overflow: hidden;
+}

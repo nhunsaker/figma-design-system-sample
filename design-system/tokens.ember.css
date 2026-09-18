@@ -36,6 +36,7 @@
   --ds-radius-surface: 12px;
   --ds-control-height: 44px;
   --ds-control-height-compact: 36px;
+  --ds-control-track: 8px;
   --ds-border-width-hairline: 1px;
   --ds-border-width-focus: 2px;
   --ds-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -43,6 +44,7 @@
   --ds-font-size-label: 14px;
   --ds-font-size-body: 16px;
   --ds-font-size-heading: 20px;
+  --ds-font-size-display: 28px;
   --ds-font-weight-body: 400;
   --ds-font-weight-emphasis: 600;
   --ds-line-height-body: 1.5;

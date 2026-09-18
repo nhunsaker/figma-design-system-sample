@@ -1,0 +1,29 @@
+.ds-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-inline);
+  font-family: var(--ds-font-body);
+}
+
+.ds-stat__label {
+  font-size: var(--ds-font-size-label);
+  color: var(--ds-text-secondary);
+}
+
+.ds-stat__value {
+  font-family: var(--ds-font-figure);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--ds-font-size-heading);
+  font-weight: var(--ds-font-weight-emphasis);
+  line-height: var(--ds-line-height-heading);
+  color: var(--ds-text-primary);
+}
+
+.ds-stat--large .ds-stat__value {
+  font-size: var(--ds-stat-large-size);
+}
+
+.ds-stat__hint {
+  font-size: var(--ds-font-size-label);
+  color: var(--ds-text-muted);
+}

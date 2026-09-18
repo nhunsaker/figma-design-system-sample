@@ -124,6 +124,9 @@
     },
     "height-compact": {
       "$value": "{primitive.size.control-compact}"
+    },
+    "track": {
+      "$value": "{primitive.size.track}"
     }
   },
   "border-width": {
@@ -154,6 +157,9 @@
     },
     "heading": {
       "$value": "{primitive.fontSize.lg}"
+    },
+    "display": {
+      "$value": "{primitive.fontSize.xl}"
     }
   },
   "font-weight": {
