@@ -1,0 +1,19 @@
+name = "figma-bridge"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Not secrets. The one file this Worker serves, and the repository it opens issues in.
+[vars]
+FIGMA_FILE_KEY = "IDVXk0yZaJ1CQvIZn14AkA"
+GITHUB_REPO = "nhunsaker/figma-design-system-sample"
+
+# Secrets are NOT here and never will be. Set them once per environment:
+#
+#   wrangler secret put FIGMA_TOKEN
+#   wrangler secret put GITHUB_TOKEN
+#   wrangler secret put WEBHOOK_PASSCODE
+#
+# They are then held encrypted by Cloudflare rather than by the operating system keychain the
+# hosted bridge uses. That is a different security posture, not a smaller one: see
+# docs/DECISIONS.md before deciding which runtime you want.

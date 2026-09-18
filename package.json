@@ -22,7 +22,9 @@
     "sync:figma": "node scripts/sync-figma-keys.mjs",
     "demo:status": "node scripts/demo.mjs status",
     "demo:reset": "node scripts/demo.mjs reset",
-    "demo:webhook": "node scripts/demo.mjs webhook"
+    "demo:webhook": "node scripts/demo.mjs webhook",
+    "test:worker": "pnpm --filter figma-bridge-worker test:all",
+    "worker:dev": "pnpm --filter figma-bridge-worker dev"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
