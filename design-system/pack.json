@@ -18,7 +18,7 @@
       "design-system/tokens/semantic.harbor.json",
       "design-system/tokens/component.json"
     ],
-    "hash": "885e2fec57c12b7b",
+    "hash": "7361390f4de5649a",
     "note": "Generated from the committed token files. A build never needs a live design connection, so every commit builds the same way."
   },
   "brands": [
@@ -310,7 +310,14 @@
           "center",
           "baseline",
           "stretch"
-        ]
+        ],
+        "justify": [
+          "start",
+          "between",
+          "end"
+        ],
+        "fill": "boolean",
+        "wrap": "boolean"
       },
       "slots": [
         "children"

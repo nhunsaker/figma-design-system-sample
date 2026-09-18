@@ -66,7 +66,7 @@ export function App() {
 
   return (
     <main className="app">
-      <Stack direction="horizontal" gap="gutter" align="baseline" wrap>
+      <Stack direction="horizontal" gap="gutter" align="center" justify="between" wrap>
         <Stack gap="inline">
           <h1 className="app__title">{PROFILE.name}</h1>
           <Badge>{PROFILE.rank}</Badge>
@@ -83,7 +83,7 @@ export function App() {
       <Tabs tabs={TABS} selected={tab} onSelect={setTab}>
         {tab === 'overview' ? (
           <Stack gap="gutter">
-            <Stack direction="horizontal" gap="gutter" wrap>
+            <Stack direction="horizontal" gap="gutter" fill wrap>
               <Stat label="Hands played" value={PROFILE.hands} />
               <Stat
                 label="Win rate"
