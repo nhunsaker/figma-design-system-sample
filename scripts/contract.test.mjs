@@ -22,11 +22,17 @@ afterEach(() => {
   while (temps.length) rmSync(temps.pop(), { recursive: true, force: true })
 })
 
-/** A throwaway copy of the design system, safe to break. */
+/**
+ * A throwaway copy of the design system, safe to break.
+ *
+ * figma/ comes too: the build reads the component key map from there, and a copy without it
+ * builds a different pack than the one on disk, which reads as drift that is not there.
+ */
 function designSystemCopy() {
   const dir = mkdtempSync(join(tmpdir(), 'dss-'))
   temps.push(dir)
   cpSync(join(ROOT, 'design-system'), join(dir, 'design-system'), { recursive: true })
+  cpSync(join(ROOT, 'figma'), join(dir, 'figma'), { recursive: true })
   return join(dir, 'design-system')
 }
 
