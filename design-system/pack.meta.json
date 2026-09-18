@@ -48,7 +48,9 @@
       "name": "Badge",
       "purpose": "Standing, as a word. Never the only carrier of a state: the badge says the word, the colour agrees with it.",
       "import": "src/components/Badge.tsx",
-      "props": { "tone": ["neutral", "success", "warning", "danger"] },
+      "props": {
+        "tone": ["neutral", "success", "warning", "danger"]
+      },
       "slots": ["children"],
       "figma": "Badge"
     },
@@ -56,7 +58,10 @@
       "name": "Card",
       "purpose": "A raised surface that groups one subject. It has a title and a body and it does not nest inside another card.",
       "import": "src/components/Card.tsx",
-      "props": { "title": "string", "as": ["section", "article", "div"] },
+      "props": {
+        "title": "string",
+        "as": ["section", "article", "div"]
+      },
       "slots": ["children", "footer"],
       "figma": "Card"
     },
@@ -90,7 +95,10 @@
       "name": "Toast",
       "purpose": "A short report that something happened, on the inverse surface so it reads as a different layer. It reports, it never asks.",
       "import": "src/components/Toast.tsx",
-      "props": { "tone": ["neutral", "success", "danger"], "onDismiss": "() => void" },
+      "props": {
+        "tone": ["neutral", "success", "danger"],
+        "onDismiss": "() => void"
+      },
       "slots": ["children"],
       "figma": "Toast"
     }
@@ -140,5 +148,28 @@
   "visual": {
     "threshold": 0.02,
     "_comment": "Fraction of pixels allowed to differ between a story screenshot and the Figma frame export before the visual check comments on the pull request. Advisory in v1, see docs/DECISIONS.md."
+  },
+  "contrast": {
+    "_comment": "Every pairing the system actually puts on screen, and the ratio it must clear. The build computes these from each brand and refuses to compile a brand that fails one, so an illegal palette is a broken build rather than an accessibility finding six months later. Text needs 4.5 to 1 and anything structural needs 3 to 1, per WCAG 2.2 AA.",
+    "text": [
+      ["text-primary", "surface-page"],
+      ["text-primary", "surface-raised"],
+      ["text-secondary", "surface-page"],
+      ["text-secondary", "surface-raised"],
+      ["text-muted", "surface-raised"],
+      ["text-inverse", "surface-inverse"],
+      ["accent-contrast", "accent-base"],
+      ["accent-contrast", "accent-hover"],
+      ["status-success-fg", "status-success-bg"],
+      ["status-warning-fg", "status-warning-bg"],
+      ["status-danger-fg", "status-danger-bg"],
+      ["status-info-fg", "status-info-bg"]
+    ],
+    "structural": [
+      ["border-focus", "surface-page"],
+      ["border-focus", "surface-raised"],
+      ["border-strong", "surface-raised"],
+      ["accent-base", "surface-page"]
+    ]
   }
 }
