@@ -80,6 +80,25 @@ Saying that costs nothing and buys the only thing that matters here, which is th
 five claims can be believed. A rule that claims a machine checks it when none does is worse than
 no rule, because the first thing anyone does with a compliance story is ask what enforces it.
 
+## Wrapping a runtime-styled library costs one extra class everywhere
+
+The vendor library is styled-components, so its rules are injected at runtime and land after
+this repository's static stylesheets. At equal specificity the later rule wins, which means a
+single class in a wrapper loses every argument to the vendor's own declarations. Every modifier
+in `Stack.css` doubles its class to reach 0,2,0.
+
+**What it gives up.** Selectors that are uglier than they should be, and a rule every future
+wrap has to remember. The alternative was `!important`, which wins the same argument and loses
+the next one.
+
+**What it cost to learn.** The stack classes were all present in the served stylesheet and none
+of them applied. Ninety five tests were green. A person looking at the running page saw four
+figures sitting on top of each other in about ten seconds, and it took three attempts to fix
+because the first two were reasoning about the cascade rather than reading it in the browser.
+
+That is the honest case for the visual check, and for the rule that a change is not shipped
+until somebody has looked at it.
+
 ## A component could still be built in the shell
 
 `check-contract` fences `src/components`: nothing appears there without the pack listing it, and
