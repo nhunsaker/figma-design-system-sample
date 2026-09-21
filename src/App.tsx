@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Badge } from './components/Badge'
 import { Button } from './components/Button'
 import { Card } from './components/Card'
 import { Meter } from './components/Meter'
+import { Missing } from './components/Missing'
 import { RecordRow } from './components/RecordRow'
 import { Stack } from './components/Stack'
 import { Stat } from './components/Stat'
@@ -51,18 +52,42 @@ const VENUES = [
   { label: 'The Back Room', value: '17' },
 ]
 
-const TABS: Tab[] = [
+const BASE_TABS: Tab[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'drills', label: 'Drills' },
   { id: 'venues', label: 'Venues' },
 ]
 
-export function App() {
-  const [tab, setTab] = useState('overview')
+const REQUESTS_TAB: Tab = { id: 'requests', label: 'Requests' }
+
+interface AppProps {
+  initialTab?: string
+  search?: string
+}
+
+function readSearch(): string {
+  return typeof window !== 'undefined' ? window.location.search : ''
+}
+
+function selectTab(tabs: Tab[], requested: string): string {
+  return tabs.find((t) => t.id === requested)?.id ?? tabs[0]?.id ?? 'overview'
+}
+
+export function App({ initialTab = 'overview', search }: AppProps) {
+  const resolvedSearch = search ?? readSearch()
+  const showRollHistory = isOn('requests-roll-history', resolvedSearch)
+  const tabs = showRollHistory ? [...BASE_TABS, REQUESTS_TAB] : BASE_TABS
+  const [tab, setTab] = useState(() => selectTab(tabs, initialTab))
   const [dismissed, setDismissed] = useState(false)
 
   const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
-  const showWeakSpot = isOn('weak-spot') && weakest
+  const showWeakSpot = isOn('weak-spot', resolvedSearch) && weakest
+
+  useEffect(() => {
+    setTab((current) =>
+      tabs.some((t) => t.id === current) ? current : (tabs[0]?.id ?? 'overview'),
+    )
+  }, [tabs])
 
   return (
     <main className="app">
@@ -80,7 +105,7 @@ export function App() {
         </Toast>
       ) : null}
 
-      <Tabs tabs={TABS} selected={tab} onSelect={setTab}>
+      <Tabs tabs={tabs} selected={tab} onSelect={setTab}>
         {tab === 'overview' ? (
           <Stack gap="gutter">
             <Stack direction="horizontal" gap="gutter" fill wrap>
@@ -134,6 +159,18 @@ export function App() {
               ))}
             </div>
           </Card>
+        ) : null}
+
+        {tab === 'requests' ? (
+          <Stack gap="gutter">
+            <h2>Roll over the last 90 days</h2>
+            <Stack direction="horizontal" gap="gutter" fill wrap>
+              <Stat label="Peak" value="$12,480" />
+              <Stat label="Low" value="$1,205" />
+              <Stat label="Now" value="$8,930" />
+            </Stack>
+            <Missing name="Sparkline" width={672} height={80} />
+          </Stack>
         ) : null}
       </Tabs>
     </main>
