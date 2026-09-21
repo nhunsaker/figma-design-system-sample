@@ -65,10 +65,13 @@ interface AppProps {
   search?: string
 }
 
-export function App({ initialTab = 'overview', search = globalThis.location?.search ?? '' }: AppProps) {
+export function App({
+  initialTab = 'overview',
+  search = globalThis.location?.search ?? '',
+}: AppProps) {
   const showRollHistory = isOn('requests-roll-history', search)
   const tabs = showRollHistory ? [...BASE_TABS, REQUESTS_TAB] : BASE_TABS
-  const defaultTab = tabs.some((t) => t.id === initialTab) ? initialTab : tabs[0].id
+  const defaultTab = tabs.find((t) => t.id === initialTab)?.id ?? tabs[0]?.id ?? 'overview'
   const [tab, setTab] = useState(defaultTab)
   const [dismissed, setDismissed] = useState(false)
 

@@ -59,7 +59,9 @@ describe('App', () => {
     expect(screen.getByRole('tab', { name: 'Requests' })).toBeInTheDocument()
     const panel = screen.getByRole('tabpanel')
     const scope = within(panel)
-    expect(scope.getByRole('heading', { level: 2, name: 'Roll over the last 90 days' })).toBeInTheDocument()
+    expect(
+      scope.getByRole('heading', { level: 2, name: 'Roll over the last 90 days' }),
+    ).toBeInTheDocument()
     expect(scope.getByText('Peak')).toBeInTheDocument()
     expect(scope.getByText('$12,480')).toBeInTheDocument()
     expect(scope.getByText('Low')).toBeInTheDocument()
