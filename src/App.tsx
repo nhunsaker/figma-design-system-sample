@@ -65,21 +65,23 @@ interface AppProps {
   search?: string
 }
 
+function readSearch(): string {
+  return typeof window !== 'undefined' ? window.location.search : ''
+}
+
 function selectTab(tabs: Tab[], requested: string): string {
   return tabs.find((t) => t.id === requested)?.id ?? tabs[0]?.id ?? 'overview'
 }
 
-export function App({
-  initialTab = 'overview',
-  search = globalThis.location?.search ?? '',
-}: AppProps) {
-  const showRollHistory = isOn('requests-roll-history', search)
+export function App({ initialTab = 'overview', search }: AppProps) {
+  const resolvedSearch = search ?? readSearch()
+  const showRollHistory = isOn('requests-roll-history', resolvedSearch)
   const tabs = showRollHistory ? [...BASE_TABS, REQUESTS_TAB] : BASE_TABS
   const [tab, setTab] = useState(() => selectTab(tabs, initialTab))
   const [dismissed, setDismissed] = useState(false)
 
   const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
-  const showWeakSpot = isOn('weak-spot', search) && weakest
+  const showWeakSpot = isOn('weak-spot', resolvedSearch) && weakest
 
   useEffect(() => {
     setTab((current) =>
