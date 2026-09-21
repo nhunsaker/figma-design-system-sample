@@ -71,6 +71,23 @@ describe('App', () => {
     expect(scope.getByRole('note', { name: 'Sparkline, not built' })).toBeInTheDocument()
   })
 
+  it('falls back to a real tab if Requests is removed after mount', () => {
+    const { rerender } = render(
+      <DesignSystem>
+        <App search="?requests-roll-history=true" initialTab="requests" />
+      </DesignSystem>,
+    )
+
+    rerender(
+      <DesignSystem>
+        <App search="" initialTab="requests" />
+      </DesignSystem>,
+    )
+
+    expect(screen.queryByRole('tab', { name: 'Requests' })).toBeNull()
+    expect(screen.getByText('Hands played')).toBeInTheDocument()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = renderApp()
     await expectNoAxeViolations(container)
