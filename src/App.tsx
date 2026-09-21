@@ -83,9 +83,9 @@ export function App({
 
   useEffect(() => {
     setTab((current) =>
-      tabs.some((t) => t.id === current) ? current : selectTab(tabs, initialTab),
+      tabs.some((t) => t.id === current) ? current : (tabs[0]?.id ?? 'overview'),
     )
-  }, [initialTab, tabs])
+  }, [tabs])
 
   return (
     <main className="app">
