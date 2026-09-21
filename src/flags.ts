@@ -9,6 +9,8 @@
 export const flags = {
   /** The weak spot callout on the drills record. Off until a person says otherwise. */
   'weak-spot': false,
+  /** The roll history frame on Requests. Off until a person says otherwise. */
+  'requests-roll-history': false,
 } as const
 
 export type FlagName = keyof typeof flags
