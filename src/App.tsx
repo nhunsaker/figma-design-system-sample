@@ -65,21 +65,26 @@ interface AppProps {
   search?: string
 }
 
+function selectTab(tabs: Tab[], requested: string): string {
+  return tabs.find((t) => t.id === requested)?.id ?? tabs[0]?.id ?? 'overview'
+}
+
 export function App({
   initialTab = 'overview',
   search = globalThis.location?.search ?? '',
 }: AppProps) {
   const showRollHistory = isOn('requests-roll-history', search)
   const tabs = showRollHistory ? [...BASE_TABS, REQUESTS_TAB] : BASE_TABS
-  const pickTab = () => tabs.find((t) => t.id === initialTab)?.id ?? tabs[0]?.id ?? 'overview'
-  const [tab, setTab] = useState(pickTab)
+  const [tab, setTab] = useState(() => selectTab(tabs, initialTab))
   const [dismissed, setDismissed] = useState(false)
 
   const weakest = useMemo(() => DRILLS.find((d) => d.standing === 'Weak spot'), [])
   const showWeakSpot = isOn('weak-spot', search) && weakest
 
   useEffect(() => {
-    setTab((current) => (tabs.some((t) => t.id === current) ? current : pickTab()))
+    setTab((current) =>
+      tabs.some((t) => t.id === current) ? current : selectTab(tabs, initialTab),
+    )
   }, [initialTab, tabs])
 
   return (
